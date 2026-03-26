@@ -2,42 +2,57 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>منصة الطلاب</title>
+  <title>دراسة الكتاب 2026</title>
+  <!-- فونت حديث من Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Tahoma, sans-serif;
+      font-family: 'Cairo', sans-serif;
       margin: 0;
       padding: 0;
       direction: rtl;
-      background: #f9f9f9;
+      background: #f4f6f9;
+      color: #333;
     }
     header {
-      background: #4CAF50;
+      background: linear-gradient(90deg, #2196F3, #1976D2);
       color: white;
-      padding: 15px;
+      padding: 20px;
       text-align: center;
-      font-size: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
     nav {
       display: flex;
-      background: #333;
+      background: #263238;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     nav button {
       flex: 1;
       padding: 15px;
       border: none;
-      background: #333;
-      color: white;
+      background: #263238;
+      color: #fff;
       cursor: pointer;
       font-size: 16px;
+      transition: background 0.3s, transform 0.2s;
+    }
+    nav button:hover {
+      background: #37474F;
+      transform: scale(1.05);
     }
     nav button.active {
-      background: #4CAF50;
+      background: #2196F3;
     }
     section {
       display: none;
-      padding: 20px;
+      padding: 25px;
       animation: fadein 0.5s;
+      background: white;
+      margin: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     section.active {
       display: block;
@@ -52,10 +67,11 @@
       right: 20px;
       background: #4caf50;
       color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
+      padding: 12px 24px;
+      border-radius: 6px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      font-size: 14px;
     }
     .toast.error { background: #f44336; }
     .toast.warning { background: #ff9800; }
