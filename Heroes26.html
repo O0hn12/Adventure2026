@@ -79,6 +79,27 @@
     .toast.error { background: #f44336; }
     .toast.warning { background: #ff9800; }
     @keyframes fadeout { from {opacity: 1;} to {opacity: 0;} }
+
+    /* للموبايل (شاشات صغيرة أقل من 768px) */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column; /* التابات تبقى تحت بعضها */
+  }
+  nav button {
+    font-size: 18px;
+    padding: 20px;
+    text-align: center;
+  }
+  section {
+    margin: 10px;
+    padding: 15px;
+  }
+  header {
+    font-size: 20px;
+    padding: 15px;
+  }
+}
+
   </style>
 </head>
 <body>
