@@ -30,13 +30,13 @@
 <body>
   <header>Heroes Adventure 2026 Attendance</header>
 
-  <!-- صفحة تسجيل الدخول -->
-  <section id="loginSection" class="active">
-    <h2>تسجيل الدخول</h2>
-    <input type="text" id="loginUsername" placeholder="اسم المستخدم">
-    <input type="password" id="loginPassword" placeholder="كلمة المرور">
-    <button id="loginBtn">🔑 دخول</button>
-  </section>
+ <!-- صفحة تسجيل الدخول -->
+<section id="loginSection" class="active" style="max-width:400px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);text-align:center;">
+  <h2 style="margin-bottom:20px;color:#1976D2;">🔑 تسجيل الدخول</h2>
+  <input type="text" id="loginUsername" placeholder="اسم المستخدم" style="width:100%;padding:12px;margin:10px 0;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+  <input type="password" id="loginPassword" placeholder="كلمة المرور" style="width:100%;padding:12px;margin:10px 0;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+  <button id="loginBtn" style="width:100%;padding:12px;background:linear-gradient(90deg,#2196F3,#1976D2);color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;">دخول</button>
+</section>
 
   <!-- التابات (مخفي في البداية) -->
   <nav style="display:none;" id="mainNav">
@@ -49,23 +49,42 @@
 
   <main>
     <!-- تاب الحضور -->
-    <section id="attendance">
-      <h2>الحضور</h2>
-      <input type="text" id="nameInput" placeholder="الاسم">
-      <input type="number" id="attendanceInput" min="0" max="5" placeholder="الحضور (0-5)">
-      <input type="number" id="bookInput" min="0" max="5" placeholder="الكتاب (0-5)">
-      <button id="submitBtn" onclick="submitData()" disabled>✅ إدخال</button>
-      <hr>
-      <h3>بحث عن اسم</h3>
-      <input type="text" id="searchInput" placeholder="ابحث بالاسم">
-      <button onclick="searchName()">🔍 بحث</button>
-      <div id="tableContainer">
-        <table id="resultTable">
-          <thead><tr><th>الاسم</th><th>الأسبوع 1</th><th>الأسبوع 2</th><th>الأسبوع 3</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+    <section id="attendance" style="display:none;max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+  <h2 style="color:#4CAF50;margin-bottom:20px;">📋 الحضور</h2>
+  
+  <div style="margin-bottom:15px;">
+    <input type="text" id="nameInput" placeholder="الاسم" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+  </div>
+  <div style="margin-bottom:15px;">
+    <input type="number" id="attendanceInput" min="0" max="5" placeholder="الحضور (0-5)" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+  </div>
+  <div style="margin-bottom:15px;">
+    <input type="number" id="bookInput" min="0" max="5" placeholder="الكتاب (0-5)" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+  </div>
+  <button id="submitBtn" onclick="submitData()" disabled style="width:100%;padding:12px;background:linear-gradient(90deg,#4CAF50,#388E3C);color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;">✅ إدخال</button>
+  
+  <hr style="margin:25px 0;">
+  
+  <h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
+  <div style="margin-bottom:15px;">
+    <input type="text" id="searchInput" placeholder="ابحث بالاسم" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+  </div>
+  <button onclick="searchName()" style="width:100%;padding:12px;background:linear-gradient(90deg,#2196F3,#1976D2);color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;">بحث</button>
+  
+  <div id="tableContainer" style="margin-top:20px;overflow-x:auto;">
+    <table id="resultTable" style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="background:#f4f6f9;color:#333;">
+          <th style="padding:10px;border:1px solid #ccc;">الاسم</th>
+          <th style="padding:10px;border:1px solid #ccc;">الأسبوع 1</th>
+          <th style="padding:10px;border:1px solid #ccc;">الأسبوع 2</th>
+          <th style="padding:10px;border:1px solid #ccc;">الأسبوع 3</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
 
     <section id="homework"><h2>الواجب</h2><input type="text" id="editName" placeholder="الاسم"><input type="number" id="newScore" min="0" max="10" placeholder="درجة جديدة"><button onclick="updateStudentScore()">✏️ تعديل</button></section>
     <section id="grades"><h2>الدرجات</h2><p>عرض تقارير الدرجات.</p></section>
