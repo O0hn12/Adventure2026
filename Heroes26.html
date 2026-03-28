@@ -130,13 +130,16 @@
     <section id="reaction"><h2>التفاعل</h2><select id="reportWeekInput"><option value="">اختر الأسبوع</option><option value="B">الأسبوع الأول</option><option value="C">الأسبوع الثاني</option><option value="D">الأسبوع الثالث</option></select><button onclick="showWeekCount()">👥 عرض العدد</button><div id="weekCountDisplay"></div><button onclick="generateWeekReport()">📋 عرض التقرير</button><div id="weekReportResult"></div></section>
     <section id="gallery"><h2>المعرض</h2><p>صور أو محتوى إضافي.</p></section>
   </main>
+```html
 <script>
 let selectedSheet = "1ب";
 let selectedWeek = "B";
 const scriptURL = 'https://attendace.johnmamdouh777.workers.dev/';
 let currentUser = "";
+let currentClass = "";
+let allNames = []; // 🔥 تخزين الأسماء
 
-// ✅ عند تحميل الصفحة (منع الدخول)
+// ✅ عند تحميل الصفحة
 window.onload = function(){
   document.getElementById("mainNav").style.display = "none";
   document.querySelectorAll("main section").forEach(sec=>sec.style.display="none");
@@ -169,7 +172,6 @@ document.getElementById("loginBtn").addEventListener("click", function () {
     setTimeout(() => {
       document.getElementById("loginSection").style.display = "none";
       document.getElementById("mainNav").style.display = "flex";
-
       showTab("attendance");
     },1000);
 
@@ -178,7 +180,7 @@ document.getElementById("loginBtn").addEventListener("click", function () {
   }
 });
 
-// ✅ تبديل التابات
+// ✅ التابات
 function showTab(tabId, event){
   if(!currentUser){
     showToast("❌ لازم تسجل دخول الأول","error");
@@ -201,6 +203,46 @@ function showToast(message,type="success"){
   setTimeout(()=>{toast.classList.add("show");},100);
   setTimeout(()=>{toast.remove();},1500);
 }
+
+// ✅ تحميل الأسماء مرة واحدة
+function loadNames(sheet){
+  fetch(`${scriptURL}?action=getStudentNames&sheet=${sheet}`)
+    .then(res => res.json())
+    .then(data => {
+      allNames = data.names || [];
+    })
+    .catch(()=> showToast("❌ خطأ في تحميل الأسماء","error"));
+}
+
+// ✅ تغيير الفرقة
+document.getElementById("classSelect").addEventListener("change", function(){
+  selectedSheet = this.value;
+  currentClass = this.value;
+  loadNames(this.value); // 🔥 تحميل الأسماء
+});
+
+// ✅ اقتراحات سريعة (LOCAL)
+document.getElementById("nameInput").addEventListener("input", function(){
+  const value = this.value.trim().toLowerCase();
+  const suggestionsBox = document.getElementById("nameSuggestions");
+  suggestionsBox.innerHTML = "";
+
+  if(!value || allNames.length === 0) return;
+
+  const filtered = allNames.filter(n => n.toLowerCase().includes(value)).slice(0,10);
+
+  filtered.forEach(name=>{
+    const div = document.createElement("div");
+    div.textContent = name;
+    div.style.padding="8px";
+    div.style.cursor="pointer";
+    div.onclick=()=>{
+      document.getElementById("nameInput").value=name;
+      suggestionsBox.innerHTML="";
+    };
+    suggestionsBox.appendChild(div);
+  });
+});
 
 // ✅ validation
 function checkSubmitState(){
@@ -258,50 +300,6 @@ function submitData(){
   .catch(()=>showToast("❌ خطأ في الاتصال!","error"));
 }
 
-// ✅ تعديل البيانات
-function updateStudentScore(){
-  if(!currentUser){
-    showToast("❌ لازم تسجل دخول","error");
-    return;
-  }
-
-  const name=document.getElementById("editName").value.trim();
-  const newScore=document.getElementById("newScore").value.trim();
-
-  if(!name || newScore===""){
-    showToast("❌ يجب إدخال الاسم والدرجة!","error");
-    return;
-  }
-
-  const payload={
-    action:"updateScore",
-    sheet:selectedSheet,
-    week:selectedWeek,
-    name:name,
-    newScore:Number(newScore)
-  };
-
-  fetch(scriptURL,{
-    method:'POST',
-    body:JSON.stringify(payload),
-    headers:{'Content-Type':'application/json'}
-  })
-  .then(res=>res.text())
-  .then(text=>{
-    try{
-      const response=JSON.parse(text);
-      if(response.success){
-        showToast("✅ تم تعديل الدرجة!","success");
-      }else{
-        showToast("❌ فشل التعديل!","error");
-      }
-    }catch{
-      showToast("❌ استجابة غير صالحة!","error");
-    }
-  })
-  .catch(()=>showToast("❌ خطأ في الاتصال!","error"));
-}
-
 // ✅ البحث
 function searchName(){
   if(!currentUser){
@@ -339,61 +337,15 @@ function searchName(){
     tr.appendChild(nameCell);
 
     for(let i=1;i<=9;i++){
-  const td=document.createElement("td");
-  td.textContent=data.row[i] || "-";
-  tr.appendChild(td);
-}
+      const td=document.createElement("td");
+      td.textContent=data.row[i] || "-";
+      tr.appendChild(td);
+    }
+
     tableBody.appendChild(tr);
   })
   .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
-  document.getElementById("classSelect").addEventListener("change", function(){
-  currentClass = this.value;
-});
-document.getElementById("nameInput").addEventListener("input", function(){
-  const value = this.value.trim();
-  const suggestionsBox = document.getElementById("nameSuggestions");
-  suggestionsBox.innerHTML = "";
-  if(!currentClass || !value) return;
-  const filtered = data.names.filter(n => n.includes(value));
-  filtered.forEach(name=>{
-    const div = document.createElement("div");
-    div.textContent = name;
-    div.className = "suggestion-item";
-    div.onclick=()=>{document.getElementById("nameInput").value=name; suggestionsBox.innerHTML="";};
-    suggestionsBox.appendChild(div);
-  });
-});
-
-
-  let currentClass = "";
-
-document.getElementById("classSelect").addEventListener("change", function(){
-  currentClass = this.value;
-});
-
-document.getElementById("nameInput").addEventListener("input", function(){
-  const value = this.value.trim();
-  const suggestionsBox = document.getElementById("nameSuggestions");
-  suggestionsBox.innerHTML = "";
-  if(!currentClass || !value) return;
-
-  // طلب الأسماء من الشيت
-  fetch(`${scriptURL}?action=getStudentNames&sheet=${currentClass}`)
-    .then(res => res.json())
-    .then(data => {
-      const filtered = data.names.filter(n => n.includes(value));
-      filtered.forEach(name=>{
-        const div = document.createElement("div");
-        div.textContent = name;
-        div.className = "suggestion-item";
-        div.onclick=()=>{document.getElementById("nameInput").value=name; suggestionsBox.innerHTML="";};
-        suggestionsBox.appendChild(div);
-      });
-    })
-    .catch(()=> showToast("❌ خطأ في جلب الأسماء","error"));
-});
-  
 </script>
 </body>
 </html>
