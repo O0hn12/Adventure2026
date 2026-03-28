@@ -52,12 +52,14 @@
     <section id="attendance" style="display:none;max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
   <h2 style="color:#4CAF50;margin-bottom:20px;">📋 الحضور</h2>
 
-      <label for="classSelect">اختر الفرقة:</label>
-<select id="classSelect" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;margin-bottom:15px;">
+      <select id="classSelect" style="...">
   <option value="">-- اختر الفرقة --</option>
   <option value="1ب">1ب</option>
   <option value="2ب">2ب</option>
   <option value="3ب">3ب</option>
+  <option value="4ب">4ب</option>
+  <option value="5ب">5ب</option>
+  <option value="6ب">6ب</option>
 </select>
   
   <div style="margin-bottom:15px;">
@@ -82,16 +84,22 @@
   
   <div id="tableContainer" style="margin-top:20px;overflow-x:auto;">
     <table id="resultTable" style="width:100%;border-collapse:collapse;">
-      <thead>
-        <tr style="background:#f4f6f9;color:#333;">
-          <th style="padding:10px;border:1px solid #ccc;">الاسم</th>
-          <th style="padding:10px;border:1px solid #ccc;">الأسبوع 1</th>
-          <th style="padding:10px;border:1px solid #ccc;">الأسبوع 2</th>
-          <th style="padding:10px;border:1px solid #ccc;">الأسبوع 3</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <thead>
+    <tr style="background:#f4f6f9;color:#333;">
+      <th style="padding:10px;border:1px solid #ccc;">الاسم</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 1</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 2</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 3</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 4</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 5</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 6</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 7</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 8</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 9</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
   </div>
 </section>
 
@@ -309,12 +317,11 @@ function searchName(){
     nameCell.textContent=data.row[0];
     tr.appendChild(nameCell);
 
-    for(let i=1;i<data.row.length;i++){
-      const td=document.createElement("td");
-      td.textContent=data.row[i] || "-";
-      tr.appendChild(td);
-    }
-
+    for(let i=1;i<=9;i++){
+  const td=document.createElement("td");
+  td.textContent=data.row[i] || "-";
+  tr.appendChild(td);
+}
     tableBody.appendChild(tr);
   })
   .catch(()=>showToast("❌ خطأ في الاتصال","error"));
