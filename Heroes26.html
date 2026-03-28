@@ -368,12 +368,10 @@ document.getElementById("nameInput").addEventListener("input", function(){
 
   let currentClass = "";
 
-// عند اختيار الفرقة
 document.getElementById("classSelect").addEventListener("change", function(){
   currentClass = this.value;
 });
 
-// عند الكتابة في خانة الاسم
 document.getElementById("nameInput").addEventListener("input", function(){
   const value = this.value.trim();
   const suggestionsBox = document.getElementById("nameSuggestions");
@@ -395,7 +393,7 @@ document.getElementById("nameInput").addEventListener("input", function(){
     })
     .catch(()=> showToast("❌ خطأ في جلب الأسماء","error"));
 });
-
+  
 </script>
 </body>
 </html>
