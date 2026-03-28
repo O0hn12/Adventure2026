@@ -34,8 +34,8 @@
   position:fixed;
   z-index:9999;
   left:50%;
-  top:50%;              /* يخليها في نص الشاشة */
-  transform:translate(-50%, -50%); /* يظبطها بالظبط في النص */
+  top:20%;              /* يخليها في نص الشاشة */
+  transform:translate(-50%); /* يظبطها بالظبط في النص */
   font-size:1.1em;
   box-shadow:0 4px 12px rgba(0,0,0,0.3);
   transition:opacity 0.5s;
@@ -74,7 +74,7 @@
     <section id="attendance" style="display:none;max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
   <h2 style="color:#4CAF50;margin-bottom:20px;">📋 الحضور</h2>
 
-      <select id="classSelect" style="...">
+      <select id="classSelect" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;margin-bottom:15px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.1);cursor:pointer;">
   <option value="">-- اختر الفرقة --</option>
   <option value="1ب">1ب</option>
   <option value="2ب">2ب</option>
@@ -199,7 +199,7 @@ function showToast(message,type="success"){
   toast.innerText=message;
   document.body.appendChild(toast);
   setTimeout(()=>{toast.classList.add("show");},100);
-  setTimeout(()=>{toast.remove();},3000);
+  setTimeout(()=>{toast.remove();},1500);
 }
 
 // ✅ validation
@@ -355,7 +355,7 @@ document.getElementById("nameInput").addEventListener("input", function(){
   const suggestionsBox = document.getElementById("nameSuggestions");
   suggestionsBox.innerHTML = "";
   if(!currentClass || !value) return;
-  const filtered = allNames[currentClass].filter(n => n.includes(value));
+  const filtered = data.names.filter(n => n.includes(value));
   filtered.forEach(name=>{
     const div = document.createElement("div");
     div.textContent = name;
