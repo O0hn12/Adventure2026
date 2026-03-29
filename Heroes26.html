@@ -83,6 +83,20 @@
   <option value="5ب">5ب</option>
   <option value="6ب">6ب</option>
 </select>
+
+      <select id="weekSelect" style="width:100%;padding:10px;margin-bottom:10px;">
+  <option value="">اختر الأسبوع</option>
+  <option value="C">الأسبوع 1</option>
+  <option value="D">الأسبوع 2</option>
+  <option value="E">الأسبوع 3</option>
+  <option value="F">الأسبوع 4</option>
+  <option value="G">الأسبوع 5</option>
+  <option value="H">الأسبوع 6</option>
+  <option value="I">الأسبوع 7</option>
+  <option value="J">الأسبوع 8</option>
+  <option value="K">الأسبوع 9</option>
+  <option value="L">الأسبوع 10</option>
+</select>
   
   <div style="margin-bottom:15px;">
     <input type="text" id="nameInput" placeholder="الاسم" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
@@ -131,8 +145,8 @@
     <section id="gallery"><h2>المعرض</h2><p>صور أو محتوى إضافي.</p></section>
   </main>
 <script>
-  apiKey: "123456"
-let selectedSheet = "1ب";
+  const API_KEY = "123456";
+let selectedSheet = "Attendance"; // الافتراضي;
 let selectedWeek = "B";
 const scriptURL = 'https://attendace.johnmamdouh777.workers.dev/';
 let currentUser = "";
@@ -183,7 +197,7 @@ document.getElementById("loginBtn").addEventListener("click", function () {
 // ✅ التابات
 function showTab(tabId, event){
   if(!currentUser){
-    showToast("❌ لازم تسجل دخول الأول","error");
+    showToast("❌ لازم تسجل دخول","error");
     return;
   }
 
@@ -192,6 +206,20 @@ function showTab(tabId, event){
 
   document.getElementById(tabId).style.display="block";
   if(event) event.target.classList.add("active");
+
+  // 🔥 ربط التاب بالشيت
+  const sheetMap = {
+    attendance: "Attendance",
+    homework: "Homework",
+    grades: "Grades",
+    reaction: "Reaction",
+    gallery: "Fairzone"
+  };
+
+  selectedSheet = sheetMap[tabId];
+
+  // ⚡ تحميل الأسماء
+  loadNames();
 }
 
 // ✅ Toast
@@ -205,18 +233,18 @@ function showToast(message,type="success"){
 }
 
 // ✅ تحميل الأسماء مرة واحدة
-function loadNames(sheet){
-  fetch(`${scriptURL}?action=getStudentNames&sheet=${sheet}`)
+function loadNames(){
+  if(!currentClass) return;
+
+  fetch(`${scriptURL}?action=getStudentNames&sheet=${selectedSheet}&class=${currentClass}`)
     .then(res => res.json())
     .then(data => {
       allNames = data.names || [];
-    })
-    .catch(()=> showToast("❌ خطأ في تحميل الأسماء","error"));
+    });
 }
 
 // ✅ تغيير الفرقة
 document.getElementById("classSelect").addEventListener("change", function(){
-  selectedSheet = this.value;
   currentClass = this.value;
   loadNames(this.value); // 🔥 تحميل الأسماء
 });
@@ -268,33 +296,38 @@ function submitData(){
   }
 
   const name=document.getElementById("nameInput").value.trim();
+
+  if(!allNames.includes(name)){
+    showToast("❌ لازم تختار اسم من الاقتراحات","error");
+    return;
+  }
+
   const attendance=Number(document.getElementById("attendanceInput").value);
   const book=Number(document.getElementById("bookInput").value);
 
   const total=attendance+book;
 
-  const data={name,number:total,sheet:selectedSheet,week:selectedWeek};
+  const data = {
+    name,
+    number: total,
+    sheet: selectedSheet,
+    week: selectedWeek,
+    className: currentClass,
+    isAdmin: currentUser === "admin",
+    apiKey: API_KEY
+  };
 
   fetch(scriptURL,{
     method:'POST',
     body:JSON.stringify(data),
     headers:{'Content-Type':'application/json'}
   })
-  .then(res=>res.text())
-  .then(text=>{
-    try{
-      const response=JSON.parse(text);
-      if(response.success){
-        showToast("✅ تم الإدخال بنجاح!","success");
-        document.getElementById("nameInput").value="";
-        document.getElementById("attendanceInput").value="";
-        document.getElementById("bookInput").value="";
-        checkSubmitState();
-      }else{
-        showToast("❌ فشل الإدخال!","error");
-      }
-    }catch{
-      showToast("❌ استجابة غير صالحة!","error");
+  .then(res=>res.json())
+  .then(response=>{
+    if(response.success){
+      showToast("✅ تم الإدخال بنجاح!","success");
+    }else{
+      showToast(response.message || "❌ فشل","error");
     }
   })
   .catch(()=>showToast("❌ خطأ في الاتصال!","error"));
@@ -313,7 +346,7 @@ function searchName(){
     return;
   }
 
-  fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(search)}`)
+  fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&class=${currentClass}&name=${encodeURIComponent(search)}`)
   .then(res=>res.text())
   .then(text=>{
     let data;
@@ -346,6 +379,32 @@ function searchName(){
   })
   .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
+  
+  document.getElementById("weekSelect").addEventListener("change", function(){
+  selectedWeek = this.value;
+});
+
+  document.getElementById("searchInput").addEventListener("input", function(){
+  const value = this.value.toLowerCase();
+  const suggestionsBox = document.getElementById("nameSuggestions");
+
+  suggestionsBox.innerHTML="";
+
+  if(!value) return;
+
+  const filtered = allNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
+
+  filtered.forEach(name=>{
+    const div=document.createElement("div");
+    div.textContent=name;
+    div.onclick=()=>{
+      document.getElementById("searchInput").value=name;
+      suggestionsBox.innerHTML="";
+    };
+    suggestionsBox.appendChild(div);
+  });
+});
+  
 </script>
 </body>
 </html>
