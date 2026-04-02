@@ -148,10 +148,11 @@
   </div>
 </section>
 
-    <section id="homework" style="display:none;max-width:600px;margin:20px auto;">
-  <h2>📚 الواجب</h2>
+    <section id="homework" style="display:none;max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
 
-      <select id="hwClassSelect">
+<h2 style="color:#FF9800;margin-bottom:20px;">📚 الواجب</h2>
+
+<select id="hwClassSelect" style="width:100%;padding:12px;margin-bottom:10px;">
   <option value="">-- اختر الفرقة --</option>
   <option value="1ب">1ب</option>
   <option value="2ب">2ب</option>
@@ -160,26 +161,59 @@
   <option value="5ب">5ب</option>
   <option value="6ب">6ب</option>
 </select>
-      
-  <select id="hwWeekSelect">
-    <option value="C">الأسبوع 1</option>
-    <option value="D">الأسبوع 2</option>
-    <option value="E">الأسبوع 3</option>
-    <option value="F">الأسبوع 4</option>
-    <option value="G">الأسبوع 5</option>
-    <option value="H">الأسبوع 6</option>
-    <option value="I">الأسبوع 7</option>
-    <option value="J">الأسبوع 8</option>
-    <option value="K">الأسبوع 9</option>
-    <option value="L">الأسبوع 10</option>
-  </select>
 
-  <input type="text" id="hwNameInput" placeholder="الاسم">
-  <div id="hwSuggestions"></div>
+<select id="hwWeekSelect" style="width:100%;padding:10px;margin-bottom:10px;">
+  <option value="">اختر الأسبوع</option>
+  <option value="C">الأسبوع 1</option>
+  <option value="D">الأسبوع 2</option>
+  <option value="E">الأسبوع 3</option>
+  <option value="F">الأسبوع 4</option>
+  <option value="G">الأسبوع 5</option>
+  <option value="H">الأسبوع 6</option>
+  <option value="I">الأسبوع 7</option>
+  <option value="J">الأسبوع 8</option>
+  <option value="K">الأسبوع 9</option>
+</select>
 
-  <input type="number" id="hwScore" min="0" max="10" placeholder="درجة الواجب (0-10)">
+<div>
+  <input type="text" id="hwNameInput" placeholder="الاسم" style="width:100%;padding:12px;">
+  <div id="hwSuggestions" style="background:#fff;border:1px solid #ccc;"></div>
+</div>
 
-  <button onclick="submitHomework()">✅ إدخال</button>
+<div style="margin-top:10px;">
+  <input type="number" id="hwScore" min="0" max="10" placeholder="درجة الواجب (0-10)" style="width:100%;padding:12px;">
+</div>
+
+<button id="hwSubmitBtn" onclick="submitHomework()" disabled style="width:100%;margin-top:10px;">✅ إدخال</button>
+
+<hr>
+
+<h3>🔍 بحث</h3>
+
+<select id="hwSearchClass"></select>
+
+<input type="text" id="hwSearchInput" placeholder="ابحث بالاسم">
+
+<button onclick="searchHomework()">بحث</button>
+
+<table id="hwTable">
+  <thead>
+    <tr>
+      <th>الاسم</th>
+      <th>الأسبوع 1</th>
+      <th>الأسبوع 2</th>
+      <th>الأسبوع 3</th>
+      <th>الأسبوع 4</th>
+      <th>الأسبوع 5</th>
+      <th>الأسبوع 6</th>
+      <th>الأسبوع 7</th>
+      <th>الأسبوع 8</th>
+      <th>الأسبوع 9</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
 </section>
     <section id="grades"><h2>الدرجات</h2><p>عرض تقارير الدرجات.</p></section>
     <section id="reaction"><h2>التفاعل</h2><select id="reportWeekInput"><option value="">اختر الأسبوع</option><option value="B">الأسبوع الأول</option><option value="C">الأسبوع الثاني</option><option value="D">الأسبوع الثالث</option></select><button onclick="showWeekCount()">👥 عرض العدد</button><div id="weekCountDisplay"></div><button onclick="generateWeekReport()">📋 عرض التقرير</button><div id="weekReportResult"></div></section>
@@ -561,8 +595,60 @@ function checkHW(){
   const score = Number(document.getElementById("hwScore").value);
 
   const valid = name && score >= 0 && score <= 10;
-  document.querySelector("#homework button").disabled = !valid;
+  document.getElementById("hwSubmitBtn").disabled = !valid;
 }
+
+  function searchHomework(){
+
+  const name = document.getElementById("hwSearchInput").value.trim();
+
+  fetch(`${scriptURL}?action=getRowByName&sheet=Homework&class=${hwClass}&name=${encodeURIComponent(name)}`)
+  .then(res=>res.json())
+  .then(data=>{
+
+    const body = document.querySelector("#hwTable tbody");
+    body.innerHTML="";
+
+    if(!data.found){
+      showToast("❌ مش موجود","error");
+      return;
+    }
+
+    const tr=document.createElement("tr");
+
+    for(let i=0;i<10;i++){
+      const td=document.createElement("td");
+      td.textContent=data.row[i] || "-";
+      tr.appendChild(td);
+    }
+
+    body.appendChild(tr);
+
+  });
+}
+
+  document.getElementById("hwSearchInput").addEventListener("input", function(){
+  const value = this.value.toLowerCase();
+  const box = document.getElementById("hwSuggestions");
+
+  box.innerHTML="";
+
+  const filtered = hwNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
+
+  filtered.forEach(name=>{
+    const div=document.createElement("div");
+    div.textContent=name;
+    div.onclick=()=>{
+      document.getElementById("hwSearchInput").value=name;
+      box.innerHTML="";
+    };
+    box.appendChild(div);
+  });
+});
+
+  document.getElementById("hwSearchClass").addEventListener("change", function(){
+  hwClass = this.value;
+});
   
 </script>
 </body>
