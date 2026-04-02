@@ -269,11 +269,26 @@
   <option value="6ب">6ب</option>
 </select>
 
-<input type="text" id="hwSearchInput" placeholder="ابحث بالاسم" style="width:100%;padding:12px;margin-bottom:10px;">
+<div style="margin-bottom:15px; position:relative;">
+  <input type="text" id="hwSearchInput" placeholder="ابحث بالاسم" style="width:100%;padding:12px;">
+  <div id="hwSearchSuggestions" style="
+    position:absolute;
+    top:100%;
+    right:0;
+    width:100%;
+    background:#fff;
+    border:1px solid #ccc;
+    border-radius:8px;
+    max-height:150px;
+    overflow-y:auto;
+    z-index:999;
+  "></div>
+</div>
 
 <button onclick="searchHomework()" style="width:100%;padding:12px;background:linear-gradient(90deg,#2196F3,#1976D2);color:#fff;border:none;border-radius:8px;font-size:18px;">بحث</button>
 
-<table id="hwTable" style="width:100%;margin-top:20px;border-collapse:collapse;">
+<div style="overflow-x:auto; width:100%;">
+<table id="hwTable" style="min-width:600px;border-collapse:collapse;">
   <thead>
     <tr>
       <th>الاسم</th>
@@ -367,7 +382,8 @@ document.getElementById("loginBtn").addEventListener("click", function () {
     const admins = ["admin","john"];
 
 if(admins.includes(username)){
-  document.getElementById("adminEditBox").style.display = "block";
+  document.getElementById("adminEditBoxAttendance").style.display = "block";
+document.getElementById("adminEditBoxHomework").style.display = "block";
 }
     showToast("✅ تم تسجيل الدخول بنجاح","success");
     currentUser = username;
@@ -764,21 +780,30 @@ showToast("⏳ برجاء الانتظار...", "warning");
   const value = this.value.toLowerCase();
   const box = document.getElementById("hwSearchSuggestions");
 
-  box.innerHTML="";
+  box.innerHTML = "";
 
-  const filtered = hwNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
+  if(!value) return;
+
+  const filtered = hwNames.filter(n => n.toLowerCase().includes(value)).slice(0,5);
 
   filtered.forEach(name=>{
-    const div=document.createElement("div");
-    div.textContent=name;
-    div.onclick=()=>{
-      document.getElementById("hwSearchInput").value=name;
-      box.innerHTML="";
+    const div = document.createElement("div");
+    div.textContent = name;
+    div.style.padding = "8px";
+    div.style.cursor = "pointer";
+
+    div.onclick = ()=>{
+      document.getElementById("hwSearchInput").value = name;
+      box.innerHTML = "";
     };
+
+    div.onmouseover = ()=> div.style.background="#eee";
+    div.onmouseout = ()=> div.style.background="#fff";
+
     box.appendChild(div);
   });
 });
-
+  
   let hwSearchClass = "";
 
 document.getElementById("hwSearchClass").addEventListener("change", function(){
@@ -842,6 +867,8 @@ document.getElementById("hwSearchClass").addEventListener("change", function(){
     box.appendChild(div);
   });
 });
+  document.getElementById("nameInput").focus();
+  document.getElementById("nameInput").focus();
 </script>
 </body>
 </html>
