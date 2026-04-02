@@ -23,34 +23,79 @@
     @keyframes fadein { from{opacity:0;} to{opacity:1;} }
     @media(max-width:768px){ nav{flex-direction:column;width:100%;} nav button{width:100%;font-size:18px;padding:15px;text-align:center;border-bottom:1px solid #444;} section{margin:5px;padding:12px;font-size:14px;} header{font-size:18px;padding:12px;} h2{font-size:16px;} p{font-size:14px;line-height:1.6;} }
     
-    .toast { visibility:hidden; min-width:250px; background-color:#333; color:#fff; text-align:center; border-radius:10px; padding:14px 20px; position:fixed; z-index:9999; left:50%; bottom:30px; transform:translateX(-50%); font-size:1em; box-shadow:0 4px 12px rgba(0,0,0,0.3); opacity:0; transition:opacity 0.4s, bottom 0.4s; }
-    .toast.show { visibility:visible; opacity:1; bottom:50px; }
+    .toast {
+  visibility:hidden;
+  min-width:250px;
+  background-color:#333;
+  color:#fff;
+  text-align:center;
+  border-radius:10px;
+  padding:14px 20px;
+  position:fixed;
+  z-index:9999;
+  left:50%;
+  bottom:30px; /* 🔥 بدل top */
+  transform:translateX(-50%);
+  font-size:1em;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  opacity:0;
+  transition:opacity 0.4s, bottom 0.4s;
+}
+
+.toast.show {
+  visibility:visible;
+  opacity:1;
+  bottom:50px; /* حركة بسيطة لفوق */
+}
     .toast.success{background-color:#4CAF50;} .toast.error{background-color:#f44336;} .toast.warning{background-color:#ff9800;}
 
-    .form-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: border-color 0.3s, box-shadow 0.3s; }
-    .form-input:focus { border-color: #2196F3; box-shadow: 0 0 6px rgba(33,150,243,0.4); outline: none; }
+    .main-btn {
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  font-size:18px;
+  color:#fff;
+  cursor:pointer;
+  transition:0.3s;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
 
-    .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 18px; color: #fff; cursor: pointer; transition: transform 0.2s, box-shadow 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-    .btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 6px 14px rgba(0,0,0,0.25); }
-    .btn:active { transform: scale(0.97); }
-    .btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
+.main-btn:hover {
+  transform:translateY(-2px) scale(1.02);
+  box-shadow:0 6px 14px rgba(0,0,0,0.25);
+}
 
-    .suggestion-box div { padding: 8px; cursor: pointer; transition: background 0.2s; }
-    .suggestion-box div:hover { background: #f0f0f0; }
+.main-btn:active {
+  transform:scale(0.97);
+}
+
+.btn-attendance {
+  background:linear-gradient(45deg,#4CAF50,#2E7D32);
+}
+
+.btn-homework {
+  background:linear-gradient(45deg,#FF9800,#EF6C00);
+}
+
+.main-btn:disabled {
+  background:#ccc;
+  cursor:not-allowed;
+  box-shadow:none;
+}
   </style>
 </head>
 <body>
   <header>Heroes Adventure 2026 Attendance</header>
+ <!-- صفحة تسجيل الدخول -->
+<section id="loginSection" class="active" style="max-width:400px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);text-align:center;">
+  <h2 style="margin-bottom:20px;color:#1976D2;">🔑 تسجيل الدخول</h2>
+  <input type="text" id="loginUsername" placeholder="اسم المستخدم" style="width:100%;padding:12px;margin:10px 0;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+  <input type="password" id="loginPassword" placeholder="كلمة المرور" style="width:100%;padding:12px;margin:10px 0;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+  <button id="loginBtn" style="width:100%;padding:12px;background:linear-gradient(90deg,#2196F3,#1976D2);color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;">دخول</button>
+</section>
 
-  <!-- صفحة تسجيل الدخول -->
-  <section id="loginSection" class="active" style="max-width:400px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);text-align:center;">
-    <h2 style="margin-bottom:20px;color:#1976D2;">🔑 تسجيل الدخول</h2>
-    <input type="text" id="loginUsername" class="form-input" placeholder="اسم المستخدم">
-    <input type="password" id="loginPassword" class="form-input" placeholder="كلمة المرور">
-    <button id="loginBtn" class="btn" style="background:linear-gradient(90deg,#2196F3,#1976D2);">دخول</button>
-  </section>
-
-  <!-- التابات -->
+  <!-- التابات (مخفي في البداية) -->
   <nav style="display:none;" id="mainNav">
     <button class="attendance active" onclick="showTab('attendance')">الحضور</button>
     <button class="homework" onclick="showTab('homework')">الواجب</button>
@@ -60,179 +105,244 @@
   </nav>
 
   <main>
-    <!-- مثال على الحضور -->
+    <!-- تاب الحضور -->
     <section id="attendance" style="display:none;max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-      <h2 style="color:#4CAF50;margin-bottom:20px;">📋 الحضور</h2>
-      <select id="classSelect" class="form-input">
-        <option value="">-- اختر الفرقة --</option>
-        <option value="1ب">1ب</option>
-        <option value="2ب">2ب</option>
-        <option value="3ب">3ب</option>
-        <option value="4ب">4ب</option>
-        <option value="5ب">5ب</option>
-        <option value="6ب">6ب</option>
-      </select>
-      <select id="weekSelect" class="form-input">
-        <option value="">اختر الأسبوع</option>
-        <option value="C">الأسبوع 1</option>
-        <option value="D">الأسبوع 2</option>
-        <option value="E">الأسبوع 3</option>
-        <option value="F">الأسبوع 4</option>
-        <option value="G">الأسبوع 5</option>
-        <option value="H">الأسبوع 6</option>
-        <option value="I">الأسبوع 7</option>
-        <option value="J">الأسبوع 8</option>
-        <option value="K">الأسبوع 9</option>
-        <option value="L">الأسبوع 10</option>
-      </select>
-      <div style="margin-bottom:15px;">
-        <input type="text" id="nameInput" class="form-input" placeholder="الاسم">
-        <div id="nameSuggestions" class="suggestion-box"></div>
-      </div>
-            <div style="margin-bottom:15px;">
-        <input type="number" id="bookInput" class="form-input" min="0" max="5" placeholder="الكتاب (0-5)">
-      </div>
+  <h2 style="color:#4CAF50;margin-bottom:20px;">📋 الحضور</h2>
 
-      <button id="submitBtn" onclick="submitData()" disabled class="btn" style="background:linear-gradient(90deg,#4CAF50,#388E3C);">✅ إدخال</button>
-      
-      <hr style="margin:25px 0;">
-      <h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
+      <select id="classSelect" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;margin-bottom:15px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.1);cursor:pointer;">
+  <option value="">-- اختر الفرقة --</option>
+  <option value="1ب">1ب</option>
+  <option value="2ب">2ب</option>
+  <option value="3ب">3ب</option>
+  <option value="4ب">4ب</option>
+  <option value="5ب">5ب</option>
+  <option value="6ب">6ب</option>
+</select>
 
-      <select id="searchClassSelect" class="form-input">
-        <option value="">-- اختر الفرقة --</option>
-        <option value="1ب">1ب</option>
-        <option value="2ب">2ب</option>
-        <option value="3ب">3ب</option>
-        <option value="4ب">4ب</option>
-        <option value="5ب">5ب</option>
-        <option value="6ب">6ب</option>
-      </select>
+      <select id="weekSelect" style="width:100%;padding:10px;margin-bottom:10px;">
+  <option value="">اختر الأسبوع</option>
+  <option value="C">الأسبوع 1</option>
+  <option value="D">الأسبوع 2</option>
+  <option value="E">الأسبوع 3</option>
+  <option value="F">الأسبوع 4</option>
+  <option value="G">الأسبوع 5</option>
+  <option value="H">الأسبوع 6</option>
+  <option value="I">الأسبوع 7</option>
+  <option value="J">الأسبوع 8</option>
+  <option value="K">الأسبوع 9</option>
+  <option value="L">الأسبوع 10</option>
+</select>
+  
+  <div style="margin-bottom:15px;">
+    <input type="text" id="nameInput" placeholder="الاسم" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+    <div id="nameSuggestions" style="background:#fff;border:1px solid #ccc;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:5px;"></div>
+  </div>
+  <div style="margin-bottom:15px;">
+    <input type="number" id="attendanceInput" min="0" max="5" placeholder="الحضور (0-5)" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+  </div>
+  <div style="margin-bottom:15px;">
+    <input type="number" id="bookInput" min="0" max="5" placeholder="الكتاب (0-5)" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+  </div>
+  <button id="submitBtn" onclick="submitData()" disabled style="width:100%;padding:12px;background:linear-gradient(90deg,#4CAF50,#388E3C);color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;">✅ إدخال</button>
+  
+  <hr style="margin:25px 0;">
+  
+  <h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
+      <select id="searchClassSelect" style="width:100%;padding:10px;margin-bottom:10px;">
+  <option value="">-- اختر الفرقة --</option>
+  <option value="1ب">1ب</option>
+  <option value="2ب">2ب</option>
+  <option value="3ب">3ب</option>
+  <option value="4ب">4ب</option>
+  <option value="5ب">5ب</option>
+  <option value="6ب">6ب</option>
+</select>
+  <div style="margin-bottom:15px;">
+    <input type="text" id="hwSearchInput" ...>
+<div id="hwSearchSuggestions" style="background:#fff;border:1px solid #ccc;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:5px;"></div>
+  <button onclick="searchName()" style="width:100%;padding:12px;background:linear-gradient(90deg,#2196F3,#1976D2);color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;">بحث</button>
+  
+  <div id="tableContainer" style="margin-top:20px;overflow-x:auto;">
+    <table id="resultTable" style="width:100%;border-collapse:collapse;">
+  <thead>
+    <tr style="background:#f4f6f9;color:#333;">
+      <th style="padding:10px;border:1px solid #ccc;">الاسم</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 1</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 2</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 3</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 4</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 5</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 6</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 7</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 8</th>
+      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 9</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+  </div>
 
-      <div style="margin-bottom:15px;">
-        <input type="text" id="searchInput" class="form-input" placeholder="ابحث بالاسم">
-        <div id="hwSearchSuggestions" class="suggestion-box"></div>
-      </div>
+    <div id="adminEditBoxAttendance" style="display:none;margin-top:20px;padding:15px;border:2px dashed #999;border-radius:10px;">
+  <h3>✏️ تعديل بيانات (Admin)</h3>
 
-      <button onclick="searchName()" class="btn" style="background:linear-gradient(90deg,#2196F3,#1976D2);">بحث</button>
+  <select id="editClass">
+    <option value="">اختر الفرقة</option>
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+  </select>
 
-      <div id="tableContainer" style="margin-top:20px;overflow-x:auto;">
-        <table id="resultTable" style="width:100%;border-collapse:collapse;">
-          <thead>
-            <tr style="background:#f4f6f9;color:#333;">
-              <th style="padding:10px;border:1px solid #ccc;">الاسم</th>
-              <th style="padding:10px;border:1px solid #ccc;">الأسبوع 1</th>
-              <th style="padding:10px;border:1px solid #ccc;">الأسبوع 2</th>
-              <th style="padding:10px;border:1px solid #ccc;">الأسبوع 3</th>
-              <th style="padding:10px;border:1px solid #ccc;">الأسبوع 4</th>
-              <th style="padding:10px;border:1px solid #ccc;">الأسبوع 5</th>
-              <th style="padding:10px;border:1px solid #ccc;">الأسبوع 6</th>
-              <th style="padding:10px;border:1px solid #ccc;">الأسبوع 7</th>
-              <th style="padding:10px;border:1px solid #ccc;">الأسبوع 8</th>
-              <th style="padding:10px;border:1px solid #ccc;">الأسبوع 9</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+  <select id="editWeek">
+    <option value="">اختر الأسبوع</option>
+  <option value="C">الأسبوع 1</option>
+  <option value="D">الأسبوع 2</option>
+  <option value="E">الأسبوع 3</option>
+  <option value="F">الأسبوع 4</option>
+  <option value="G">الأسبوع 5</option>
+  <option value="H">الأسبوع 6</option>
+  <option value="I">الأسبوع 7</option>
+  <option value="J">الأسبوع 8</option>
+  <option value="K">الأسبوع 9</option>
+  <option value="L">الأسبوع 10</option>
+  </select>
 
-    <!-- الواجب -->
+  <input type="text" id="editName" placeholder="الاسم">
+  <input type="number" id="editScore" placeholder="الدرجة">
+
+  <button onclick="updateScore()">💾 تعديل</button>
+</div>
+    
+</section>
+
     <section id="homework" style="display:none;max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-      <h2 style="color:#FF9800;margin-bottom:20px;">📚 الواجب</h2>
 
-      <select id="hwClassSelect" class="form-input">
-        <option value="">-- اختر الفرقة --</option>
-        <option value="1ب">1ب</option>
-        <option value="2ب">2ب</option>
-        <option value="3ب">3ب</option>
-        <option value="4ب">4ب</option>
-        <option value="5ب">5ب</option>
-        <option value="6ب">6ب</option>
-      </select>
+<h2 style="color:#FF9800;margin-bottom:20px;">📚 الواجب</h2>
 
-      <select id="hwWeekSelect" class="form-input">
-        <option value="">اختر الأسبوع</option>
-        <option value="C">الأسبوع 1</option>
-        <option value="D">الأسبوع 2</option>
-        <option value="E">الأسبوع 3</option>
-        <option value="F">الأسبوع 4</option>
-        <option value="G">الأسبوع 5</option>
-        <option value="H">الأسبوع 6</option>
-        <option value="I">الأسبوع 7</option>
-        <option value="J">الأسبوع 8</option>
-        <option value="K">الأسبوع 9</option>
-      </select>
+<select id="hwClassSelect" style="width:100%;padding:12px;margin-bottom:10px;">
+  <option value="">-- اختر الفرقة --</option>
+  <option value="1ب">1ب</option>
+  <option value="2ب">2ب</option>
+  <option value="3ب">3ب</option>
+  <option value="4ب">4ب</option>
+  <option value="5ب">5ب</option>
+  <option value="6ب">6ب</option>
+</select>
 
-      <div style="margin-bottom:15px;">
-        <input type="text" id="hwNameInput" class="form-input" placeholder="الاسم">
-        <div id="hwSuggestions" class="suggestion-box"></div>
-      </div>
+<select id="hwWeekSelect" style="width:100%;padding:10px;margin-bottom:10px;">
+  <option value="">اختر الأسبوع</option>
+  <option value="C">الأسبوع 1</option>
+  <option value="D">الأسبوع 2</option>
+  <option value="E">الأسبوع 3</option>
+  <option value="F">الأسبوع 4</option>
+  <option value="G">الأسبوع 5</option>
+  <option value="H">الأسبوع 6</option>
+  <option value="I">الأسبوع 7</option>
+  <option value="J">الأسبوع 8</option>
+  <option value="K">الأسبوع 9</option>
+</select>
 
-      <div style="margin-bottom:15px;">
-        <input type="number" id="hwScore" class="form-input" min="0" max="10" placeholder="درجة الواجب (0-10)">
-      </div>
+<div style="margin-bottom:15px;">
+  <input type="text" id="hwNameInput" placeholder="الاسم" style="width:100%;padding:12px;">
+  <div id="hwSuggestions" style="background:#fff;border:1px solid #ccc;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:5px;"></div>
+</div>
 
-      <button id="hwSubmitBtn" onclick="submitHomework()" disabled class="btn" style="background:linear-gradient(90deg,#FF9800,#F57C00);">✅ إدخال</button>
+<div style="margin-bottom:15px;">
+  <input type="number" id="hwScore" min="0" max="10" placeholder="درجة الواجب (0-10)" style="width:100%;padding:12px;">
+</div>
 
-      <hr style="margin:25px 0;">
-      <h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
+<button id="hwSubmitBtn" onclick="submitHomework()" disabled style="width:100%;padding:12px;background:linear-gradient(90deg,#FF9800,#F57C00);color:#fff;border:none;border-radius:8px;font-size:18px;">✅ إدخال</button>
 
-      <select id="hwSearchClass" class="form-input">
-        <option value="">-- اختر الفرقة --</option>
-        <option value="1ب">1ب</option>
-        <option value="2ب">2ب</option>
-        <option value="3ب">3ب</option>
-        <option value="4ب">4ب</option>
-        <option value="5ب">5ب</option>
-        <option value="6ب">6ب</option>
-      </select>
+<hr style="margin:25px 0;">
 
-      <div style="margin-bottom:15px; position:relative;">
-        <input type="text" id="hwSearchInput" class="form-input" placeholder="ابحث بالاسم">
-        <div id="hwSearchSuggestions" class="suggestion-box" style="position:absolute;top:100%;right:0;width:100%;z-index:999;"></div>
-      </div>
+<h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
 
-      <button onclick="searchHomework()" class="btn" style="background:linear-gradient(90deg,#2196F3,#1976D2);">بحث</button>
+<select id="hwSearchClass" style="width:100%;padding:10px;margin-bottom:10px;">
+  <option value="">-- اختر الفرقة --</option>
+  <option value="1ب">1ب</option>
+  <option value="2ب">2ب</option>
+  <option value="3ب">3ب</option>
+  <option value="4ب">4ب</option>
+  <option value="5ب">5ب</option>
+  <option value="6ب">6ب</option>
+</select>
 
-      <div style="overflow-x:auto; width:100%;">
-        <table id="hwTable" style="min-width:600px;border-collapse:collapse;">
-          <thead>
-            <tr>
-              <th>الاسم</th>
-              <th>الأسبوع 1</th>
-              <th>الأسبوع 2</th>
-              <th>الأسبوع 3</th>
-              <th>الأسبوع 4</th>
-              <th>الأسبوع 5</th>
-              <th>الأسبوع 6</th>
-              <th>الأسبوع 7</th>
-              <th>الأسبوع 8</th>
-              <th>الأسبوع 9</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+<div style="margin-bottom:15px; position:relative;">
+  <input type="text" id="hwSearchInput" placeholder="ابحث بالاسم" style="width:100%;padding:12px;">
+  <div id="hwSearchSuggestions" style="
+    position:absolute;
+    top:100%;
+    right:0;
+    width:100%;
+    background:#fff;
+    border:1px solid #ccc;
+    border-radius:8px;
+    max-height:150px;
+    overflow-y:auto;
+    z-index:999;
+  "></div>
+</div>
 
-    <!-- باقي الصفحات -->
+<button onclick="searchHomework()" style="width:100%;padding:12px;background:linear-gradient(90deg,#2196F3,#1976D2);color:#fff;border:none;border-radius:8px;font-size:18px;">بحث</button>
+
+<div style="overflow-x:auto; width:100%;">
+<table id="hwTable" style="min-width:600px;border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th>الاسم</th>
+      <th>الأسبوع 1</th>
+      <th>الأسبوع 2</th>
+      <th>الأسبوع 3</th>
+      <th>الأسبوع 4</th>
+      <th>الأسبوع 5</th>
+      <th>الأسبوع 6</th>
+      <th>الأسبوع 7</th>
+      <th>الأسبوع 8</th>
+      <th>الأسبوع 9</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+      <div id="adminEditBoxHomework" style="display:none;margin-top:20px;padding:15px;border:2px dashed #999;border-radius:10px;">
+  <h3>✏️ تعديل بيانات (Admin)</h3>
+
+  <select id="editClass">
+    <option value="">اختر الفرقة</option>
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+  </select>
+
+  <select id="editWeek">
+    <option value="">اختر الأسبوع</option>
+  <option value="C">الأسبوع 1</option>
+  <option value="D">الأسبوع 2</option>
+  <option value="E">الأسبوع 3</option>
+  <option value="F">الأسبوع 4</option>
+  <option value="G">الأسبوع 5</option>
+  <option value="H">الأسبوع 6</option>
+  <option value="I">الأسبوع 7</option>
+  <option value="J">الأسبوع 8</option>
+  <option value="K">الأسبوع 9</option>
+  <option value="L">الأسبوع 10</option>
+  </select>
+
+  <input type="text" id="editName" placeholder="الاسم">
+  <input type="number" id="editScore" placeholder="الدرجة">
+
+  <button onclick="updateScore()">💾 تعديل</button>
+</div>
+</section>
     <section id="grades"><h2>الدرجات</h2><p>عرض تقارير الدرجات.</p></section>
-    <section id="reaction">
-      <h2>التفاعل</h2>
-      <select id="reportWeekInput" class="form-input">
-        <option value="">اختر الأسبوع</option>
-        <option value="B">الأسبوع الأول</option>
-        <option value="C">الأسبوع الثاني</option>
-        <option value="D">الأسبوع الثالث</option>
-      </select>
-      <button onclick="showWeekCount()" class="btn" style="background:linear-gradient(90deg,#2196F3,#1976D2);">👥 عرض العدد</button>
-      <div id="weekCountDisplay"></div>
-      <button onclick="generateWeekReport()" class="btn" style="background:linear-gradient(90deg,#4CAF50,#388E3C);">📋 عرض التقرير</button>
-      <div id="weekReportResult"></div>
-    </section>
+    <section id="reaction"><h2>التفاعل</h2><select id="reportWeekInput"><option value="">اختر الأسبوع</option><option value="B">الأسبوع الأول</option><option value="C">الأسبوع الثاني</option><option value="D">الأسبوع الثالث</option></select><button onclick="showWeekCount()">👥 عرض العدد</button><div id="weekCountDisplay"></div><button onclick="generateWeekReport()">📋 عرض التقرير</button><div id="weekReportResult"></div></section>
     <section id="gallery"><h2>المعرض</h2><p>صور أو محتوى إضافي.</p></section>
   </main>
-</body>
 <script>
   const API_KEY = "123456";
 let selectedSheet = "Attendance"; // الافتراضي;
