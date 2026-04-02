@@ -175,28 +175,36 @@
   <option value="K">الأسبوع 9</option>
 </select>
 
-<div>
+<div style="margin-bottom:15px;">
   <input type="text" id="hwNameInput" placeholder="الاسم" style="width:100%;padding:12px;">
-  <div id="hwSuggestions" style="background:#fff;border:1px solid #ccc;"></div>
+  <div id="hwSuggestions" style="background:#fff;border:1px solid #ccc;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:5px;"></div>
 </div>
 
-<div style="margin-top:10px;">
+<div style="margin-bottom:15px;">
   <input type="number" id="hwScore" min="0" max="10" placeholder="درجة الواجب (0-10)" style="width:100%;padding:12px;">
 </div>
 
-<button id="hwSubmitBtn" onclick="submitHomework()" disabled style="width:100%;margin-top:10px;">✅ إدخال</button>
+<button id="hwSubmitBtn" onclick="submitHomework()" disabled style="width:100%;padding:12px;background:linear-gradient(90deg,#FF9800,#F57C00);color:#fff;border:none;border-radius:8px;font-size:18px;">✅ إدخال</button>
 
-<hr>
+<hr style="margin:25px 0;">
 
-<h3>🔍 بحث</h3>
+<h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
 
-<select id="hwSearchClass"></select>
+<select id="hwSearchClass" style="width:100%;padding:10px;margin-bottom:10px;">
+  <option value="">-- اختر الفرقة --</option>
+  <option value="1ب">1ب</option>
+  <option value="2ب">2ب</option>
+  <option value="3ب">3ب</option>
+  <option value="4ب">4ب</option>
+  <option value="5ب">5ب</option>
+  <option value="6ب">6ب</option>
+</select>
 
-<input type="text" id="hwSearchInput" placeholder="ابحث بالاسم">
+<input type="text" id="hwSearchInput" placeholder="ابحث بالاسم" style="width:100%;padding:12px;margin-bottom:10px;">
 
-<button onclick="searchHomework()">بحث</button>
+<button onclick="searchHomework()" style="width:100%;padding:12px;background:linear-gradient(90deg,#2196F3,#1976D2);color:#fff;border:none;border-radius:8px;font-size:18px;">بحث</button>
 
-<table id="hwTable">
+<table id="hwTable" style="width:100%;margin-top:20px;border-collapse:collapse;">
   <thead>
     <tr>
       <th>الاسم</th>
@@ -594,15 +602,15 @@ function checkHW(){
   const name = document.getElementById("hwNameInput").value.trim();
   const score = Number(document.getElementById("hwScore").value);
 
-  const valid = name && score >= 0 && score <= 10;
+  const valid = hwNames.includes(name) && score >= 0 && score <= 10;
+
   document.getElementById("hwSubmitBtn").disabled = !valid;
 }
 
   function searchHomework(){
-
   const name = document.getElementById("hwSearchInput").value.trim();
 
-  fetch(`${scriptURL}?action=getRowByName&sheet=Homework&class=${hwClass}&name=${encodeURIComponent(name)}`)
+  fetch(`${scriptURL}?action=getRowByName&sheet=Homework&class=${hwSearchClass}&name=${encodeURIComponent(name)}`)
   .then(res=>res.json())
   .then(data=>{
 
@@ -646,8 +654,16 @@ function checkHW(){
   });
 });
 
-  document.getElementById("hwSearchClass").addEventListener("change", function(){
-  hwClass = this.value;
+  let hwSearchClass = "";
+
+document.getElementById("hwSearchClass").addEventListener("change", function(){
+  hwSearchClass = this.value;
+
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Homework&class=${hwSearchClass}`)
+    .then(res => res.json())
+    .then(data => {
+      hwNames = data.names || [];
+    });
 });
   
 </script>
