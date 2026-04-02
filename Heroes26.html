@@ -29,24 +29,60 @@
   background-color:#333;
   color:#fff;
   text-align:center;
-  border-radius:8px;
-  padding:16px;
+  border-radius:10px;
+  padding:14px 20px;
   position:fixed;
   z-index:9999;
   left:50%;
-  top:20%;              /* يخليها في نص الشاشة */
-  transform:translate(-50%); /* يظبطها بالظبط في النص */
-  font-size:1.1em;
+  bottom:30px; /* 🔥 بدل top */
+  transform:translateX(-50%);
+  font-size:1em;
   box-shadow:0 4px 12px rgba(0,0,0,0.3);
-  transition:opacity 0.5s;
+  opacity:0;
+  transition:opacity 0.4s, bottom 0.4s;
 }
 
-    .toast.show {
+.toast.show {
   visibility:visible;
   opacity:1;
+  bottom:50px; /* حركة بسيطة لفوق */
+}
+    .toast.success{background-color:#4CAF50;} .toast.error{background-color:#f44336;} .toast.warning{background-color:#ff9800;}
+
+    .main-btn {
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  font-size:18px;
+  color:#fff;
+  cursor:pointer;
+  transition:0.3s;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
-    .toast.success{background-color:#4CAF50;} .toast.error{background-color:#f44336;} .toast.warning{background-color:#ff9800;}
+.main-btn:hover {
+  transform:translateY(-2px) scale(1.02);
+  box-shadow:0 6px 14px rgba(0,0,0,0.25);
+}
+
+.main-btn:active {
+  transform:scale(0.97);
+}
+
+.btn-attendance {
+  background:linear-gradient(45deg,#4CAF50,#2E7D32);
+}
+
+.btn-homework {
+  background:linear-gradient(45deg,#FF9800,#EF6C00);
+}
+
+.main-btn:disabled {
+  background:#ccc;
+  cursor:not-allowed;
+  box-shadow:none;
+}
   </style>
 </head>
 <body>
@@ -559,14 +595,20 @@ document.getElementById("hwNameInput").addEventListener("input", function(){
   function submitHomework(){
   const name = document.getElementById("hwNameInput").value.trim();
   const score = Number(document.getElementById("hwScore").value);
+  const week = document.getElementById("hwWeekSelect").value;
 
   if(!hwNames.includes(name)){
-    showToast("❌ اختار اسم صحيح","error");
+    showToast("❌ اختار اسم من الاقتراحات","error");
     return;
   }
 
   if(score < 0 || score > 10){
-    showToast("❌ الدرجة من 0 لـ 10","error");
+    showToast("❌ الدرجة لازم تكون من 0 لـ 10","error");
+    return;
+  }
+
+  if(!week){
+    showToast("❌ اختار الأسبوع","warning");
     return;
   }
 
@@ -578,7 +620,7 @@ document.getElementById("hwNameInput").addEventListener("input", function(){
       name,
       number: score,
       sheet: "Homework",
-      week: document.getElementById("hwWeekSelect").value,
+      week: week,
       className: hwClass,
       isAdmin: admins.includes(currentUser),
       apiKey: API_KEY
@@ -590,7 +632,7 @@ document.getElementById("hwNameInput").addEventListener("input", function(){
     if(res.success){
       showToast("✅ تم حفظ الواجب","success");
     }else{
-      showToast(res.message,"error");
+      showToast(res.message || "❌ لا يمكن الحفظ","error"); // 🔥 هنا بيظهر "متسجل بالفعل"
     }
   });
 }
