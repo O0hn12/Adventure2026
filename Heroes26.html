@@ -144,6 +144,18 @@
   margin-bottom:15px;
   color:#1976D2;
 }
+    #resultTable th, #resultTable td,
+#hwTable th, #hwTable td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+  min-width: 80px; /* علشان الأعمدة تبقى متساوية */
+}
+#resultTable, #hwTable {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed; /* يخلي الأعمدة ثابتة العرض */
+}
   </style>
 </head>
 <body>
