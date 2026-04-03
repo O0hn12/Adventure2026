@@ -83,6 +83,53 @@
   cursor:not-allowed;
   box-shadow:none;
 }
+
+    /* 🔥 شكل موحد لكل الحقول */
+.input-box, .select-box {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  transition: 0.2s;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.input-box:focus, .select-box:focus {
+  border-color: #2196F3;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(33,150,243,0.2);
+}
+
+/* 🔥 Hover بسيط */
+.input-box:hover, .select-box:hover {
+  border-color: #999;
+}
+    .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #555;
+}
+    .suggestions-box {
+  background:#fff;
+  border:1px solid #ccc;
+  border-radius:8px;
+  max-height:150px;
+  overflow-y:auto;
+  margin-top:5px;
+}
+
+.suggestions-box div {
+  padding:10px;
+  cursor:pointer;
+}
+
+.suggestions-box div:hover {
+  background:#eee;
+}
   </style>
 </head>
 <body>
@@ -109,7 +156,7 @@
     <section id="attendance" style="display:none;max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
   <h2 style="color:#4CAF50;margin-bottom:20px;">📋 الحضور</h2>
 
-      <select id="classSelect" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;margin-bottom:15px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.1);cursor:pointer;">
+      <select id="classSelect" class="select-box">
   <option value="">-- اختر الفرقة --</option>
   <option value="1ب">1ب</option>
   <option value="2ب">2ب</option>
@@ -119,7 +166,7 @@
   <option value="6ب">6ب</option>
 </select>
 
-      <select id="weekSelect" style="width:100%;padding:10px;margin-bottom:10px;">
+      <select id="weekSelect" class="select-box">
   <option value="">اختر الأسبوع</option>
   <option value="C">الأسبوع 1</option>
   <option value="D">الأسبوع 2</option>
@@ -134,16 +181,18 @@
 </select>
   
   <div style="margin-bottom:15px;">
-    <input type="text" id="nameInput" placeholder="الاسم" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
-    <div id="nameSuggestions" style="background:#fff;border:1px solid #ccc;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:5px;"></div>
+    <input type="text" id="nameInput" class="input-box" placeholder="الاسم">
+    <div id="nameSuggestions" class="suggestions-box"></div>
   </div>
   <div style="margin-bottom:15px;">
-    <input type="number" id="attendanceInput" min="0" max="5" placeholder="الحضور (0-5)" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+    <input type="number" id="attendanceInput" class="input-box" min="0" max="5" placeholder="الحضور (0-5)">
   </div>
   <div style="margin-bottom:15px;">
-    <input type="number" id="bookInput" min="0" max="5" placeholder="الكتاب (0-5)" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;">
+    <input type="number" id="bookInput" class="input-box" min="0" max="5" placeholder="الكتاب (0-5)">
   </div>
-  <button id="submitBtn" onclick="submitData()" disabled style="width:100%;padding:12px;background:linear-gradient(90deg,#4CAF50,#388E3C);color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;">✅ إدخال</button>
+  <button id="submitBtn" class="main-btn btn-attendance" onclick="submitData()" disabled>
+  ✅ إدخال
+</button>
   
   <hr style="margin:25px 0;">
   
@@ -160,8 +209,9 @@
   <div style="margin-bottom:15px;">
     <input type="text" id="hwSearchInput" ...>
 <div id="hwSearchSuggestions" style="background:#fff;border:1px solid #ccc;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:5px;"></div>
-  <button onclick="searchName()" style="width:100%;padding:12px;background:linear-gradient(90deg,#2196F3,#1976D2);color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;">بحث</button>
-  
+<button onclick="searchName()" class="main-btn btn-attendance">
+  🔍 بحث
+</button>  
   <div id="tableContainer" style="margin-top:20px;overflow-x:auto;">
     <table id="resultTable" style="width:100%;border-collapse:collapse;">
   <thead>
@@ -221,7 +271,7 @@
 
 <h2 style="color:#FF9800;margin-bottom:20px;">📚 الواجب</h2>
 
-<select id="hwClassSelect" style="width:100%;padding:12px;margin-bottom:10px;">
+<select id="hwClassSelect" class="select-box">
   <option value="">-- اختر الفرقة --</option>
   <option value="1ب">1ب</option>
   <option value="2ب">2ب</option>
@@ -231,7 +281,7 @@
   <option value="6ب">6ب</option>
 </select>
 
-<select id="hwWeekSelect" style="width:100%;padding:10px;margin-bottom:10px;">
+<select id="hwWeekSelect" class="select-box">
   <option value="">اختر الأسبوع</option>
   <option value="C">الأسبوع 1</option>
   <option value="D">الأسبوع 2</option>
@@ -245,16 +295,18 @@
 </select>
 
 <div style="margin-bottom:15px;">
-  <input type="text" id="hwNameInput" placeholder="الاسم" style="width:100%;padding:12px;">
+  <input type="text" id="hwNameInput" class="input-box" placeholder="الاسم">
   <div id="hwSuggestions" style="background:#fff;border:1px solid #ccc;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:5px;"></div>
 </div>
 
 <div style="margin-bottom:15px;">
-  <input type="number" id="hwScore" min="0" max="10" placeholder="درجة الواجب (0-10)" style="width:100%;padding:12px;">
+  <input type="number" id="hwScore" class="input-box" min="0" max="10" placeholder="درجة الواجب (0-10)">
 </div>
 
-<button id="hwSubmitBtn" onclick="submitHomework()" disabled style="width:100%;padding:12px;background:linear-gradient(90deg,#FF9800,#F57C00);color:#fff;border:none;border-radius:8px;font-size:18px;">✅ إدخال</button>
-
+<button id="hwSubmitBtn" class="main-btn btn-homework" onclick="submitHomework()" disabled>
+  ✅ إدخال
+</button>
+  
 <hr style="margin:25px 0;">
 
 <h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
@@ -270,7 +322,7 @@
 </select>
 
 <div style="margin-bottom:15px; position:relative;">
-  <input type="text" id="hwSearchInput" placeholder="ابحث بالاسم" style="width:100%;padding:12px;">
+  <input type="text" id="searchInput" class="input-box" placeholder="ابحث بالاسم">
   <div id="hwSearchSuggestions" style="
     position:absolute;
     top:100%;
@@ -479,14 +531,18 @@ document.getElementById("nameInput").addEventListener("input", function(){
 
 // ✅ validation
 function checkSubmitState(){
-  const name=document.getElementById("nameInput").value.trim();
-  const attendance=Number(document.getElementById("attendanceInput").value);
-  const book=Number(document.getElementById("bookInput").value);
+  const name = document.getElementById("nameInput").value.trim();
+  const attendance = Number(document.getElementById("attendanceInput").value);
+  const book = Number(document.getElementById("bookInput").value);
+  const week = document.getElementById("weekSelect").value;
+  const classVal = document.getElementById("classSelect").value;
 
-  const validAttendance = !isNaN(attendance) && attendance >= 0 && attendance <= 5;
-  const validBook = !isNaN(book) && book >= 0 && book <= 5;
+  const validAttendance = attendance >= 0 && attendance <= 5;
+  const validBook = book >= 0 && book <= 5;
 
-  document.getElementById("submitBtn").disabled = !(name && validAttendance && validBook);
+  const isValid = name && validAttendance && validBook && week && classVal;
+
+  document.getElementById("submitBtn").disabled = !isValid;
 }
 
 document.getElementById("nameInput").addEventListener("input",checkSubmitState);
@@ -742,8 +798,10 @@ document.getElementById("hwScore").addEventListener("input", checkHW);
 function checkHW(){
   const name = document.getElementById("hwNameInput").value.trim();
   const score = Number(document.getElementById("hwScore").value);
+  const week = document.getElementById("hwWeekSelect").value;
+  const classVal = document.getElementById("hwClassSelect").value;
 
-  const valid = hwNames.includes(name) && score >= 0 && score <= 10;
+  const valid = hwNames.includes(name) && score >= 0 && score <= 10 && week && classVal;
 
   document.getElementById("hwSubmitBtn").disabled = !valid;
 }
@@ -869,6 +927,10 @@ document.getElementById("hwSearchClass").addEventListener("change", function(){
 });
   document.getElementById("nameInput").focus();
   document.getElementById("nameInput").focus();
+  document.getElementById("weekSelect").addEventListener("change", checkSubmitState);
+  document.getElementById("classSelect").addEventListener("change", checkSubmitState);
+  document.getElementById("hwWeekSelect").addEventListener("change", checkHW);
+  document.getElementById("hwClassSelect").addEventListener("change", checkHW);
 </script>
 </body>
 </html>
