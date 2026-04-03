@@ -673,28 +673,6 @@ function searchName(inputId){
   selectedWeek = this.value;
 });
 
-  document.getElementById("searchInput").addEventListener("input", function(){
-  const value = this.value.toLowerCase();
-  const box = document.getElementById("attendanceSearchSuggestions");
-
-  box.innerHTML="";
-
-  if(!value) return;
-
-  const filtered = allNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
-
-  filtered.forEach(name=>{
-    const div=document.createElement("div");
-    div.textContent=name;
-    div.onclick=()=>{
-      document.getElementById("searchInput").value=name;
-      box.innerHTML="";
-    };
-    suggestionsBox.appendChild(div);
-  });
-});
-
-
   let searchClass = "";
 
 document.getElementById("searchClassSelect").addEventListener("change", function(){
