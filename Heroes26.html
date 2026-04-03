@@ -504,7 +504,81 @@
 </div>
 </section>
     <section id="grades"><h2>الدرجات</h2><p>عرض تقارير الدرجات.</p></section>
-    <section id="reaction"><h2>التفاعل</h2><select id="reportWeekInput"><option value="">اختر الأسبوع</option><option value="B">الأسبوع الأول</option><option value="C">الأسبوع الثاني</option><option value="D">الأسبوع الثالث</option></select><button onclick="showWeekCount()">👥 عرض العدد</button><div id="weekCountDisplay"></div><button onclick="generateWeekReport()">📋 عرض التقرير</button><div id="weekReportResult"></div></section>
+    <section id="reaction" style="display:none;max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+  <h2 style="color:#9C27B0;margin-bottom:20px;">🎭 التفاعل والسلوك</h2>
+
+  <!-- اختيار الفرقة -->
+  <select id="reactionClassSelect" class="select-box">
+    <option value="">-- اختر الفرقة --</option>
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+  </select>
+
+  <!-- اختيار الأسبوع -->
+  <select id="reactionWeekSelect" class="select-box">
+    <option value="">اختر الأسبوع</option>
+    <option value="C">الأسبوع 1</option>
+    <option value="D">الأسبوع 2</option>
+    <option value="E">الأسبوع 3</option>
+    <option value="F">الأسبوع 4</option>
+    <option value="G">الأسبوع 5</option>
+    <option value="H">الأسبوع 6</option>
+    <option value="I">الأسبوع 7</option>
+    <option value="J">الأسبوع 8</option>
+    <option value="K">الأسبوع 9</option>
+    <option value="L">الأسبوع 10</option>
+  </select>
+
+  <!-- إدخال الاسم -->
+  <div style="margin-bottom:15px;">
+    <input type="text" id="reactionNameInput" class="input-box" placeholder="الاسم">
+    <div id="reactionSuggestions" class="suggestions-box"></div>
+  </div>
+
+  <!-- إدخال الدرجة -->
+  <div style="margin-bottom:15px;">
+    <input type="number" id="reactionScore" class="input-box" min="0" max="10" placeholder="درجة التفاعل/السلوك">
+  </div>
+
+  <!-- زرار إدخال -->
+  <button id="reactionSubmitBtn" class="main-btn btn-reaction" onclick="submitReaction()" disabled>
+    ✅ إدخال
+  </button>
+
+  <hr style="margin:25px 0;">
+
+  <!-- مربع البحث -->
+  <h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
+  <select id="reactionSearchClass" class="select-box">
+    <option value="">-- اختر الفرقة --</option>
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+  </select>
+  <input type="text" id="reactionSearchInput" class="input-box" placeholder="ابحث بالاسم">
+  <div id="reactionSearchSuggestions" class="suggestions-box"></div>
+  <button onclick="searchReaction()" class="main-btn btn-reaction">🔍 بحث</button>
+
+  <div id="reactionReportDisplay"></div>
+
+  <!-- مربع تعديل للأدمن -->
+  <div id="adminEditBoxReaction" class="admin-box">
+    <h3>✏️ تعديل بيانات التفاعل</h3>
+    <select id="editClassReaction" class="select-box">...</select>
+    <select id="editWeekReaction" class="select-box">...</select>
+    <input type="text" id="editNameReaction" class="input-box" placeholder="الاسم">
+    <div id="editSuggestionsReaction" class="suggestions-box"></div>
+    <input type="number" id="editScoreReaction" class="input-box" placeholder="الدرجة">
+    <button class="main-btn btn-reaction" onclick="updateScore()">💾 تعديل</button>
+  </div>
+</section>
     <section id="gallery"><h2>المعرض</h2><p>صور أو محتوى إضافي.</p></section>
   </main>
 <script>
@@ -1237,6 +1311,252 @@ document.getElementById("editNameHomework").addEventListener("input", function()
     box.appendChild(div);
   });
 });
+
+  function submitReaction(){
+  const name = document.getElementById("reactionNameInput").value.trim();
+  const score = Number(document.getElementById("reactionScore").value);
+  const week = document.getElementById("reactionWeekSelect").value;
+
+  if(!reactionNames.includes(name)){
+    showToast("❌ اختار اسم من الاقتراحات","error");
+    return;
+  }
+
+  if(score < 0){
+    showToast("❌ الدرجة لازم تكون موجبة","error");
+    return;
+  }
+
+  if(!week){
+    showToast("❌ اختار الأسبوع","warning");
+    return;
+  }
+
+  showToast("⏳ برجاء الانتظار...", "warning");
+
+  fetch(scriptURL,{
+    method:'POST',
+    body:JSON.stringify({
+      action: "addReaction",
+      name,
+      number: score,
+      sheet: "Reaction",
+      week: week,
+      className: reactionClass,
+      isAdmin: ADMINS.includes(currentUser),
+      apiKey: API_KEY
+    }),
+    headers:{'Content-Type':'application/json'}
+  })
+  .then(res=>res.json())
+  .then(res=>{
+    if(res.success){
+      showToast(res.message || "✅ تم الإدخال بنجاح!","success");
+      document.getElementById("reactionNameInput").value = "";
+      document.getElementById("reactionScore").value = "";
+      document.getElementById("reactionSuggestions").innerHTML = "";
+      document.getElementById("reactionSubmitBtn").disabled = true;
+    } else {
+      showToast(res.message || "❌ لا يمكن الحفظ","error");
+    }
+  });
+}
+
+  let reactionNames = [];
+let reactionClass = "";
+let reactionWeek = "C";
+
+// تحميل أسماء الطلبة للفرقة المختارة
+document.getElementById("reactionClassSelect").addEventListener("change", function(){
+  reactionClass = this.value;
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Reaction&class=${reactionClass}`)
+    .then(res => res.json())
+    .then(data => reactionNames = data.names || []);
+});
+
+// اقتراحات الأسماء
+document.getElementById("reactionNameInput").addEventListener("input", function(){
+  const value = this.value.toLowerCase();
+  const box = document.getElementById("reactionSuggestions");
+  box.innerHTML = "";
+  const filtered = reactionNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
+  filtered.forEach(name=>{
+    const div=document.createElement("div");
+    div.textContent=name;
+    div.onclick=()=>{
+      document.getElementById("reactionNameInput").value=name;
+      box.innerHTML="";
+    };
+    box.appendChild(div);
+  });
+});
+
+// إدخال تفاعل/سلوك
+function submitReaction(){
+  const name = document.getElementById("reactionNameInput").value.trim();
+  const score = Number(document.getElementById("reactionScore").value);
+  const week = document.getElementById("reactionWeekSelect").value;
+
+  if(!reactionNames.includes(name)){
+    showToast("❌ اختار اسم من الاقتراحات","error");
+    return;
+  }
+  if(score < 0){
+    showToast("❌ الدرجة لازم تكون موجبة","error");
+    return;
+  }
+  if(!week){
+    showToast("❌ اختار الأسبوع","warning");
+    return;
+  }
+
+  showToast("⏳ برجاء الانتظار...", "warning");
+
+  fetch(scriptURL,{
+    method:'POST',
+    body:JSON.stringify({
+      action: "addReaction",
+      name,
+      number: score,
+      sheet: "Reaction",
+      week: week,
+      className: reactionClass,
+      isAdmin: ADMINS.includes(currentUser),
+      apiKey: API_KEY
+    }),
+    headers:{'Content-Type':'application/json'}
+  })
+  .then(res=>res.json())
+  .then(res=>{
+    if(res.success){
+      showToast(res.message || "✅ تم الإدخال بنجاح!","success");
+      document.getElementById("reactionNameInput").value = "";
+      document.getElementById("reactionScore").value = "";
+      document.getElementById("reactionSuggestions").innerHTML = "";
+      document.getElementById("reactionSubmitBtn").disabled = true;
+    } else {
+      showToast(res.message || "❌ لا يمكن الحفظ","error");
+    }
+  });
+}
+
+  function searchReaction(){
+  const searchClass = document.getElementById("reactionSearchClass").value;
+  const searchName = document.getElementById("reactionSearchInput").value.trim();
+
+  if(!searchClass || !searchName){
+    showToast("❌ لازم تختار الفرقة وتكتب اسم","error");
+    return;
+  }
+
+  fetch(`${scriptURL}?action=getRowByName&sheet=Reaction&class=${searchClass}&name=${encodeURIComponent(searchName)}`)
+    .then(res=>res.json())
+    .then(data=>{
+      if(!data.found){
+        showToast("❌ الاسم غير موجود","error");
+        return;
+      }
+
+      const box = document.getElementById("reactionReportDisplay");
+      box.innerHTML = "";
+
+      const table = document.createElement("table");
+      table.style.width="100%";
+      table.style.borderCollapse="collapse";
+
+      const header = document.createElement("tr");
+      ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
+        .forEach(h=>{
+          const th=document.createElement("th");
+          th.textContent=h;
+          th.style.border="1px solid #ccc";
+          th.style.padding="6px";
+          header.appendChild(th);
+        });
+      table.appendChild(header);
+
+      const tr=document.createElement("tr");
+      data.row.forEach(val=>{
+        const td=document.createElement("td");
+        td.textContent=val || "-";
+        td.style.border="1px solid #ccc";
+        td.style.padding="6px";
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+
+      box.appendChild(table);
+    });
+}
+
+  function showReactionCount(){
+  const week = document.getElementById("reactionWeekSelect").value;
+  if(!week){
+    showToast("❌ اختار الأسبوع","error");
+    return;
+  }
+
+  fetch(`${scriptURL}?action=getWeekCount&sheet=Reaction&class=${reactionClass}&week=${week}`)
+    .then(res=>res.json())
+    .then(data=>{
+      document.getElementById("reactionReportDisplay").innerText = "👥 العدد: " + data.count;
+    });
+}
+
+function showReactionReport(){
+  const week = document.getElementById("reactionWeekSelect").value;
+  if(!week){
+    showToast("❌ اختار الأسبوع","error");
+    return;
+  }
+
+  fetch(`${scriptURL}?action=getWeekReport&sheet=Reaction&class=${reactionClass}&week=${week}`)
+    .then(res=>res.json())
+    .then(data=>{
+      const box = document.getElementById("reactionReportDisplay");
+      box.innerHTML = "";
+      data.students.forEach(s=>{
+        const div=document.createElement("div");
+        div.textContent = s.name + " - " + s.score;
+        box.appendChild(div);
+      });
+    });
+}
+
+  function updateReactionScore(){
+  const name = document.getElementById("editNameReaction").value.trim();
+  const week = document.getElementById("editWeekReaction").value;
+  const score = Number(document.getElementById("editScoreReaction").value);
+  const className = document.getElementById("editClassReaction").value;
+
+  if(!name || !week || !className){
+    showToast("❌ لازم تدخل كل البيانات","error");
+    return;
+  }
+
+  fetch(scriptURL,{
+    method:'POST',
+    body:JSON.stringify({
+      action: "updateScore",
+      name,
+      week,
+      newScore: score,
+      sheet: "Reaction",
+      className,
+      isAdmin: ADMINS.includes(currentUser),
+      apiKey: API_KEY
+    }),
+    headers:{'Content-Type':'application/json'}
+  })
+  .then(res=>res.json())
+  .then(res=>{
+    if(res.success){
+      showToast("✅ تم التعديل بنجاح","success");
+    } else {
+      showToast(res.message || "❌ فشل التعديل","error");
+    }
+  });
+}
 
 </script>
 </body>
