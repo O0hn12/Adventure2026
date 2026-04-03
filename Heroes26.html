@@ -207,7 +207,7 @@
   <option value="6ب">6ب</option>
 </select>
   <div style="margin-bottom:15px;">
-    <input type="text" id="hwSearchInput" ...>
+    <input type="text" id="hwSearchInput" class="input-box" placeholder="ابحث بالاسم">
 <div id="hwSearchSuggestions" style="background:#fff;border:1px solid #ccc;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:5px;"></div>
 <button onclick="searchName()" class="main-btn btn-attendance">
   🔍 بحث
@@ -692,7 +692,7 @@ let searchNames = [];
 
   document.getElementById("searchInput").addEventListener("input", function(){
   const value = this.value.toLowerCase();
-  const suggestionsBox = document.getElementById("nameSuggestions");;
+  const suggestionsBox = document.getElementById("hwSearchSuggestions");
 
   suggestionsBox.innerHTML="";
 
