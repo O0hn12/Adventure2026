@@ -609,17 +609,26 @@ showToast("⏳ برجاء الانتظار...", "warning");
   if(!res.ok){
     throw new Error("HTTP error " + res.status);
   }
-  return res.json();
+  const contentType = res.headers.get("content-type");
+  if(contentType && contentType.includes("application/json")){
+    return res.json();
+  } else {
+    return res.text().then(text=>{
+      console.error("رد السيرفر مش JSON:", text);
+      throw new Error("الرد مش JSON");
+    });
+  }
 })
 .then(response=>{
   if(response.success || response.status === "ok"){
     showToast("✅ تم الإدخال بنجاح!","success");
     // تفريغ الحقول
-    document.getElementById("hwNameInput").value = "";
-    document.getElementById("hwScore").value = "";
-    document.getElementById("hwSuggestions").innerHTML = "";
-    document.getElementById("hwSubmitBtn").disabled = true;
-  }else{
+    document.getElementById("nameInput").value = "";
+    document.getElementById("attendanceInput").value = "";
+    document.getElementById("bookInput").value = "";
+    document.getElementById("nameSuggestions").innerHTML = "";
+    document.getElementById("submitBtn").disabled = true;
+  } else {
     showToast(response.message || "❌ فشل","error");
   }
 })
