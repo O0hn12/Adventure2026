@@ -885,17 +885,18 @@ showToast("⏳ برجاء الانتظار...", "warning");
   .then(res=>res.json())
   .then(res=>{
   if(res.success){
-  showToast("✅ تم الإدخال بنجاح!","success");
+    // 👇 اعرض الرسالة اللي جاية من السيرفر لو موجودة
+    showToast(res.message || "✅ تم الإدخال بنجاح!","success");
 
-  // 🔥 تفريغ الحقول
-  document.getElementById("hwNameInput").value = "";
-document.getElementById("hwScore").value = "";
-document.getElementById("hwSuggestions").innerHTML = "";
-document.getElementById("hwSubmitBtn").disabled = true;
-}else{
-      showToast(res.message || "❌ لا يمكن الحفظ","error"); // 🔥 هنا بيظهر "متسجل بالفعل"
-    }
-  });
+    // 🔥 تفريغ الحقول
+    document.getElementById("hwNameInput").value = "";
+    document.getElementById("hwScore").value = "";
+    document.getElementById("hwSuggestions").innerHTML = "";
+    document.getElementById("hwSubmitBtn").disabled = true;
+  }else{
+    showToast(res.message || "❌ لا يمكن الحفظ","error");
+  }
+});
 }
 
   document.getElementById("hwNameInput").addEventListener("input", checkHW);
