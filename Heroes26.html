@@ -169,6 +169,29 @@
   }
 }
 
+    .btn-reaction {
+  background:linear-gradient(45deg,#9C27B0,#BA68C8); /* نفس لون زرار التفاعل في الـ nav */
+}
+    #reactionReportDisplay table {
+  width:100%;
+  border-collapse:collapse;
+  table-layout:auto;
+}
+
+#reactionReportDisplay th, #reactionReportDisplay td {
+  padding:6px;
+  font-size:12px;
+  text-align:center;
+  border:1px solid #ccc;
+  white-space:nowrap;
+}
+
+@media(max-width:768px){
+  #reactionReportDisplay table {
+    display:block;
+    overflow-x:auto;
+  }
+}
   </style>
 </head>
 <body>
@@ -505,7 +528,8 @@
 </section>
     <section id="grades"><h2>الدرجات</h2><p>عرض تقارير الدرجات.</p></section>
     <section id="reaction" style="display:none;max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-  <h2 style="color:#9C27B0;margin-bottom:20px;">🎭 التفاعل والسلوك</h2>
+
+  <h2 style="color:#9C27B0;margin-bottom:20px;">🎭 التفاعل</h2>
 
   <!-- اختيار الفرقة -->
   <select id="reactionClassSelect" class="select-box">
@@ -541,7 +565,7 @@
 
   <!-- إدخال الدرجة -->
   <div style="margin-bottom:15px;">
-    <input type="number" id="reactionScore" class="input-box" min="0" max="10" placeholder="درجة التفاعل/السلوك">
+    <input type="number" id="reactionScore" class="input-box" min="0" max="10" placeholder="درجة التفاعل">
   </div>
 
   <!-- زرار إدخال -->
@@ -551,27 +575,10 @@
 
   <hr style="margin:25px 0;">
 
-  <!-- مربع البحث -->
-  <h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
-  <select id="reactionSearchClass" class="select-box">
-    <option value="">-- اختر الفرقة --</option>
-    <option value="1ب">1ب</option>
-    <option value="2ب">2ب</option>
-    <option value="3ب">3ب</option>
-    <option value="4ب">4ب</option>
-    <option value="5ب">5ب</option>
-    <option value="6ب">6ب</option>
-  </select>
-  <input type="text" id="reactionSearchInput" class="input-box" placeholder="ابحث بالاسم">
-  <div id="reactionSearchSuggestions" class="suggestions-box"></div>
-  <button onclick="searchReaction()" class="main-btn btn-reaction">🔍 بحث</button>
+  <h2 style="color:#9C27B0;margin-bottom:20px;">⚖️ السلوك</h2>
 
-  <div id="reactionReportDisplay"></div>
-
-  <!-- مربع تعديل للأدمن -->
-  <div id="adminReportReaction" class="admin-box">
-  <h3>👥 تقرير التفاعل/السلوك</h3>
-  <select id="reportClassReaction" class="select-box">
+  <!-- اختيار الفرقة -->
+  <select id="behaviorClassSelect" class="select-box">
     <option value="">-- اختر الفرقة --</option>
     <option value="1ب">1ب</option>
     <option value="2ب">2ب</option>
@@ -581,7 +588,8 @@
     <option value="6ب">6ب</option>
   </select>
 
-  <select id="reportWeekReaction" class="select-box">
+  <!-- اختيار الأسبوع -->
+  <select id="behaviorWeekSelect" class="select-box">
     <option value="">اختر الأسبوع</option>
     <option value="C">الأسبوع 1</option>
     <option value="D">الأسبوع 2</option>
@@ -595,13 +603,55 @@
     <option value="L">الأسبوع 10</option>
   </select>
 
-  <button onclick="showReactionCount()" class="main-btn btn-reaction">👥 عرض العدد</button>
-  <div id="reactionCountDisplay"></div>
+  <!-- إدخال الاسم -->
+  <div style="margin-bottom:15px;">
+    <input type="text" id="behaviorNameInput" class="input-box" placeholder="الاسم">
+    <div id="behaviorSuggestions" class="suggestions-box"></div>
+  </div>
 
-  <button onclick="showReactionReport()" class="main-btn btn-reaction">📋 عرض الأسماء</button>
+  <!-- إدخال الدرجة -->
+  <div style="margin-bottom:15px;">
+    <input type="number" id="behaviorScore" class="input-box" min="0" max="10" placeholder="درجة السلوك">
+  </div>
+
+  <!-- زرار إدخال -->
+  <button id="behaviorSubmitBtn" class="main-btn btn-reaction" onclick="submitBehavior()" disabled>
+    ✅ إدخال
+  </button>
+
+  <hr style="margin:25px 0;">
+
+  <!-- مربع البحث -->
+  <h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
+  <select id="reactionSearchClass" class="select-box">...</select>
+  <input type="text" id="reactionSearchInput" class="input-box" placeholder="ابحث بالاسم">
+  <div id="reactionSearchSuggestions" class="suggestions-box"></div>
+  <button onclick="searchReaction()" class="main-btn btn-reaction">🔍 بحث</button>
   <div id="reactionReportDisplay"></div>
-</div>
+
+  <!-- مربع تعديل للأدمن -->
+  <div id="adminEditBoxReaction" class="admin-box">
+    <h3>✏️ تعديل بيانات التفاعل</h3>
+    <select id="editClassReaction" class="select-box">...</select>
+    <select id="editWeekReaction" class="select-box">...</select>
+    <input type="text" id="editNameReaction" class="input-box" placeholder="الاسم">
+    <div id="editSuggestionsReaction" class="suggestions-box"></div>
+    <input type="number" id="editScoreReaction" class="input-box" placeholder="الدرجة">
+    <button class="main-btn btn-reaction" onclick="updateReactionScore()">💾 تعديل</button>
+  </div>
+
+  <div id="adminEditBoxBehavior" class="admin-box">
+    <h3>✏️ تعديل بيانات السلوك</h3>
+    <select id="editClassBehavior" class="select-box">...</select>
+    <select id="editWeekBehavior" class="select-box">...</select>
+    <input type="text" id="editNameBehavior" class="input-box" placeholder="الاسم">
+    <div id="editSuggestionsBehavior" class="suggestions-box"></div>
+    <input type="number" id="editScoreBehavior" class="input-box" placeholder="الدرجة">
+    <button class="main-btn btn-reaction" onclick="updateBehaviorScore()">💾 تعديل</button>
+  </div>
+
 </section>
+    
     <section id="gallery"><h2>المعرض</h2><p>صور أو محتوى إضافي.</p></section>
   </main>
 <script>
@@ -646,7 +696,9 @@ document.getElementById("loginBtn").addEventListener("click", function () {
   document.getElementById("adminEditBoxHomework").style.display = "block";
   document.getElementById("adminReportAttendance").style.display = "block"; // 👈 تقرير الحضور
   document.getElementById("adminReportHomework").style.display = "block";   // 👈 تقرير الواجب
-}
+  document.getElementById("adminEditBoxReaction").style.display = "block";
+  document.getElementById("adminReportReaction").style.display = "block";
+    }
     showToast("✅ تم تسجيل الدخول بنجاح","success");
     currentUser = username;
 
