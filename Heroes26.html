@@ -690,17 +690,18 @@ document.getElementById("loginBtn").addEventListener("click", function () {
     "labota": "204625"
   };
 
-  if(ADMINS.includes(username)){
-  document.getElementById("adminEditBoxAttendance").style.display = "block";
-  document.getElementById("adminEditBoxHomework").style.display = "block";
-  document.getElementById("adminReportAttendance").style.display = "block";
-  document.getElementById("adminReportHomework").style.display = "block";
+  if (users[username] && users[username] === password) {
+    if (ADMINS.includes(username)) {
+      document.getElementById("adminEditBoxAttendance").style.display = "block";
+      document.getElementById("adminEditBoxHomework").style.display = "block";
+      document.getElementById("adminReportAttendance").style.display = "block";
+      document.getElementById("adminReportHomework").style.display = "block";
 
-  // 👇 لازم تضيف دول علشان التفاعل والسلوك يظهروا للأدمن
-  document.getElementById("adminEditBoxReaction").style.display = "block";
-  document.getElementById("adminEditBoxBehavior").style.display = "block";
-  document.getElementById("adminReportReaction").style.display = "block";
-}
+      // 👇 إضافات التفاعل والسلوك
+      document.getElementById("adminEditBoxReaction").style.display = "block";
+      document.getElementById("adminEditBoxBehavior").style.display = "block";
+      document.getElementById("adminReportReaction").style.display = "block";
+    }
 
     showToast("✅ تم تسجيل الدخول بنجاح","success");
     currentUser = username;
