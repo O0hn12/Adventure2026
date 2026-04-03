@@ -490,6 +490,8 @@ document.getElementById("loginBtn").addEventListener("click", function () {
     if(ADMINS.includes(username)){
   document.getElementById("adminEditBoxAttendance").style.display = "block";
   document.getElementById("adminEditBoxHomework").style.display = "block";
+  document.getElementById("adminReportAttendance").style.display = "block"; // 👈 تقرير الحضور
+  document.getElementById("adminReportHomework").style.display = "block";   // 👈 تقرير الواجب
 }
     showToast("✅ تم تسجيل الدخول بنجاح","success");
     currentUser = username;
