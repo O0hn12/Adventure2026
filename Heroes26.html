@@ -259,6 +259,16 @@
   </table>
 </div>
 
+    <div class="admin-box">
+  <h3>👥 تقرير الحضور</h3>
+  <select id="reportClassAttendance" class="select-box">...</select>
+  <select id="reportWeekAttendance" class="select-box">...</select>
+  <button onclick="showAttendanceCount()" class="main-btn btn-attendance">👥 عرض العدد</button>
+  <div id="attendanceCountDisplay"></div>
+  <button onclick="showAttendanceReport()" class="main-btn btn-attendance">📋 عرض الأسماء</button>
+  <div id="attendanceReportDisplay"></div>
+</div>
+
     <div id="adminEditBoxAttendance" class="admin-box">
   <h3>✏️ تعديل الحضور</h3>
 
@@ -388,6 +398,16 @@
     </thead>
     <tbody></tbody>
   </table>
+</div>
+
+      <div class="admin-box">
+  <h3>📚 تقرير الواجب</h3>
+  <select id="reportClassHomework" class="select-box">...</select>
+  <select id="reportWeekHomework" class="select-box">...</select>
+  <button onclick="showHomeworkCount()" class="main-btn btn-homework">👥 عرض العدد</button>
+  <div id="homeworkCountDisplay"></div>
+  <button onclick="showHomeworkReport()" class="main-btn btn-homework">📋 عرض الأسماء</button>
+  <div id="homeworkReportDisplay"></div>
 </div>
 
       <div id="adminEditBoxHomework" class="admin-box">
@@ -1053,6 +1073,58 @@ document.getElementById("editNameHomework").addEventListener("input", function()
     box.appendChild(div);
   });
 });
+
+  function showAttendanceCount(){
+  const className = document.getElementById("reportClassAttendance").value;
+  const week = document.getElementById("reportWeekAttendance").value;
+
+  fetch(`${scriptURL}?action=getWeekCount&sheet=Attendance&class=${className}&week=${week}`)
+  .then(res=>res.json())
+  .then(data=>{
+    document.getElementById("attendanceCountDisplay").innerText = `عدد الحاضرين: ${data.count}`;
+  });
+}
+
+function showAttendanceReport(){
+  const className = document.getElementById("reportClassAttendance").value;
+  const week = document.getElementById("reportWeekAttendance").value;
+
+  fetch(`${scriptURL}?action=getWeekReport&sheet=Attendance&class=${className}&week=${week}`)
+  .then(res=>res.json())
+  .then(data=>{
+    const div = document.getElementById("attendanceReportDisplay");
+    div.innerHTML = "";
+    data.students.forEach(s=>{
+      div.innerHTML += `<p>${s.name} - ${s.score}</p>`;
+    });
+  });
+}
+
+function showHomeworkCount(){
+  const className = document.getElementById("reportClassHomework").value;
+  const week = document.getElementById("reportWeekHomework").value;
+
+  fetch(`${scriptURL}?action=getWeekCount&sheet=Homework&class=${className}&week=${week}`)
+  .then(res=>res.json())
+  .then(data=>{
+    document.getElementById("homeworkCountDisplay").innerText = `عدد الطلاب: ${data.count}`;
+  });
+}
+
+function showHomeworkReport(){
+  const className = document.getElementById("reportClassHomework").value;
+  const week = document.getElementById("reportWeekHomework").value;
+
+  fetch(`${scriptURL}?action=getWeekReport&sheet=Homework&class=${className}&week=${week}`)
+  .then(res=>res.json())
+  .then(data=>{
+    const div = document.getElementById("homeworkReportDisplay");
+    div.innerHTML = "";
+    data.students.forEach(s=>{
+      div.innerHTML += `<p>${s.name} - ${s.score}</p>`;
+    });
+  });
+}
 </script>
 </body>
 </html>
