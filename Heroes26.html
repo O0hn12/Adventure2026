@@ -249,7 +249,7 @@
     <div id="adminEditBoxAttendance" class="admin-box">
   <h3>✏️ تعديل الحضور</h3>
 
-  <select id="editClass" class="select-box">
+  <select id="editClassAttendance" class="select-box">
     <option value="">اختر الفرقة</option>
     <option value="1ب">1ب</option>
     <option value="2ب">2ب</option>
@@ -259,7 +259,7 @@
     <option value="6ب">6ب</option>
   </select>
 
-  <select id="editWeek" class="select-box">
+  <select id="editWeekAttendance" class="select-box">
     <option value="">اختر الأسبوع</option>
     <option value="C">الأسبوع 1</option>
     <option value="D">الأسبوع 2</option>
@@ -277,7 +277,7 @@
   <input type="text" id="editNameAttendance" class="input-box" placeholder="الاسم">
   <div id="editSuggestionsAttendance" class="suggestions-box"></div>
 </div>
-  <input type="number" id="editScore" class="input-box" placeholder="الدرجة">
+  <input type="number" id="editScoreAttendance" class="input-box" placeholder="الدرجة">
 
   <button class="main-btn btn-attendance" onclick="updateScore()">💾 حفظ التعديل</button>
 </div>
@@ -378,7 +378,7 @@
       <div id="adminEditBoxHomework" class="admin-box">
   <h3>✏️ تعديل بيانات (Admin)</h3>
 
-  <select id="editClass" class="select-box">
+  <select id="editClassHomework" class="select-box">
     <option value="">اختر الفرقة</option>
     <option value="1ب">1ب</option>
     <option value="2ب">2ب</option>
@@ -388,7 +388,7 @@
     <option value="6ب">6ب</option>
   </select>
 
-  <select id="editWeek">
+  <select id="editWeekHomework" class="select-box">
     <option value="">اختر الأسبوع</option>
   <option value="C">الأسبوع 1</option>
   <option value="D">الأسبوع 2</option>
@@ -406,7 +406,7 @@
   <input type="text" id="editNameHomework" class="input-box" placeholder="الاسم">
   <div id="editSuggestionsHomework" class="suggestions-box"></div>
 </div>
-<input type="number" id="editScore" class="input-box">
+<input type="number" id="editScoreHomework" class="input-box">
         
   <button onclick="updateScore()">💾 تعديل</button>
 </div>
@@ -624,7 +624,7 @@ showToast("⏳ برجاء الانتظار...", "warning");
 }
 
 // ✅ البحث
-function searchName(){
+function searchName(inputId){
   if(!currentUser){
     showToast("❌ لازم تسجل دخول","error");
     return;
@@ -676,7 +676,7 @@ function searchName(){
 
   document.getElementById("searchInput").addEventListener("input", function(){
   const value = this.value.toLowerCase();
-  const suggestionsBox = document.getElementById("nameSuggestions");
+  const box = document.getElementById("attendanceSearchSuggestions");
 
   suggestionsBox.innerHTML="";
 
