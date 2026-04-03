@@ -146,16 +146,29 @@
 }
     #resultTable th, #resultTable td,
 #hwTable th, #hwTable td {
-  border: 1px solid #ccc;
   padding: 8px;
   text-align: center;
-  min-width: 80px; /* علشان الأعمدة تبقى متساوية */
+  white-space: nowrap; /* يمنع الكلام يدخل في بعضه */
 }
+
 #resultTable, #hwTable {
   border-collapse: collapse;
   width: 100%;
-  table-layout: fixed; /* يخلي الأعمدة ثابتة العرض */
+  table-layout: auto; /* بدل fixed */
 }
+    @media(max-width:768px){
+  #resultTable, #hwTable {
+    display: block;
+    overflow-x: auto; /* يخلي الجدول يلف يمين/شمال */
+    white-space: nowrap;
+  }
+  #resultTable th, #resultTable td,
+  #hwTable th, #hwTable td {
+    font-size: 12px; /* يصغر الخط شوية */
+    padding: 6px;
+  }
+}
+
   </style>
 </head>
 <body>
