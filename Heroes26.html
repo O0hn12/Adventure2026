@@ -339,7 +339,7 @@
 </select>
 
 <div style="margin-bottom:15px; position:relative;">
-  <input type="text" id="searchInput" class="input-box" placeholder="ابحث بالاسم">
+  <input type="text" id="hwSearchInput" class="input-box" placeholder="ابحث بالاسم">
   <div id="hwSearchSuggestions" style="
     position:absolute;
     top:100%;
@@ -408,7 +408,7 @@
 </div>
 <input type="number" id="editScoreHomework" class="input-box">
         
-  <button onclick="updateScore()">💾 تعديل</button>
+  <button class="main-btn btn-homework" onclick="updateScore()">💾 تعديل</button>
 </div>
 </section>
     <section id="grades"><h2>الدرجات</h2><p>عرض تقارير الدرجات.</p></section>
@@ -678,7 +678,7 @@ function searchName(inputId){
   const value = this.value.toLowerCase();
   const box = document.getElementById("attendanceSearchSuggestions");
 
-  suggestionsBox.innerHTML="";
+  box.innerHTML="";
 
   if(!value) return;
 
@@ -689,7 +689,7 @@ function searchName(inputId){
     div.textContent=name;
     div.onclick=()=>{
       document.getElementById("searchInput").value=name;
-      suggestionsBox.innerHTML="";
+      box.innerHTML="";
     };
     suggestionsBox.appendChild(div);
   });
@@ -902,13 +902,21 @@ document.getElementById("hwSearchClass").addEventListener("change", function(){
 });
 
   function updateScore(){
-  const name =
-  selectedSheet === "Homework"
+  const name = selectedSheet === "Homework"
     ? document.getElementById("editNameHomework").value.trim()
     : document.getElementById("editNameAttendance").value.trim();
-  const score = Number(document.getElementById("editScore").value);
-  const week = document.getElementById("editWeek").value;
-  const className = document.getElementById("editClass").value;
+
+  const score = selectedSheet === "Homework"
+    ? Number(document.getElementById("editScoreHomework").value)
+    : Number(document.getElementById("editScoreAttendance").value);
+
+  const week = selectedSheet === "Homework"
+    ? document.getElementById("editWeekHomework").value
+    : document.getElementById("editWeekAttendance").value;
+
+  const className = selectedSheet === "Homework"
+    ? document.getElementById("editClassHomework").value
+    : document.getElementById("editClassAttendance").value;
 
   if(!name || !week || !className){
     showToast("❌ كمل البيانات","error");
@@ -938,6 +946,7 @@ document.getElementById("hwSearchClass").addEventListener("change", function(){
     }
   });
 }
+
   document.getElementById("editName").addEventListener("input", function(){
   const value = this.value.toLowerCase();
   const box = document.getElementById("editSuggestions");
