@@ -600,22 +600,25 @@ const data = {
   apiKey: API_KEY
 };
 showToast("⏳ برجاء الانتظار...", "warning");
-  fetch(scriptURL,{
-    method:'POST',
-    body:JSON.stringify(data),
-    headers:{'Content-Type':'application/json'}
-  })
-  .then(res=>res.json())
-  .then(response=>{
+  ffetch(scriptURL,{
+  method:'POST',
+  body:JSON.stringify(data),
+  headers:{'Content-Type':'application/json'}
+})
+.then(res=>{
+  if(!res.ok){
+    throw new Error("HTTP error " + res.status);
+  }
+  return res.json();
+})
+.then(response=>{
   if(response.success || response.status === "ok"){
     showToast("✅ تم الإدخال بنجاح!","success");
-
-    // 🔥 تفريغ الحقول
-    document.getElementById("nameInput").value = "";
-    document.getElementById("attendanceInput").value = "";
-    document.getElementById("bookInput").value = "";
-    document.getElementById("nameSuggestions").innerHTML = "";
-    document.getElementById("submitBtn").disabled = true;
+    // تفريغ الحقول
+    document.getElementById("hwNameInput").value = "";
+    document.getElementById("hwScore").value = "";
+    document.getElementById("hwSuggestions").innerHTML = "";
+    document.getElementById("hwSubmitBtn").disabled = true;
   }else{
     showToast(response.message || "❌ فشل","error");
   }
