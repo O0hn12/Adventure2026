@@ -928,12 +928,21 @@ document.getElementById("hwSearchClass").addEventListener("change", function(){
   })
   .then(res=>res.json())
   .then(res=>{
-    if(res.success){
-      showToast("✅ تم التعديل","success");
-    }else{
-      showToast(res.message,"error");
+  if(res.success){
+    showToast("✅ تم التعديل","success");
+
+    if(selectedSheet === "Homework"){
+      document.getElementById("editNameHomework").value = "";
+      document.getElementById("editScoreHomework").value = "";
+    } else {
+      document.getElementById("editNameAttendance").value = "";
+      document.getElementById("editScoreAttendance").value = "";
     }
-  });
+
+  }else{
+    showToast(res.message,"error");
+  }
+});
 }
   
   document.getElementById("nameInput").focus();
