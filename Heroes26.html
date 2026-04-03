@@ -1170,6 +1170,60 @@ function showHomeworkReport(){
     });
   });
 }
+  document.getElementById("editClassAttendance").addEventListener("change", function(){
+  const className = this.value;
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Attendance&class=${className}`)
+    .then(res => res.json())
+    .then(data => {
+      editAttendanceNames = data.names || [];
+    });
+});
+
+document.getElementById("editNameAttendance").addEventListener("input", function(){
+  const value = this.value.trim().toLowerCase();
+  const box = document.getElementById("editSuggestionsAttendance");
+  box.innerHTML = "";
+  if(!value || editAttendanceNames.length === 0) return;
+
+  const filtered = editAttendanceNames.filter(n => n.toLowerCase().includes(value)).slice(0,10);
+  filtered.forEach(name=>{
+    const div = document.createElement("div");
+    div.textContent = name;
+    div.onclick = ()=>{
+      document.getElementById("editNameAttendance").value = name;
+      box.innerHTML = "";
+    };
+    box.appendChild(div);
+  });
+});
+
+  document.getElementById("editClassHomework").addEventListener("change", function(){
+  const className = this.value;
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Homework&class=${className}`)
+    .then(res => res.json())
+    .then(data => {
+      editHomeworkNames = data.names || [];
+    });
+});
+
+document.getElementById("editNameHomework").addEventListener("input", function(){
+  const value = this.value.trim().toLowerCase();
+  const box = document.getElementById("editSuggestionsHomework");
+  box.innerHTML = "";
+  if(!value || editHomeworkNames.length === 0) return;
+
+  const filtered = editHomeworkNames.filter(n => n.toLowerCase().includes(value)).slice(0,10);
+  filtered.forEach(name=>{
+    const div = document.createElement("div");
+    div.textContent = name;
+    div.onclick = ()=>{
+      document.getElementById("editNameHomework").value = name;
+      box.innerHTML = "";
+    };
+    box.appendChild(div);
+  });
+});
+
 </script>
 </body>
 </html>
