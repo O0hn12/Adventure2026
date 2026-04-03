@@ -569,15 +569,38 @@
   <div id="reactionReportDisplay"></div>
 
   <!-- مربع تعديل للأدمن -->
-  <div id="adminEditBoxReaction" class="admin-box">
-    <h3>✏️ تعديل بيانات التفاعل</h3>
-    <select id="editClassReaction" class="select-box">...</select>
-    <select id="editWeekReaction" class="select-box">...</select>
-    <input type="text" id="editNameReaction" class="input-box" placeholder="الاسم">
-    <div id="editSuggestionsReaction" class="suggestions-box"></div>
-    <input type="number" id="editScoreReaction" class="input-box" placeholder="الدرجة">
-    <button class="main-btn btn-reaction" onclick="updateScore()">💾 تعديل</button>
-  </div>
+  <div id="adminReportReaction" class="admin-box">
+  <h3>👥 تقرير التفاعل/السلوك</h3>
+  <select id="reportClassReaction" class="select-box">
+    <option value="">-- اختر الفرقة --</option>
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+  </select>
+
+  <select id="reportWeekReaction" class="select-box">
+    <option value="">اختر الأسبوع</option>
+    <option value="C">الأسبوع 1</option>
+    <option value="D">الأسبوع 2</option>
+    <option value="E">الأسبوع 3</option>
+    <option value="F">الأسبوع 4</option>
+    <option value="G">الأسبوع 5</option>
+    <option value="H">الأسبوع 6</option>
+    <option value="I">الأسبوع 7</option>
+    <option value="J">الأسبوع 8</option>
+    <option value="K">الأسبوع 9</option>
+    <option value="L">الأسبوع 10</option>
+  </select>
+
+  <button onclick="showReactionCount()" class="main-btn btn-reaction">👥 عرض العدد</button>
+  <div id="reactionCountDisplay"></div>
+
+  <button onclick="showReactionReport()" class="main-btn btn-reaction">📋 عرض الأسماء</button>
+  <div id="reactionReportDisplay"></div>
+</div>
 </section>
     <section id="gallery"><h2>المعرض</h2><p>صور أو محتوى إضافي.</p></section>
   </main>
@@ -1557,6 +1580,21 @@ function showReactionReport(){
     }
   });
 }
+
+  function checkReactionSubmitState(){
+  const name = document.getElementById("reactionNameInput").value.trim();
+  const score = Number(document.getElementById("reactionScore").value);
+  const week = document.getElementById("reactionWeekSelect").value;
+  const classVal = document.getElementById("reactionClassSelect").value;
+
+  const isValid = name && score >= 0 && week && classVal;
+  document.getElementById("reactionSubmitBtn").disabled = !isValid;
+}
+
+document.getElementById("reactionNameInput").addEventListener("input",checkReactionSubmitState);
+document.getElementById("reactionScore").addEventListener("input",checkReactionSubmitState);
+document.getElementById("reactionWeekSelect").addEventListener("change",checkReactionSubmitState);
+document.getElementById("reactionClassSelect").addEventListener("change",checkReactionSubmitState);
 
 </script>
 </body>
