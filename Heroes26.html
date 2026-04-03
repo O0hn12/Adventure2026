@@ -811,7 +811,7 @@ function checkHW(){
 }
 
   function searchHomework(){
-  const name = document.getElementById("searchInput").value.trim();
+const name = document.getElementById("hwSearchInput").value.trim();
   showToast("⏳ برجاء الانتظار...", "warning");
 
   fetch(`${scriptURL}?action=getRowByName&sheet=Homework&class=${hwSearchClass}&name=${encodeURIComponent(name)}`)
@@ -920,24 +920,7 @@ document.getElementById("hwSearchClass").addEventListener("change", function(){
     }
   });
 }
-
-  document.getElementById("editName").addEventListener("input", function(){
-  const value = this.value.toLowerCase();
-  const box = document.getElementById("editSuggestions");
-  box.innerHTML="";
-
-  const filtered = allNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
-
-  filtered.forEach(name=>{
-    const div=document.createElement("div");
-    div.textContent=name;
-    div.onclick=()=>{
-      document.getElementById("editName").value=name;
-      box.innerHTML="";
-    };
-    box.appendChild(div);
-  });
-});
+  
   document.getElementById("nameInput").focus();
   document.getElementById("nameInput").focus();
   document.getElementById("weekSelect").addEventListener("change", checkSubmitState);
