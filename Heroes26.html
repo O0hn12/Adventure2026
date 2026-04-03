@@ -221,9 +221,9 @@
   <option value="6ب">6ب</option>
 </select>
   <div style="margin-bottom:15px;">
-    <input type="text" id="hwSearchInput" class="input-box" placeholder="ابحث بالاسم">
 <input type="text" id="attendanceSearchInput" class="input-box" placeholder="ابحث بالاسم">
-<div id="attendanceSearchSuggestions" class="suggestions-box"></div><button onclick="searchName()" class="main-btn btn-attendance">
+<div id="attendanceSearchSuggestions" class="suggestions-box"></div>
+    <button onclick="searchName('attendanceSearchInput')" class="main-btn btn-attendance">
   🔍 بحث
 </button>  
   <div id="tableContainer" style="margin-top:20px;overflow-x:auto;">
@@ -273,7 +273,10 @@
     <option value="L">الأسبوع 10</option>
   </select>
 
-  <input type="text" id="editName" class="input-box" placeholder="الاسم">
+  <div style="margin-bottom:15px;">
+  <input type="text" id="editNameAttendance" class="input-box" placeholder="الاسم">
+  <div id="editSuggestionsAttendance" class="suggestions-box"></div>
+</div>
   <input type="number" id="editScore" class="input-box" placeholder="الدرجة">
 
   <button class="main-btn btn-attendance" onclick="updateScore()">💾 حفظ التعديل</button>
@@ -372,10 +375,10 @@
   <tbody></tbody>
 </table>
 
-      <div id="adminEditBoxHomework" style="display:none;margin-top:20px;padding:15px;border:2px dashed #999;border-radius:10px;">
+      <div id="adminEditBoxHomework" class="admin-box">
   <h3>✏️ تعديل بيانات (Admin)</h3>
 
-  <select id="editClass">
+  <select id="editClass" class="select-box">
     <option value="">اختر الفرقة</option>
     <option value="1ب">1ب</option>
     <option value="2ب">2ب</option>
@@ -399,9 +402,12 @@
   <option value="L">الأسبوع 10</option>
   </select>
 
-  <input type="text" id="editName" placeholder="الاسم">
-  <input type="number" id="editScore" placeholder="الدرجة">
-
+  <div style="margin-bottom:15px;">
+  <input type="text" id="editNameHomework" class="input-box" placeholder="الاسم">
+  <div id="editSuggestionsHomework" class="suggestions-box"></div>
+</div>
+<input type="number" id="editScore" class="input-box">
+        
   <button onclick="updateScore()">💾 تعديل</button>
 </div>
 </section>
@@ -624,7 +630,7 @@ function searchName(){
     return;
   }
 
-  const search=document.getElementById("searchInput").value.trim();
+  const search=document.getElementById(inputId).value.trim();
   if(!search){
     showToast("❌ أدخل اسم","error");
     return;
@@ -896,7 +902,10 @@ document.getElementById("hwSearchClass").addEventListener("change", function(){
 });
 
   function updateScore(){
-  const name = document.getElementById("editName").value.trim();
+  const name =
+  selectedSheet === "Homework"
+    ? document.getElementById("editNameHomework").value.trim()
+    : document.getElementById("editNameAttendance").value.trim();
   const score = Number(document.getElementById("editScore").value);
   const week = document.getElementById("editWeek").value;
   const className = document.getElementById("editClass").value;
@@ -969,6 +978,50 @@ document.getElementById("hwSearchClass").addEventListener("change", function(){
 
     div.onclick = ()=>{
       document.getElementById("attendanceSearchInput").value = name;
+      box.innerHTML = "";
+    };
+
+    box.appendChild(div);
+  });
+});
+
+  // 🔥 اقتراحات تعديل الحضور
+document.getElementById("editNameAttendance").addEventListener("input", function(){
+  const value = this.value.toLowerCase();
+  const box = document.getElementById("editSuggestionsAttendance");
+
+  box.innerHTML = "";
+
+  const filtered = allNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
+
+  filtered.forEach(name=>{
+    const div = document.createElement("div");
+    div.textContent = name;
+
+    div.onclick = ()=>{
+      document.getElementById("editNameAttendance").value = name;
+      box.innerHTML = "";
+    };
+
+    box.appendChild(div);
+  });
+});
+
+// 🔥 اقتراحات تعديل الواجب
+document.getElementById("editNameHomework").addEventListener("input", function(){
+  const value = this.value.toLowerCase();
+  const box = document.getElementById("editSuggestionsHomework");
+
+  box.innerHTML = "";
+
+  const filtered = hwNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
+
+  filtered.forEach(name=>{
+    const div = document.createElement("div");
+    div.textContent = name;
+
+    div.onclick = ()=>{
+      document.getElementById("editNameHomework").value = name;
       box.innerHTML = "";
     };
 
