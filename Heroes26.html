@@ -607,20 +607,23 @@ showToast("⏳ برجاء الانتظار...", "warning");
   })
   .then(res=>res.json())
   .then(response=>{
-    if(response.success){
-  showToast("✅ تم الإدخال بنجاح!","success");
+  if(response.success || response.status === "ok"){
+    showToast("✅ تم الإدخال بنجاح!","success");
 
-  // 🔥 تفريغ الحقول
-  document.getElementById("nameInput").value = "";
-  document.getElementById("attendanceInput").value = "";
-  document.getElementById("bookInput").value = "";
-  document.getElementById("nameSuggestions").innerHTML = "";
-  document.getElementById("submitBtn").disabled = true;
-}else{
-      showToast(response.message || "❌ فشل","error");
-    }
-  })
-  .catch(()=>showToast("❌ خطأ في الاتصال!","error"));
+    // 🔥 تفريغ الحقول
+    document.getElementById("nameInput").value = "";
+    document.getElementById("attendanceInput").value = "";
+    document.getElementById("bookInput").value = "";
+    document.getElementById("nameSuggestions").innerHTML = "";
+    document.getElementById("submitBtn").disabled = true;
+  }else{
+    showToast(response.message || "❌ فشل","error");
+  }
+})
+.catch(err=>{
+  console.error("خطأ:", err);
+  showToast("❌ خطأ في الاتصال!","error");
+});
 }
 
 // ✅ البحث
