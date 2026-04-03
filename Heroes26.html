@@ -458,6 +458,7 @@ const scriptURL = 'https://attendace.johnmamdouh777.workers.dev/';
 let currentUser = "";
 let currentClass = "";
 let allNames = []; // 🔥 تخزين الأسماء
+const ADMINS = ["admin","john"]; // هنا تزود أي أدمن جديد مرة واحدة
 
 // ✅ عند تحميل الصفحة
 window.onload = function(){
@@ -486,11 +487,9 @@ document.getElementById("loginBtn").addEventListener("click", function () {
   };
 
   if (users[username] && users[username] === password) {
-    const admins = ["admin","john"];
-
-if(admins.includes(username)){
+    if(ADMINS.includes(username)){
   document.getElementById("adminEditBoxAttendance").style.display = "block";
-document.getElementById("adminEditBoxHomework").style.display = "block";
+  document.getElementById("adminEditBoxHomework").style.display = "block";
 }
     showToast("✅ تم تسجيل الدخول بنجاح","success");
     currentUser = username;
@@ -631,7 +630,7 @@ const data = {
   sheet: selectedSheet,
   week: selectedWeek,
   className: currentClass,
-  isAdmin: admins.includes(currentUser),
+  isAdmin: ADMINS.includes(currentUser),
   apiKey: API_KEY
 };
 showToast("⏳ برجاء الانتظار...", "warning");
@@ -832,7 +831,7 @@ showToast("⏳ برجاء الانتظار...", "warning");
       sheet: "Homework",
       week: week,
       className: hwClass,
-      isAdmin: admins.includes(currentUser),
+      isAdmin: ADMINS.includes(currentUser),
       apiKey: API_KEY
     }),
     headers:{'Content-Type':'application/json'}
