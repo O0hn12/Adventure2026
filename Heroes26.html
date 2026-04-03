@@ -239,24 +239,25 @@
   🔍 بحث
 </button>  
   <div id="tableContainer" style="margin-top:20px;overflow-x:auto;">
-    <table id="resultTable" style="width:100%;border-collapse:collapse;">
-  <thead>
-    <tr style="background:#f4f6f9;color:#333;">
-      <th style="padding:10px;border:1px solid #ccc;">الاسم</th>
-      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 1</th>
-      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 2</th>
-      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 3</th>
-      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 4</th>
-      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 5</th>
-      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 6</th>
-      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 7</th>
-      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 8</th>
-      <th style="padding:10px;border:1px solid #ccc;">الأسبوع 9</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-  </div>
+  <table id="resultTable" style="width:100%;border-collapse:collapse;">
+    <thead>
+      <tr style="background:#f4f6f9;color:#333;">
+        <th style="padding:10px;border:1px solid #ccc;">الاسم</th>
+        <th style="padding:10px;border:1px solid #ccc;">الفرقة</th> <!-- العمود الجديد -->
+        <th style="padding:10px;border:1px solid #ccc;">الأسبوع 1</th>
+        <th style="padding:10px;border:1px solid #ccc;">الأسبوع 2</th>
+        <th style="padding:10px;border:1px solid #ccc;">الأسبوع 3</th>
+        <th style="padding:10px;border:1px solid #ccc;">الأسبوع 4</th>
+        <th style="padding:10px;border:1px solid #ccc;">الأسبوع 5</th>
+        <th style="padding:10px;border:1px solid #ccc;">الأسبوع 6</th>
+        <th style="padding:10px;border:1px solid #ccc;">الأسبوع 7</th>
+        <th style="padding:10px;border:1px solid #ccc;">الأسبوع 8</th>
+        <th style="padding:10px;border:1px solid #ccc;">الأسبوع 9</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
     <div id="adminEditBoxAttendance" class="admin-box">
   <h3>✏️ تعديل الحضور</h3>
@@ -369,23 +370,25 @@
 <button onclick="searchHomework()" style="width:100%;padding:12px;background:linear-gradient(90deg,#2196F3,#1976D2);color:#fff;border:none;border-radius:8px;font-size:18px;">بحث</button>
 
 <div style="overflow-x:auto; width:100%;">
-<table id="hwTable" style="min-width:600px;border-collapse:collapse;">
-  <thead>
-    <tr>
-      <th>الاسم</th>
-      <th>الأسبوع 1</th>
-      <th>الأسبوع 2</th>
-      <th>الأسبوع 3</th>
-      <th>الأسبوع 4</th>
-      <th>الأسبوع 5</th>
-      <th>الأسبوع 6</th>
-      <th>الأسبوع 7</th>
-      <th>الأسبوع 8</th>
-      <th>الأسبوع 9</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+  <table id="hwTable" style="min-width:600px;border-collapse:collapse;">
+    <thead>
+      <tr>
+        <th>الاسم</th>
+        <th>الفرقة</th> <!-- العمود الجديد -->
+        <th>الأسبوع 1</th>
+        <th>الأسبوع 2</th>
+        <th>الأسبوع 3</th>
+        <th>الأسبوع 4</th>
+        <th>الأسبوع 5</th>
+        <th>الأسبوع 6</th>
+        <th>الأسبوع 7</th>
+        <th>الأسبوع 8</th>
+        <th>الأسبوع 9</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
       <div id="adminEditBoxHomework" class="admin-box">
   <h3>✏️ تعديل بيانات (Admin)</h3>
@@ -678,20 +681,27 @@ function searchName(inputId){
     }
 
     const tableBody=document.querySelector("#resultTable tbody");
-    tableBody.innerHTML="";
-    const tr=document.createElement("tr");
+tableBody.innerHTML="";
+const tr=document.createElement("tr");
 
-    const nameCell=document.createElement("td");
-    nameCell.textContent=data.row[0];
-    tr.appendChild(nameCell);
+// الاسم
+const nameCell=document.createElement("td");
+nameCell.textContent=data.row[0];
+tr.appendChild(nameCell);
 
-    for(let i=1;i<=9;i++){
-      const td=document.createElement("td");
-      td.textContent=data.row[i] || "-";
-      tr.appendChild(td);
-    }
+// الفرقة
+const classCell=document.createElement("td");
+classCell.textContent=data.row[1];
+tr.appendChild(classCell);
 
-    tableBody.appendChild(tr);
+// الأسابيع (من العمود الثالث فالشيت)
+for(let i=2;i<=10;i++){   // يبدأ من العمود الثالث
+  const td=document.createElement("td");
+  td.textContent=data.row[i] || "-";
+  tr.appendChild(td);
+}
+
+tableBody.appendChild(tr);
   })
   .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
@@ -838,7 +848,7 @@ function checkHW(){
 }
 
   function searchHomework(){
-const name = document.getElementById("hwSearchInput").value.trim();
+  const name = document.getElementById("hwSearchInput").value.trim();
   showToast("⏳ برجاء الانتظار...", "warning");
 
   fetch(`${scriptURL}?action=getRowByName&sheet=Homework&class=${hwSearchClass}&name=${encodeURIComponent(name)}`)
@@ -853,11 +863,24 @@ const name = document.getElementById("hwSearchInput").value.trim();
     }
 
     const tr=document.createElement("tr");
-    for(let i=0;i<10;i++){
+
+    // الاسم
+    const nameCell=document.createElement("td");
+    nameCell.textContent=data.row[0];
+    tr.appendChild(nameCell);
+
+    // الفرقة
+    const classCell=document.createElement("td");
+    classCell.textContent=data.row[1];
+    tr.appendChild(classCell);
+
+    // الأسابيع (من العمود الثالث فالشيت)
+    for(let i=2;i<12;i++){
       const td=document.createElement("td");
       td.textContent=data.row[i] || "-";
       tr.appendChild(td);
     }
+
     body.appendChild(tr);
   });
 }
