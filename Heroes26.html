@@ -600,7 +600,7 @@ const data = {
   apiKey: API_KEY
 };
 showToast("⏳ برجاء الانتظار...", "warning");
-  ffetch(scriptURL,{
+  fetch(scriptURL,{
   method:'POST',
   body:JSON.stringify(data),
   headers:{'Content-Type':'application/json'}
