@@ -1641,73 +1641,6 @@ document.getElementById("reactionNameInput").addEventListener("input", function(
     });
 }
 
-function searchBoth(){
-  const searchClass = document.getElementById("reactionSearchClass").value;
-  const searchName = document.getElementById("reactionSearchInput").value.trim();
-
-  if(!searchClass || !searchName){
-    showToast("❌ لازم تختار الفرقة وتكتب اسم","error");
-    return;
-  }
-
-  Promise.all([
-    fetch(`${scriptURL}?action=getRowByName&sheet=Reaction&class=${searchClass}&name=${encodeURIComponent(searchName)}`).then(res=>res.json()),
-    fetch(`${scriptURL}?action=getRowByName&sheet=Behavior&class=${searchClass}&name=${encodeURIComponent(searchName)}`).then(res=>res.json())
-  ]).then(([reactionData, behaviorData])=>{
-    console.log("Reaction data:", reactionData);
-    console.log("Behavior data:", behaviorData);
-    const box = document.getElementById("reactionReportDisplay");
-    box.innerHTML = "";
-
-    const table = document.createElement("table");
-    table.style.width="100%";
-    table.style.borderCollapse="collapse";
-
-    // الهيدر
-    const header = document.createElement("tr");
-    header.appendChild(createCell("الاسم"));
-    header.appendChild(createCell("الفرقة"));
-    for(let i=1;i<=10;i++){
-      header.appendChild(createCell("الأسبوع " + i));
-    }
-    table.appendChild(header);
-
-    // صف السلوك
-    const trBehavior=document.createElement("tr");
-    trBehavior.style.backgroundColor="#fce4ec"; // وردي فاتح
-    trBehavior.appendChild(createCell(behaviorData.found ? behaviorData.row[0] : searchName));
-    trBehavior.appendChild(createCell(behaviorData.found ? behaviorData.row[1] : searchClass));
-    if(behaviorData.found){
-      behaviorData.row.slice(2).forEach(val=>trBehavior.appendChild(createCell(val)));
-    } else {
-      for(let i=0;i<10;i++) trBehavior.appendChild(createCell("-"));
-    }
-    table.appendChild(trBehavior);
-
-    // صف التفاعل
-    const trReaction=document.createElement("tr");
-    trReaction.style.backgroundColor="#e3f2fd"; // أزرق فاتح
-    trReaction.appendChild(createCell(reactionData.found ? reactionData.row[0] : searchName));
-    trReaction.appendChild(createCell(reactionData.found ? reactionData.row[1] : searchClass));
-    if(reactionData.found){
-      reactionData.row.slice(2).forEach(val=>trReaction.appendChild(createCell(val)));
-    } else {
-      for(let i=0;i<10;i++) trReaction.appendChild(createCell("-"));
-    }
-    table.appendChild(trReaction);
-
-    box.appendChild(table);
-  });
-}
-
-function createCell(text){
-  const td=document.createElement("td");
-  td.textContent=text || "-";
-  td.style.border="1px solid #ccc";
-  td.style.padding="6px";
-  return td;
-}
-
   function updateReactionScore(){
   const name = document.getElementById("editNameReaction").value.trim();
   const week = document.getElementById("editWeekReaction").value;
@@ -1956,8 +1889,9 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
 }
 
   function searchBehavior(){
+  // ياخد نفس الفرقة والاسم اللي اتحددوا في بحث التفاعل
   const searchClass = document.getElementById("reactionSearchClass").value;
-  const searchName = document.getElementById("behaviorSearchInput").value.trim();
+  const searchName = document.getElementById("reactionSearchInput").value.trim();
 
   if(!searchClass || !searchName){
     showToast("❌ لازم تختار الفرقة وتكتب اسم","error");
@@ -1971,7 +1905,7 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
       box.innerHTML = "";
 
       if(!data.found){
-        showToast("❌ الاسم غير موجود","error");
+        showToast("❌ الاسم غير موجود في السلوك","error");
         return;
       }
 
@@ -2003,7 +1937,6 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
       box.appendChild(table);
     });
 }
-
 
   function showReactionCount(){
   const cls = document.getElementById("reportClassReaction").value;
