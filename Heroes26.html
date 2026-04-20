@@ -1634,84 +1634,71 @@ function searchBoth(){
     return;
   }
 
-  // بحث التفاعل
-  fetch(`${scriptURL}?action=getRowByName&sheet=Reaction&class=${searchClass}&name=${encodeURIComponent(searchName)}`)
-    .then(res=>res.json())
-    .then(data=>{
-      const box = document.getElementById("reactionReportDisplay");
-      box.innerHTML = "";
+  Promise.all([
+    fetch(`${scriptURL}?action=getRowByName&sheet=Reaction&class=${searchClass}&name=${encodeURIComponent(searchName)}`).then(res=>res.json()),
+    fetch(`${scriptURL}?action=getRowByName&sheet=Behavior&class=${searchClass}&name=${encodeURIComponent(searchName)}`).then(res=>res.json())
+  ]).then(([reactionData, behaviorData])=>{
+    const box = document.getElementById("reactionReportDisplay");
+    box.innerHTML = "";
 
-      const table = document.createElement("table");
-      table.style.width="100%";
-      table.style.borderCollapse="collapse";
+    const table = document.createElement("table");
+    table.style.width="100%";
+    table.style.borderCollapse="collapse";
 
-      const header = document.createElement("tr");
-      ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
-        .forEach(h=>{
-          const th=document.createElement("th");
-          th.textContent=h;
-          th.style.border="1px solid #ccc";
-          th.style.padding="6px";
-          header.appendChild(th);
-        });
-      table.appendChild(header);
-
-      if(data.found){
-        const tr=document.createElement("tr");
-        data.row.forEach(val=>{
-          const td=document.createElement("td");
-          td.textContent=val || "-";
-          td.style.border="1px solid #ccc";
-          td.style.padding="6px";
-          tr.appendChild(td);
-        });
-        table.appendChild(tr);
-      }
-
-      const title=document.createElement("h4");
-      title.textContent="📊 جدول التفاعل";
-      box.appendChild(title);
-      box.appendChild(table);
+    // الهيدر
+    const header = document.createElement("tr");
+    ["الاسم","الفرقة",
+     "تفاعل - الأسبوع 1","تفاعل - الأسبوع 2","تفاعل - الأسبوع 3","تفاعل - الأسبوع 4","تفاعل - الأسبوع 5","تفاعل - الأسبوع 6","تفاعل - الأسبوع 7","تفاعل - الأسبوع 8","تفاعل - الأسبوع 9","تفاعل - الأسبوع 10",
+     "سلوك - الأسبوع 1","سلوك - الأسبوع 2","سلوك - الأسبوع 3","سلوك - الأسبوع 4","سلوك - الأسبوع 5","سلوك - الأسبوع 6","سلوك - الأسبوع 7","سلوك - الأسبوع 8","سلوك - الأسبوع 9","سلوك - الأسبوع 10"
+    ].forEach(h=>{
+      const th=document.createElement("th");
+      th.textContent=h;
+      th.style.border="1px solid #ccc";
+      th.style.padding="6px";
+      header.appendChild(th);
     });
+    table.appendChild(header);
 
-  // بحث السلوك
-  fetch(`${scriptURL}?action=getRowByName&sheet=Behavior&class=${searchClass}&name=${encodeURIComponent(searchName)}`)
-    .then(res=>res.json())
-    .then(data=>{
-      const box = document.getElementById("reactionReportDisplay");
+    // الصف
+    const tr=document.createElement("tr");
+    // الاسم والفرقة من أي واحد (التفاعل مثلاً)
+    if(reactionData.found){
+      tr.appendChild(createCell(reactionData.row[0]));
+      tr.appendChild(createCell(reactionData.row[1]));
+    } else if(behaviorData.found){
+      tr.appendChild(createCell(behaviorData.row[0]));
+      tr.appendChild(createCell(behaviorData.row[1]));
+    } else {
+      showToast("❌ الاسم غير موجود","error");
+      return;
+    }
 
-      const table = document.createElement("table");
-      table.style.width="100%";
-      table.style.borderCollapse="collapse";
+    // درجات التفاعل
+    if(reactionData.found){
+      reactionData.row.slice(2).forEach(val=>tr.appendChild(createCell(val)));
+    } else {
+      for(let i=0;i<10;i++) tr.appendChild(createCell("-"));
+    }
 
-      const header = document.createElement("tr");
-      ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
-        .forEach(h=>{
-          const th=document.createElement("th");
-          th.textContent=h;
-          th.style.border="1px solid #ccc";
-          th.style.padding="6px";
-          header.appendChild(th);
-        });
-      table.appendChild(header);
+    // درجات السلوك
+    if(behaviorData.found){
+      behaviorData.row.slice(2).forEach(val=>tr.appendChild(createCell(val)));
+    } else {
+      for(let i=0;i<10;i++) tr.appendChild(createCell("-"));
+    }
 
-      if(data.found){
-        const tr=document.createElement("tr");
-        data.row.forEach(val=>{
-          const td=document.createElement("td");
-          td.textContent=val || "-";
-          td.style.border="1px solid #ccc";
-          td.style.padding="6px";
-          tr.appendChild(td);
-        });
-        table.appendChild(tr);
-      }
+    table.appendChild(tr);
+    box.appendChild(table);
+  });
+}
 
-      const title=document.createElement("h4");
-      title.textContent="📊 جدول السلوك";
-      box.appendChild(title);
-      box.appendChild(table);
-    });
+// helper لإنشاء خلية
+function createCell(text){
+  const td=document.createElement("td");
+  td.textContent=text || "-";
+  td.style.border="1px solid #ccc";
+  td.style.padding="6px";
+  return td;
 }
 
   function updateReactionScore(){
