@@ -1647,47 +1647,33 @@ function searchBoth(){
 
     // الهيدر
     const header = document.createElement("tr");
-    ["الاسم","الفرقة",
-     "تفاعل - الأسبوع 1","تفاعل - الأسبوع 2","تفاعل - الأسبوع 3","تفاعل - الأسبوع 4","تفاعل - الأسبوع 5","تفاعل - الأسبوع 6","تفاعل - الأسبوع 7","تفاعل - الأسبوع 8","تفاعل - الأسبوع 9","تفاعل - الأسبوع 10",
-     "سلوك - الأسبوع 1","سلوك - الأسبوع 2","سلوك - الأسبوع 3","سلوك - الأسبوع 4","سلوك - الأسبوع 5","سلوك - الأسبوع 6","سلوك - الأسبوع 7","سلوك - الأسبوع 8","سلوك - الأسبوع 9","سلوك - الأسبوع 10"
-    ].forEach(h=>{
-      const th=document.createElement("th");
-      th.textContent=h;
-      th.style.border="1px solid #ccc";
-      th.style.padding="6px";
-      header.appendChild(th);
-    });
+    header.appendChild(createCell("الاسم"));
+    header.appendChild(createCell("الفرقة"));
+    for(let i=1;i<=10;i++){
+      header.appendChild(createCell("الأسبوع " + i));
+    }
     table.appendChild(header);
 
-    // الصف
-    const tr=document.createElement("tr");
-    // الاسم والفرقة من أي واحد (التفاعل مثلاً)
-    if(reactionData.found){
-      tr.appendChild(createCell(reactionData.row[0]));
-      tr.appendChild(createCell(reactionData.row[1]));
-    } else if(behaviorData.found){
-      tr.appendChild(createCell(behaviorData.row[0]));
-      tr.appendChild(createCell(behaviorData.row[1]));
-    } else {
-      showToast("❌ الاسم غير موجود","error");
-      return;
-    }
-
-    // درجات التفاعل
-    if(reactionData.found){
-      reactionData.row.slice(2).forEach(val=>tr.appendChild(createCell(val)));
-    } else {
-      for(let i=0;i<10;i++) tr.appendChild(createCell("-"));
-    }
-
-    // درجات السلوك
+    // صف السلوك
     if(behaviorData.found){
-      behaviorData.row.slice(2).forEach(val=>tr.appendChild(createCell(val)));
-    } else {
-      for(let i=0;i<10;i++) tr.appendChild(createCell("-"));
+      const trBehavior=document.createElement("tr");
+      trBehavior.style.backgroundColor="#fce4ec"; // لون وردي فاتح للسلوك
+      trBehavior.appendChild(createCell(behaviorData.row[0]));
+      trBehavior.appendChild(createCell(behaviorData.row[1]));
+      behaviorData.row.slice(2).forEach(val=>trBehavior.appendChild(createCell(val)));
+      table.appendChild(trBehavior);
     }
 
-    table.appendChild(tr);
+    // صف التفاعل
+    if(reactionData.found){
+      const trReaction=document.createElement("tr");
+      trReaction.style.backgroundColor="#e3f2fd"; // لون أزرق فاتح للتفاعل
+      trReaction.appendChild(createCell(reactionData.row[0]));
+      trReaction.appendChild(createCell(reactionData.row[1]));
+      reactionData.row.slice(2).forEach(val=>trReaction.appendChild(createCell(val)));
+      table.appendChild(trReaction);
+    }
+
     box.appendChild(table);
   });
 }
