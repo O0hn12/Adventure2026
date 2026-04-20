@@ -1655,30 +1655,33 @@ function searchBoth(){
     table.appendChild(header);
 
     // صف السلوك
+    const trBehavior=document.createElement("tr");
+    trBehavior.style.backgroundColor="#fce4ec"; // وردي فاتح
+    trBehavior.appendChild(createCell(behaviorData.found ? behaviorData.row[0] : searchName));
+    trBehavior.appendChild(createCell(behaviorData.found ? behaviorData.row[1] : searchClass));
     if(behaviorData.found){
-      const trBehavior=document.createElement("tr");
-      trBehavior.style.backgroundColor="#fce4ec"; // لون وردي فاتح للسلوك
-      trBehavior.appendChild(createCell(behaviorData.row[0]));
-      trBehavior.appendChild(createCell(behaviorData.row[1]));
       behaviorData.row.slice(2).forEach(val=>trBehavior.appendChild(createCell(val)));
-      table.appendChild(trBehavior);
+    } else {
+      for(let i=0;i<10;i++) trBehavior.appendChild(createCell("-"));
     }
+    table.appendChild(trBehavior);
 
     // صف التفاعل
+    const trReaction=document.createElement("tr");
+    trReaction.style.backgroundColor="#e3f2fd"; // أزرق فاتح
+    trReaction.appendChild(createCell(reactionData.found ? reactionData.row[0] : searchName));
+    trReaction.appendChild(createCell(reactionData.found ? reactionData.row[1] : searchClass));
     if(reactionData.found){
-      const trReaction=document.createElement("tr");
-      trReaction.style.backgroundColor="#e3f2fd"; // لون أزرق فاتح للتفاعل
-      trReaction.appendChild(createCell(reactionData.row[0]));
-      trReaction.appendChild(createCell(reactionData.row[1]));
       reactionData.row.slice(2).forEach(val=>trReaction.appendChild(createCell(val)));
-      table.appendChild(trReaction);
+    } else {
+      for(let i=0;i<10;i++) trReaction.appendChild(createCell("-"));
     }
+    table.appendChild(trReaction);
 
     box.appendChild(table);
   });
 }
 
-// helper لإنشاء خلية
 function createCell(text){
   const td=document.createElement("td");
   td.textContent=text || "-";
