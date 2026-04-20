@@ -563,7 +563,16 @@
   <button class="main-btn btn-homework" onclick="updateScore()">💾 تعديل</button>
 </div>
 </section>
-    <section id="grades"><h2>الدرجات</h2><p>عرض تقارير الدرجات.</p></section>
+    <section id="grades"><h2>الدرجات</h2>
+      <h3>📊 درجات الطالب</h3>
+<select id="gradeClass" class="select-box">...</select>
+<input type="text" id="gradeNameInput" class="input-box" placeholder="اكتب الاسم">
+<div id="gradeSuggestions" class="suggestions-box"></div>
+<button onclick="showStudentGrades()" class="main-btn">📋 عرض الدرجات</button>
+
+<div id="studentGradesDisplay"></div>
+
+    </section>
     <section id="reaction" style="display:none;max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
 
   <h2 style="color:#9C27B0;margin-bottom:20px;">🎭 التفاعل</h2>
@@ -2042,6 +2051,26 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
       box.appendChild(table);
     });
 }
+
+  function showStudentGrades() {
+  const classSelected = document.getElementById("gradeClass").value;
+  const studentName = document.getElementById("gradeNameInput").value;
+
+  // هنا تعمل fetch من Google Script أو API يجيب الدرجات من ورقة الدرجات
+  google.script.run.withSuccessHandler(function(data) {
+    document.getElementById("studentGradesDisplay").innerHTML = `
+      <table>
+        <tr><th>الحضور</th><td>${data.attendance}</td></tr>
+        <tr><th>الواجب</th><td>${data.homework}</td></tr>
+        <tr><th>التفاعل</th><td>${data.reaction}</td></tr>
+        <tr><th>السلوك</th><td>${data.behavior}</td></tr>
+        <tr><th>الماينص</th><td>${data.minus}</td></tr>
+        <tr><th>المجموع الكلي</th><td>${data.total}</td></tr>
+      </table>
+    `;
+  }).getStudentGrades(classSelected, studentName);
+}
+
 </script>
 </body>
 </html>
