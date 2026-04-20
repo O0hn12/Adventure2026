@@ -623,7 +623,17 @@
 
   <!-- مربع البحث -->
   <h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
-  <select id="reactionSearchClass" class="select-box">...</select>
+  <select id="reactionSearchClass" class="select-box">
+    
+    <option value="">-- اختر الفرقة --</option>
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+    
+  </select>
   <input type="text" id="reactionSearchInput" class="input-box" placeholder="ابحث بالاسم">
   <div id="reactionSearchSuggestions" class="suggestions-box"></div>
   <button onclick="searchReaction()" class="main-btn btn-reaction">🔍 بحث</button>
@@ -632,8 +642,32 @@
   <!-- مربع تعديل للأدمن -->
   <div id="adminEditBoxReaction" class="admin-box">
     <h3>✏️ تعديل بيانات التفاعل</h3>
-    <select id="editClassReaction" class="select-box">...</select>
-    <select id="editWeekReaction" class="select-box">...</select>
+    <select id="editClassReaction" class="select-box">
+      <option value="">-- اختر الفرقة --</option>
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+      
+    </select>
+    
+    <select id="editWeekReaction" class="select-box">
+      
+      <option value="">اختر الأسبوع</option>
+  <option value="C">الأسبوع 1</option>
+  <option value="D">الأسبوع 2</option>
+  <option value="E">الأسبوع 3</option>
+  <option value="F">الأسبوع 4</option>
+  <option value="G">الأسبوع 5</option>
+  <option value="H">الأسبوع 6</option>
+  <option value="I">الأسبوع 7</option>
+  <option value="J">الأسبوع 8</option>
+  <option value="K">الأسبوع 9</option>
+  <option value="L">الأسبوع 10</option>
+      
+    </select>
     <input type="text" id="editNameReaction" class="input-box" placeholder="الاسم">
     <div id="editSuggestionsReaction" class="suggestions-box"></div>
     <input type="number" id="editScoreReaction" class="input-box" placeholder="الدرجة">
@@ -642,8 +676,32 @@
 
   <div id="adminEditBoxBehavior" class="admin-box">
     <h3>✏️ تعديل بيانات السلوك</h3>
-    <select id="editClassBehavior" class="select-box">...</select>
-    <select id="editWeekBehavior" class="select-box">...</select>
+    <select id="editClassBehavior" class="select-box">
+    <option value="">-- اختر الفرقة --</option>
+      
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+      
+    </select>
+    <select id="editWeekBehavior" class="select-box">
+      
+    <option value="">اختر الأسبوع</option>
+  <option value="C">الأسبوع 1</option>
+  <option value="D">الأسبوع 2</option>
+  <option value="E">الأسبوع 3</option>
+  <option value="F">الأسبوع 4</option>
+  <option value="G">الأسبوع 5</option>
+  <option value="H">الأسبوع 6</option>
+  <option value="I">الأسبوع 7</option>
+  <option value="J">الأسبوع 8</option>
+  <option value="K">الأسبوع 9</option>
+  <option value="L">الأسبوع 10</option>  
+      
+    </select>
     <input type="text" id="editNameBehavior" class="input-box" placeholder="الاسم">
     <div id="editSuggestionsBehavior" class="suggestions-box"></div>
     <input type="number" id="editScoreBehavior" class="input-box" placeholder="الدرجة">
@@ -1703,6 +1761,54 @@ document.getElementById("behaviorClassSelect").addEventListener("change",checkBe
     }
   });
 }
+
+  document.getElementById("reactionSearchInput").addEventListener("input", function(){
+  const value = this.value.toLowerCase();
+  const box = document.getElementById("reactionSearchSuggestions");
+  box.innerHTML = "";
+  const filtered = reactionNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
+  filtered.forEach(name=>{
+    const div=document.createElement("div");
+    div.textContent=name;
+    div.onclick=()=>{
+      document.getElementById("reactionSearchInput").value=name;
+      box.innerHTML="";
+    };
+    box.appendChild(div);
+  });
+});
+
+  document.getElementById("editNameReaction").addEventListener("input", function(){
+  const value = this.value.toLowerCase();
+  const box = document.getElementById("editSuggestionsReaction");
+  box.innerHTML = "";
+  const filtered = reactionNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
+  filtered.forEach(name=>{
+    const div=document.createElement("div");
+    div.textContent=name;
+    div.onclick=()=>{
+      document.getElementById("editNameReaction").value=name;
+      box.innerHTML="";
+    };
+    box.appendChild(div);
+  });
+});
+
+  document.getElementById("editNameBehavior").addEventListener("input", function(){
+  const value = this.value.toLowerCase();
+  const box = document.getElementById("editSuggestionsBehavior");
+  box.innerHTML = "";
+  const filtered = behaviorNames.filter(n=>n.toLowerCase().includes(value)).slice(0,5);
+  filtered.forEach(name=>{
+    const div=document.createElement("div");
+    div.textContent=name;
+    div.onclick=()=>{
+      document.getElementById("editNameBehavior").value=name;
+      box.innerHTML="";
+    };
+    box.appendChild(div);
+  });
+});
 
 </script>
 </body>
