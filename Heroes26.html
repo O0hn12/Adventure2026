@@ -565,7 +565,17 @@
 </section>
     <section id="grades"><h2>الدرجات</h2>
       <h3>📊 درجات الطالب</h3>
-<select id="gradeClass" class="select-box">...</select>
+<select id="gradeClass" class="select-box">
+  
+  <option value="">-- اختر الفرقة --</option>
+  <option value="1ب">1ب</option>
+  <option value="2ب">2ب</option>
+  <option value="3ب">3ب</option>
+  <option value="4ب">4ب</option>
+  <option value="5ب">5ب</option>
+  <option value="6ب">6ب</option>
+
+</select>
 <input type="text" id="gradeNameInput" class="input-box" placeholder="اكتب الاسم">
 <div id="gradeSuggestions" class="suggestions-box"></div>
 <button onclick="showStudentGrades()" class="main-btn">📋 عرض الدرجات</button>
