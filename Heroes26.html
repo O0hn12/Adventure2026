@@ -193,6 +193,11 @@
   }
 }
 
+    .table-container {
+  max-height: 300px;   /* الطول اللي يناسب الموبايل */
+  overflow-y: auto;    /* يخلي فيه scroll عمودي */
+  margin-top: 10px;
+}
     .table-report {
   width: 100%;
   border-collapse: collapse;
@@ -1625,7 +1630,8 @@ document.getElementById("reactionNameInput").addEventListener("input", function(
 
       const box = document.getElementById("reactionSearchDisplay"); // مكان البحث فقط
       box.innerHTML = "";
-
+      const container = document.createElement("div");
+      container.className = "table-container";
       const table = document.createElement("table");
       table.className = "table-report"; // استخدم الكلاس الموحد
 
@@ -1918,7 +1924,8 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
         showToast("❌ الاسم غير موجود في السلوك","error");
         return;
       }
-
+      const container = document.createElement("div");
+      container.className = "table-container";
       const table = document.createElement("table");
       table.className = "table-report";
 
