@@ -1480,55 +1480,6 @@ document.getElementById("reactionNameInput").addEventListener("input", function(
   });
 });
 
-// إدخال تفاعل/سلوك
-function submitReaction(){
-  const name = document.getElementById("reactionNameInput").value.trim();
-  const score = Number(document.getElementById("reactionScore").value);
-  const week = document.getElementById("reactionWeekSelect").value;
-
-  if(!reactionNames.includes(name)){
-    showToast("❌ اختار اسم من الاقتراحات","error");
-    return;
-  }
-  if(score < 0){
-    showToast("❌ الدرجة لازم تكون موجبة","error");
-    return;
-  }
-  if(!week){
-    showToast("❌ اختار الأسبوع","warning");
-    return;
-  }
-
-  showToast("⏳ برجاء الانتظار...", "warning");
-
-  fetch(scriptURL,{
-    method:'POST',
-    body:JSON.stringify({
-      action: "addReaction",
-      name,
-      number: score,
-      sheet: "Reaction",
-      week: week,
-      className: reactionClass,
-      isAdmin: ADMINS.includes(currentUser),
-      apiKey: API_KEY
-    }),
-    headers:{'Content-Type':'application/json'}
-  })
-  .then(res=>res.json())
-  .then(res=>{
-    if(res.success){
-      showToast(res.message || "✅ تم الإدخال بنجاح!","success");
-      document.getElementById("reactionNameInput").value = "";
-      document.getElementById("reactionScore").value = "";
-      document.getElementById("reactionSuggestions").innerHTML = "";
-      document.getElementById("reactionSubmitBtn").disabled = true;
-    } else {
-      showToast(res.message || "❌ لا يمكن الحفظ","error");
-    }
-  });
-}
-
   function searchReaction(){
   const searchClass = document.getElementById("reactionSearchClass").value;
   const searchName = document.getElementById("reactionSearchInput").value.trim();
