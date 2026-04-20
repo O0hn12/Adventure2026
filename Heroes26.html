@@ -193,9 +193,13 @@
   }
 }
 
-    .table-container {
-  max-height: 300px;   /* الطول اللي يناسب الموبايل */
-  overflow-y: auto;    /* يخلي فيه scroll عمودي */
+    .table-container-horizontal {
+  overflow-x: auto;   /* يخلي فيه scroll أفقي */
+  margin-top: 10px;
+}
+    .table-container-vertical {
+  max-height: 300px;  /* الطول المناسب */
+  overflow-y: auto;   /* يخلي فيه scroll عمودي */
   margin-top: 10px;
 }
     .table-report {
@@ -1631,7 +1635,7 @@ document.getElementById("reactionNameInput").addEventListener("input", function(
       const box = document.getElementById("reactionSearchDisplay"); // مكان البحث فقط
       box.innerHTML = "";
       const container = document.createElement("div");
-      container.className = "table-container";
+      container.className = "table-container-horizontal";
       const table = document.createElement("table");
       table.className = "table-report"; // استخدم الكلاس الموحد
 
@@ -1925,7 +1929,7 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
         return;
       }
       const container = document.createElement("div");
-      container.className = "table-container";
+      container.className = "table-container-horizontal";
       const table = document.createElement("table");
       table.className = "table-report";
 
@@ -1971,7 +1975,8 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
     .then(data=>{
       const box = document.getElementById("reactionReportDisplay");
       box.innerHTML = "<h4>📋 أسماء التفاعل</h4>";
-
+      const container = document.createElement("div");
+      container.className = "table-container-vertical";
       const table = document.createElement("table");
       table.className = "table-report";
 
@@ -2010,7 +2015,8 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
     .then(data=>{
       const box = document.getElementById("behaviorReportDisplay");
       box.innerHTML = "<h4>📋 أسماء السلوك</h4>";
-
+      const container = document.createElement("div");
+      container.className = "table-container-vertical";
       // إنشاء جدول بنفس ستايل الجداول
       const table = document.createElement("table");
       table.className = "table-report"; // استخدم الكلاس اللي عملناه في الـ CSS
