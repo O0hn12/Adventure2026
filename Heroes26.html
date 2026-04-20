@@ -667,8 +667,8 @@
   <button onclick="searchBehavior()" class="main-btn btn-behavior">🔍 بحث السلوك</button>
 </div>
 
-<div id="reactionReportDisplay"></div>
-<div id="behaviorReportDisplay"></div>
+<div id="reactionSearchDisplay"></div>
+<div id="behaviorSearchDisplay"></div>
 
   <!-- مربع تعديل للأدمن -->
   <div id="adminEditBoxReaction" class="admin-box">
@@ -779,9 +779,9 @@
   </div>
 
   <div id="reactionCountDisplay"></div>
-  <div id="reactionReportDisplay"></div>
-  <div id="behaviorCountDisplay"></div>
-  <div id="behaviorReportDisplay"></div>
+<div id="reactionReportDisplay"></div>
+<div id="behaviorCountDisplay"></div>
+<div id="behaviorReportDisplay"></div>
 </div>
 
 </section>
@@ -1621,48 +1621,32 @@ document.getElementById("reactionNameInput").addEventListener("input", function(
         return;
       }
 
-      const box = document.getElementById("reactionReportDisplay");
+      const box = document.getElementById("reactionSearchDisplay"); // مكان البحث فقط
       box.innerHTML = "";
 
       const table = document.createElement("table");
-table.className = "table-report";
+      table.className = "table-report"; // استخدم الكلاس الموحد
 
+      // الهيدر
       const header = document.createElement("tr");
       ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
         .forEach(h=>{
           const th=document.createElement("th");
           th.textContent=h;
-          th.style.border="1px solid #ccc";
-          th.style.padding="6px";
           header.appendChild(th);
         });
       table.appendChild(header);
 
+      // الصف
       const tr=document.createElement("tr");
       data.row.forEach(val=>{
         const td=document.createElement("td");
         td.textContent=val || "-";
-        td.style.border="1px solid #ccc";
-        td.style.padding="6px";
         tr.appendChild(td);
       });
       table.appendChild(tr);
 
       box.appendChild(table);
-    });
-}
-
-  function showReactionCount(){
-  const week = document.getElementById("reactionWeekSelect").value;
-  if(!week){
-    showToast("❌ اختار الأسبوع","error");
-    return;
-  }
-
-  fetch(`${scriptURL}?action=getWeekCount&sheet=Reaction&class=${reactionClass}&week=${week}`)
-    .then(res=>res.json())
-    .then(data=>{
-      document.getElementById("reactionReportDisplay").innerText = "👥 العدد: " + data.count;
     });
 }
 
@@ -1914,7 +1898,6 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
 }
 
   function searchBehavior(){
-  // ياخد نفس الفرقة والاسم اللي اتحددوا في بحث التفاعل
   const searchClass = document.getElementById("reactionSearchClass").value;
   const searchName = document.getElementById("reactionSearchInput").value.trim();
 
@@ -1926,7 +1909,7 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
   fetch(`${scriptURL}?action=getRowByName&sheet=Behavior&class=${searchClass}&name=${encodeURIComponent(searchName)}`)
     .then(res=>res.json())
     .then(data=>{
-      const box = document.getElementById("behaviorReportDisplay");
+      const box = document.getElementById("behaviorSearchDisplay");
       box.innerHTML = "";
 
       if(!data.found){
@@ -1935,15 +1918,13 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
       }
 
       const table = document.createElement("table");
-table.className = "table-report";
+      table.className = "table-report";
 
       const header = document.createElement("tr");
       ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
         .forEach(h=>{
           const th=document.createElement("th");
           th.textContent=h;
-          th.style.border="1px solid #ccc";
-          th.style.padding="6px";
           header.appendChild(th);
         });
       table.appendChild(header);
@@ -1952,8 +1933,6 @@ table.className = "table-report";
       data.row.forEach(val=>{
         const td=document.createElement("td");
         td.textContent=val || "-";
-        td.style.border="1px solid #ccc";
-        td.style.padding="6px";
         tr.appendChild(td);
       });
       table.appendChild(tr);
