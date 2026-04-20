@@ -1983,9 +1983,21 @@ table.className = "table-report";
     .then(data=>{
       const box = document.getElementById("reactionReportDisplay");
       box.innerHTML = "<h4>📋 أسماء التفاعل</h4>";
+
+      const table = document.createElement("table");
+      table.className = "table-report";
+
+      const header = document.createElement("tr");
+      header.innerHTML = "<th>الاسم</th><th>الدرجة</th>";
+      table.appendChild(header);
+
       data.students.forEach(s=>{
-        box.innerHTML += `<div>${s.name} - ${s.score}</div>`;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${s.name}</td><td>${s.score}</td>`;
+        table.appendChild(tr);
       });
+
+      box.appendChild(table);
     });
 }
 
@@ -2010,13 +2022,32 @@ table.className = "table-report";
     .then(data=>{
       const box = document.getElementById("behaviorReportDisplay");
       box.innerHTML = "<h4>📋 أسماء السلوك</h4>";
-      data.students.forEach(s=>{
-        box.innerHTML += `<div>${s.name} - ${s.score}</div>`;
-      });
+
+      // إنشاء جدول بنفس ستايل الجداول
+      const table = document.createElement("table");
+      table.className = "table-report"; // استخدم الكلاس اللي عملناه في الـ CSS
+
+      // الهيدر
+      const header = document.createElement("tr");
+      header.innerHTML = "<th>الاسم</th><th>الدرجة</th>";
+      table.appendChild(header);
+
+      // الصفوف
+      if(data.students && data.students.length > 0){
+        data.students.forEach(s=>{
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${s.name}</td><td>${s.score}</td>`;
+          table.appendChild(tr);
+        });
+      } else {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="2">لا يوجد بيانات</td>`;
+        table.appendChild(tr);
+      }
+
+      box.appendChild(table);
     });
 }
-
-
 </script>
 </body>
 </html>
