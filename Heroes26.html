@@ -710,8 +710,32 @@
 
       <div id="adminReportReaction" class="admin-box">
   <h3>👥 تقرير التفاعل</h3>
-  <select id="reportClassReaction" class="select-box">...</select>
-  <select id="reportWeekReaction" class="select-box">...</select>
+  <select id="reportClassReaction" class="select-box">
+
+<option value="">-- اختر الفرقة --</option>
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+    
+  </select>
+  <select id="reportWeekReaction" class="select-box">
+
+<option value="">اختر الأسبوع</option>
+  <option value="C">الأسبوع 1</option>
+  <option value="D">الأسبوع 2</option>
+  <option value="E">الأسبوع 3</option>
+  <option value="F">الأسبوع 4</option>
+  <option value="G">الأسبوع 5</option>
+  <option value="H">الأسبوع 6</option>
+  <option value="I">الأسبوع 7</option>
+  <option value="J">الأسبوع 8</option>
+  <option value="K">الأسبوع 9</option>
+  <option value="L">الأسبوع 10</option>
+    
+  </select>
   <button onclick="showReactionCount()" class="main-btn btn-reaction">👥 عرض العدد</button>
   <div id="reactionCountDisplay"></div>
   <button onclick="showReactionReport()" class="main-btn btn-reaction">📋 عرض الأسماء</button>
@@ -1649,8 +1673,11 @@ function showReactionReport(){
   .then(res=>res.json())
   .then(res=>{
     if(res.success){
-      showToast("✅ تم التعديل بنجاح","success");
-    } else {
+  showToast("✅ تم التعديل بنجاح","success");
+  document.getElementById("editNameReaction").value = "";
+  document.getElementById("editScoreReaction").value = "";
+  document.getElementById("editSuggestionsReaction").innerHTML = "";
+} else {
       showToast(res.message || "❌ فشل التعديل","error");
     }
   });
@@ -1778,7 +1805,8 @@ document.getElementById("behaviorClassSelect").addEventListener("change",checkBe
   });
 });
 
-  document.getElementById("editNameReaction").addEventListener("input", function(){
+  // اقتراحات تعديل التفاعل
+document.getElementById("editNameReaction").addEventListener("input", function(){
   const value = this.value.toLowerCase();
   const box = document.getElementById("editSuggestionsReaction");
   box.innerHTML = "";
@@ -1794,7 +1822,8 @@ document.getElementById("behaviorClassSelect").addEventListener("change",checkBe
   });
 });
 
-  document.getElementById("editNameBehavior").addEventListener("input", function(){
+// اقتراحات تعديل السلوك
+document.getElementById("editNameBehavior").addEventListener("input", function(){
   const value = this.value.toLowerCase();
   const box = document.getElementById("editSuggestionsBehavior");
   box.innerHTML = "";
@@ -1809,6 +1838,94 @@ document.getElementById("behaviorClassSelect").addEventListener("change",checkBe
     box.appendChild(div);
   });
 });
+
+  function searchBehavior(){
+  const searchClass = document.getElementById("behaviorSearchClass").value;
+  const searchName = document.getElementById("behaviorSearchInput").value.trim();
+
+  if(!searchClass || !searchName){
+    showToast("❌ لازم تختار الفرقة وتكتب اسم","error");
+    return;
+  }
+
+  fetch(`${scriptURL}?action=getRowByName&sheet=Behavior&class=${searchClass}&name=${encodeURIComponent(searchName)}`)
+    .then(res=>res.json())
+    .then(data=>{
+      if(!data.found){
+        showToast("❌ الاسم غير موجود","error");
+        return;
+      }
+
+      const box = document.getElementById("behaviorReportDisplay");
+      box.innerHTML = "";
+
+      const table = document.createElement("table");
+      table.style.width="100%";
+      table.style.borderCollapse="collapse";
+
+      const header = document.createElement("tr");
+      ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
+        .forEach(h=>{
+          const th=document.createElement("th");
+          th.textContent=h;
+          th.style.border="1px solid #ccc";
+          th.style.padding="6px";
+          header.appendChild(th);
+        });
+      table.appendChild(header);
+
+      const tr=document.createElement("tr");
+      data.row.forEach(val=>{
+        const td=document.createElement("td");
+        td.textContent=val || "-";
+        td.style.border="1px solid #ccc";
+        td.style.padding="6px";
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+
+      box.appendChild(table);
+    });
+}
+
+  function updateBehaviorScore(){
+  const name = document.getElementById("editNameBehavior").value.trim();
+  const week = document.getElementById("editWeekBehavior").value;
+  const score = Number(document.getElementById("editScoreBehavior").value);
+  const className = document.getElementById("editClassBehavior").value;
+
+  if(!name || !week || !className){
+    showToast("❌ لازم تدخل كل البيانات","error");
+    return;
+  }
+
+  fetch(scriptURL,{
+    method:'POST',
+    body:JSON.stringify({
+      action: "updateScore",
+      name,
+      week,
+      newScore: score,
+      sheet: "Behavior", // 👈 هنا الفرق
+      className,
+      isAdmin: ADMINS.includes(currentUser),
+      apiKey: API_KEY
+    }),
+    headers:{'Content-Type':'application/json'}
+  })
+  .then(res=>res.json())
+  .then(res=>{
+    if(res.success){
+      showToast("✅ تم التعديل بنجاح","success");
+      // تفريغ المربعات بعد التعديل
+      document.getElementById("editNameBehavior").value = "";
+      document.getElementById("editScoreBehavior").value = "";
+      document.getElementById("editSuggestionsBehavior").innerHTML = "";
+    } else {
+      showToast(res.message || "❌ فشل التعديل","error");
+    }
+  });
+}
 
 </script>
 </body>
