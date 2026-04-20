@@ -192,6 +192,32 @@
     overflow-x:auto;
   }
 }
+
+    .table-report {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table-report th, .table-report td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.table-report th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .table-report th, .table-report td {
+    font-size: 12px;
+    padding: 6px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1599,8 +1625,7 @@ document.getElementById("reactionNameInput").addEventListener("input", function(
       box.innerHTML = "";
 
       const table = document.createElement("table");
-      table.style.width="100%";
-      table.style.borderCollapse="collapse";
+table.className = "table-report";
 
       const header = document.createElement("tr");
       ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
@@ -1910,8 +1935,7 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
       }
 
       const table = document.createElement("table");
-      table.style.width="100%";
-      table.style.borderCollapse="collapse";
+table.className = "table-report";
 
       const header = document.createElement("tr");
       ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
