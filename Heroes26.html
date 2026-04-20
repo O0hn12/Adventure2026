@@ -1625,23 +1625,92 @@ document.getElementById("reactionNameInput").addEventListener("input", function(
     });
 }
 
-function showReactionReport(){
-  const week = document.getElementById("reactionWeekSelect").value;
-  if(!week){
-    showToast("❌ اختار الأسبوع","error");
+function searchBoth(){
+  const searchClass = document.getElementById("reactionSearchClass").value;
+  const searchName = document.getElementById("reactionSearchInput").value.trim();
+
+  if(!searchClass || !searchName){
+    showToast("❌ لازم تختار الفرقة وتكتب اسم","error");
     return;
   }
 
-  fetch(`${scriptURL}?action=getWeekReport&sheet=Reaction&class=${reactionClass}&week=${week}`)
+  // بحث التفاعل
+  fetch(`${scriptURL}?action=getRowByName&sheet=Reaction&class=${searchClass}&name=${encodeURIComponent(searchName)}`)
     .then(res=>res.json())
     .then(data=>{
       const box = document.getElementById("reactionReportDisplay");
       box.innerHTML = "";
-      data.students.forEach(s=>{
-        const div=document.createElement("div");
-        div.textContent = s.name + " - " + s.score;
-        box.appendChild(div);
-      });
+
+      const table = document.createElement("table");
+      table.style.width="100%";
+      table.style.borderCollapse="collapse";
+
+      const header = document.createElement("tr");
+      ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
+        .forEach(h=>{
+          const th=document.createElement("th");
+          th.textContent=h;
+          th.style.border="1px solid #ccc";
+          th.style.padding="6px";
+          header.appendChild(th);
+        });
+      table.appendChild(header);
+
+      if(data.found){
+        const tr=document.createElement("tr");
+        data.row.forEach(val=>{
+          const td=document.createElement("td");
+          td.textContent=val || "-";
+          td.style.border="1px solid #ccc";
+          td.style.padding="6px";
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      }
+
+      const title=document.createElement("h4");
+      title.textContent="📊 جدول التفاعل";
+      box.appendChild(title);
+      box.appendChild(table);
+    });
+
+  // بحث السلوك
+  fetch(`${scriptURL}?action=getRowByName&sheet=Behavior&class=${searchClass}&name=${encodeURIComponent(searchName)}`)
+    .then(res=>res.json())
+    .then(data=>{
+      const box = document.getElementById("reactionReportDisplay");
+
+      const table = document.createElement("table");
+      table.style.width="100%";
+      table.style.borderCollapse="collapse";
+
+      const header = document.createElement("tr");
+      ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
+        .forEach(h=>{
+          const th=document.createElement("th");
+          th.textContent=h;
+          th.style.border="1px solid #ccc";
+          th.style.padding="6px";
+          header.appendChild(th);
+        });
+      table.appendChild(header);
+
+      if(data.found){
+        const tr=document.createElement("tr");
+        data.row.forEach(val=>{
+          const td=document.createElement("td");
+          td.textContent=val || "-";
+          td.style.border="1px solid #ccc";
+          td.style.padding="6px";
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      }
+
+      const title=document.createElement("h4");
+      title.textContent="📊 جدول السلوك";
+      box.appendChild(title);
+      box.appendChild(table);
     });
 }
 
@@ -1789,6 +1858,13 @@ document.getElementById("behaviorClassSelect").addEventListener("change",checkBe
   });
 }
 
+  document.getElementById("reactionSearchClass").addEventListener("change", function(){
+  const searchClass = this.value;
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Reaction&class=${searchClass}`)
+    .then(res => res.json())
+    .then(data => reactionNames = data.names || []);
+});
+
   document.getElementById("reactionSearchInput").addEventListener("input", function(){
   const value = this.value.toLowerCase();
   const box = document.getElementById("reactionSearchSuggestions");
@@ -1838,55 +1914,6 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
     box.appendChild(div);
   });
 });
-
-  function searchBehavior(){
-  const searchClass = document.getElementById("behaviorSearchClass").value;
-  const searchName = document.getElementById("behaviorSearchInput").value.trim();
-
-  if(!searchClass || !searchName){
-    showToast("❌ لازم تختار الفرقة وتكتب اسم","error");
-    return;
-  }
-
-  fetch(`${scriptURL}?action=getRowByName&sheet=Behavior&class=${searchClass}&name=${encodeURIComponent(searchName)}`)
-    .then(res=>res.json())
-    .then(data=>{
-      if(!data.found){
-        showToast("❌ الاسم غير موجود","error");
-        return;
-      }
-
-      const box = document.getElementById("behaviorReportDisplay");
-      box.innerHTML = "";
-
-      const table = document.createElement("table");
-      table.style.width="100%";
-      table.style.borderCollapse="collapse";
-
-      const header = document.createElement("tr");
-      ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
-        .forEach(h=>{
-          const th=document.createElement("th");
-          th.textContent=h;
-          th.style.border="1px solid #ccc";
-          th.style.padding="6px";
-          header.appendChild(th);
-        });
-      table.appendChild(header);
-
-      const tr=document.createElement("tr");
-      data.row.forEach(val=>{
-        const td=document.createElement("td");
-        td.textContent=val || "-";
-        td.style.border="1px solid #ccc";
-        td.style.padding="6px";
-        tr.appendChild(td);
-      });
-      table.appendChild(tr);
-
-      box.appendChild(table);
-    });
-}
 
   function updateBehaviorScore(){
   const name = document.getElementById("editNameBehavior").value.trim();
