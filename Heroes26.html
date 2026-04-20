@@ -1955,6 +1955,111 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
   });
 }
 
+  function searchBehavior(){
+  const searchClass = document.getElementById("behaviorSearchClass").value;
+  const searchName = document.getElementById("behaviorSearchInput").value.trim();
+
+  if(!searchClass || !searchName){
+    showToast("❌ لازم تختار الفرقة وتكتب اسم","error");
+    return;
+  }
+
+  fetch(`${scriptURL}?action=getRowByName&sheet=Behavior&class=${searchClass}&name=${encodeURIComponent(searchName)}`)
+    .then(res=>res.json())
+    .then(data=>{
+      const box = document.getElementById("behaviorReportDisplay");
+      box.innerHTML = "";
+
+      if(!data.found){
+        showToast("❌ الاسم غير موجود","error");
+        return;
+      }
+
+      const table = document.createElement("table");
+      table.style.width="100%";
+      table.style.borderCollapse="collapse";
+
+      const header = document.createElement("tr");
+      ["الاسم","الفرقة","الأسبوع 1","الأسبوع 2","الأسبوع 3","الأسبوع 4","الأسبوع 5","الأسبوع 6","الأسبوع 7","الأسبوع 8","الأسبوع 9","الأسبوع 10"]
+        .forEach(h=>{
+          const th=document.createElement("th");
+          th.textContent=h;
+          th.style.border="1px solid #ccc";
+          th.style.padding="6px";
+          header.appendChild(th);
+        });
+      table.appendChild(header);
+
+      const tr=document.createElement("tr");
+      data.row.forEach(val=>{
+        const td=document.createElement("td");
+        td.textContent=val || "-";
+        td.style.border="1px solid #ccc";
+        td.style.padding="6px";
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+
+      box.appendChild(table);
+    });
+}
+
+
+  function showReactionCount(){
+  const cls = document.getElementById("reportClassReaction").value;
+  const week = document.getElementById("reportWeekReaction").value;
+
+  fetch(`${scriptURL}?action=getWeekCount&sheet=Reaction&class=${cls}&week=${week}`)
+    .then(res=>res.json())
+    .then(data=>{
+      document.getElementById("reactionCountDisplay").innerHTML =
+        `👥 عدد التفاعل في الأسبوع ${week}: ${data.count}`;
+    });
+}
+
+  function showReactionReport(){
+  const cls = document.getElementById("reportClassReaction").value;
+  const week = document.getElementById("reportWeekReaction").value;
+
+  fetch(`${scriptURL}?action=getWeekReport&sheet=Reaction&class=${cls}&week=${week}`)
+    .then(res=>res.json())
+    .then(data=>{
+      const box = document.getElementById("reactionReportDisplay");
+      box.innerHTML = "<h4>📋 أسماء التفاعل</h4>";
+      data.students.forEach(s=>{
+        box.innerHTML += `<div>${s.name} - ${s.score}</div>`;
+      });
+    });
+}
+
+  function showBehaviorCount(){
+  const cls = document.getElementById("reportClassReaction").value;
+  const week = document.getElementById("reportWeekReaction").value;
+
+  fetch(`${scriptURL}?action=getWeekCount&sheet=Behavior&class=${cls}&week=${week}`)
+    .then(res=>res.json())
+    .then(data=>{
+      document.getElementById("behaviorCountDisplay").innerHTML =
+        `👥 عدد السلوك في الأسبوع ${week}: ${data.count}`;
+    });
+}
+
+  function showBehaviorReport(){
+  const cls = document.getElementById("reportClassReaction").value;
+  const week = document.getElementById("reportWeekReaction").value;
+
+  fetch(`${scriptURL}?action=getWeekReport&sheet=Behavior&class=${cls}&week=${week}`)
+    .then(res=>res.json())
+    .then(data=>{
+      const box = document.getElementById("behaviorReportDisplay");
+      box.innerHTML = "<h4>📋 أسماء السلوك</h4>";
+      data.students.forEach(s=>{
+        box.innerHTML += `<div>${s.name} - ${s.score}</div>`;
+      });
+    });
+}
+
+
 </script>
 </body>
 </html>
