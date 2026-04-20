@@ -762,7 +762,7 @@ function showToast(message,type="success"){
   toast.innerText=message;
   document.body.appendChild(toast);
   setTimeout(()=>{toast.classList.add("show");},100);
-  setTimeout(()=>{toast.remove();},1500);
+  setTimeout(()=>{toast.remove();},4000);
 }
 
 // ✅ تحميل الأسماء مرة واحدة
@@ -1411,10 +1411,10 @@ document.getElementById("editNameHomework").addEventListener("input", function()
     return;
   }
 
-  if(score < 0){
-    showToast("❌ الدرجة لازم تكون موجبة","error");
-    return;
-  }
+  if(score < 0 || score > 10){
+  showToast("❌ الدرجة لازم تكون بين 0 و 10","error");
+  return;
+}
 
   if(!week){
     showToast("❌ اختار الأسبوع","warning");
