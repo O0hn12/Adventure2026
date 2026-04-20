@@ -1638,6 +1638,8 @@ function searchBoth(){
     fetch(`${scriptURL}?action=getRowByName&sheet=Reaction&class=${searchClass}&name=${encodeURIComponent(searchName)}`).then(res=>res.json()),
     fetch(`${scriptURL}?action=getRowByName&sheet=Behavior&class=${searchClass}&name=${encodeURIComponent(searchName)}`).then(res=>res.json())
   ]).then(([reactionData, behaviorData])=>{
+    console.log("Reaction data:", reactionData);
+    console.log("Behavior data:", behaviorData);
     const box = document.getElementById("reactionReportDisplay");
     box.innerHTML = "";
 
