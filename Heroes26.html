@@ -636,8 +636,13 @@
   </select>
   <input type="text" id="reactionSearchInput" class="input-box" placeholder="ابحث بالاسم">
   <div id="reactionSearchSuggestions" class="suggestions-box"></div>
-  <button onclick="searchReaction()" class="main-btn btn-reaction">🔍 بحث</button>
-  <div id="reactionReportDisplay"></div>
+  <div style="display:flex; gap:10px; margin-top:10px;">
+  <button onclick="searchReaction()" class="main-btn btn-reaction">🔍 بحث التفاعل</button>
+  <button onclick="searchBehavior()" class="main-btn btn-behavior">🔍 بحث السلوك</button>
+</div>
+
+<div id="reactionReportDisplay"></div>
+<div id="behaviorReportDisplay"></div>
 
   <!-- مربع تعديل للأدمن -->
   <div id="adminEditBoxReaction" class="admin-box">
@@ -709,10 +714,10 @@
   </div>
 
       <div id="adminReportReaction" class="admin-box">
-  <h3>👥 تقرير التفاعل</h3>
+  <h3>👥 تقرير التفاعل والسلوك</h3>
   <select id="reportClassReaction" class="select-box">
-
-<option value="">-- اختر الفرقة --</option>
+    
+    <option value="">-- اختر الفرقة --</option>
     <option value="1ب">1ب</option>
     <option value="2ب">2ب</option>
     <option value="3ب">3ب</option>
@@ -736,10 +741,21 @@
   <option value="L">الأسبوع 10</option>
     
   </select>
-  <button onclick="showReactionCount()" class="main-btn btn-reaction">👥 عرض العدد</button>
+
+  <div style="display:flex; gap:10px; margin-top:10px;">
+    <button onclick="showReactionCount()" class="main-btn btn-reaction">👥 عدد التفاعل</button>
+    <button onclick="showReactionReport()" class="main-btn btn-reaction">📋 أسماء التفاعل</button>
+  </div>
+
+  <div style="display:flex; gap:10px; margin-top:10px;">
+    <button onclick="showBehaviorCount()" class="main-btn btn-behavior">👥 عدد السلوك</button>
+    <button onclick="showBehaviorReport()" class="main-btn btn-behavior">📋 أسماء السلوك</button>
+  </div>
+
   <div id="reactionCountDisplay"></div>
-  <button onclick="showReactionReport()" class="main-btn btn-reaction">📋 عرض الأسماء</button>
   <div id="reactionReportDisplay"></div>
+  <div id="behaviorCountDisplay"></div>
+  <div id="behaviorReportDisplay"></div>
 </div>
 
 </section>
@@ -1877,6 +1893,13 @@ document.getElementById("editNameReaction").addEventListener("input", function()
 });
 
 // اقتراحات تعديل السلوك
+document.getElementById("editClassBehavior").addEventListener("change", function(){
+  const className = this.value;
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Behavior&class=${className}`)
+    .then(res=>res.json())
+    .then(data=> behaviorNames = data.names || []);
+});
+
 document.getElementById("editNameBehavior").addEventListener("input", function(){
   const value = this.value.toLowerCase();
   const box = document.getElementById("editSuggestionsBehavior");
