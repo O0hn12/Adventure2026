@@ -2075,35 +2075,50 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
   const classSelected = document.getElementById("gradeClass").value;
   const studentName = document.getElementById("gradeNameInput").value;
 
-  // هنا تعمل fetch من Google Script أو API يجيب الدرجات من ورقة الدرجات
-  google.script.run.withSuccessHandler(function(data) {
-    document.getElementById("studentGradesDisplay").innerHTML = `
-      <table>
-        <tr><th>الحضور</th><td>${data.attendance}</td></tr>
-        <tr><th>الواجب</th><td>${data.homework}</td></tr>
-        <tr><th>التفاعل</th><td>${data.reaction}</td></tr>
-        <tr><th>السلوك</th><td>${data.behavior}</td></tr>
-        <tr><th>الماينص</th><td>${data.minus}</td></tr>
-        <tr><th>المجموع الكلي</th><td>${data.total}</td></tr>
-      </table>
-    `;
-  }).getStudentGrades(classSelected, studentName);
+  fetch(`${scriptURL}?action=getStudentGrades&sheet=Grades&class=${classSelected}&name=${studentName}`)
+    .then(res => res.json())
+    .then(data => {
+      const box = document.getElementById("studentGradesDisplay");
+      box.innerHTML = "<h4>📊 درجات الطالب</h4>";
+
+      const table = document.createElement("table");
+      table.className = "table-report";
+
+      const rows = [
+        ["الحضور", data.attendance],
+        ["الواجب", data.homework],
+        ["التفاعل", data.reaction],
+        ["السلوك", data.behavior],
+        ["الماينص", data.minus],
+        ["المجموع الكلي", data.total]
+      ];
+
+      rows.forEach(r=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<th>${r[0]}</th><td>${r[1]}</td>`;
+        table.appendChild(tr);
+      });
+
+      box.appendChild(table);
+    });
 }
 
   function loadGradeSuggestions(cls, input){
-  google.script.run.withSuccessHandler(function(names){
-    const suggestionsBox = document.getElementById("gradeSuggestions");
-    suggestionsBox.innerHTML = "";
-    names.filter(n => n.includes(input)).forEach(n=>{
-      const div = document.createElement("div");
-      div.textContent = n;
-      div.onclick = ()=>{ 
-        document.getElementById("gradeNameInput").value = n; 
-        suggestionsBox.innerHTML=""; 
-      };
-      suggestionsBox.appendChild(div);
+  fetch(`${scriptURL}?action=getGradeNamesByClass&sheet=Grades&class=${cls}`)
+    .then(res => res.json())
+    .then(names => {
+      const suggestionsBox = document.getElementById("gradeSuggestions");
+      suggestionsBox.innerHTML = "";
+      names.filter(n => n.includes(input)).forEach(n=>{
+        const div = document.createElement("div");
+        div.textContent = n;
+        div.onclick = ()=>{ 
+          document.getElementById("gradeNameInput").value = n; 
+          suggestionsBox.innerHTML=""; 
+        };
+        suggestionsBox.appendChild(div);
+      });
     });
-  }).getGradeNamesByClass(cls);
 }
 
   document.getElementById("gradeNameInput").addEventListener("input", function(){
