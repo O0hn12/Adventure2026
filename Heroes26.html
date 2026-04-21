@@ -241,7 +241,7 @@
   </style>
 </head>
 <body>
-  <header>Heroes Adventure 2026 Attendance</header>
+  <header>Heroes Adventure 2026 System</header>
  <!-- صفحة تسجيل الدخول -->
 <section id="loginSection" class="active" style="max-width:400px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);text-align:center;">
   <h2 style="margin-bottom:20px;color:#1976D2;">🔑 تسجيل الدخول</h2>
@@ -2106,9 +2106,10 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
   function loadGradeSuggestions(cls, input){
   fetch(`${scriptURL}?action=getGradeNamesByClass&sheet=Grades&class=${cls}`)
     .then(res => res.json())
-    .then(names => {
+    .then(result => {
       const suggestionsBox = document.getElementById("gradeSuggestions");
       suggestionsBox.innerHTML = "";
+      const names = result.names || []; // هنا بناخد الـ array من المفتاح names
       names.filter(n => n.includes(input)).forEach(n=>{
         const div = document.createElement("div");
         div.textContent = n;
