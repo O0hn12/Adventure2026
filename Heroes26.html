@@ -2077,7 +2077,8 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
 
   fetch(`${scriptURL}?action=getStudentGrades&sheet=Grades&class=${classSelected}&name=${studentName}`)
     .then(res => res.json())
-    .then(data => {
+    .then(result => {
+      const data = result; // الدالة بترجع object فيه القيم مباشرة
       const box = document.getElementById("studentGradesDisplay");
       box.innerHTML = "<h4>📊 درجات الطالب</h4>";
 
@@ -2104,12 +2105,12 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
 }
 
   function loadGradeSuggestions(cls, input){
-  fetch(`${scriptURL}?action=getGradeNamesByClass&sheet=Grades&class=${cls}`)
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Grades&class=${cls}`)
     .then(res => res.json())
     .then(result => {
       const suggestionsBox = document.getElementById("gradeSuggestions");
       suggestionsBox.innerHTML = "";
-      const names = result.names || []; // هنا بناخد الـ array من المفتاح names
+      const names = result.names || [];
       names.filter(n => n.includes(input)).forEach(n=>{
         const div = document.createElement("div");
         div.textContent = n;
@@ -2121,7 +2122,7 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
       });
     });
 }
-
+  
   document.getElementById("gradeNameInput").addEventListener("input", function(){
   const cls = document.getElementById("gradeClass").value;
   const input = this.value;
