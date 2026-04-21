@@ -2078,12 +2078,17 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
   fetch(`${scriptURL}?action=getStudentGrades&sheet=Grades&class=${classSelected}&name=${studentName}`)
     .then(res => res.json())
     .then(result => {
-      const data = result; // الدالة بترجع object فيه القيم مباشرة
+      const data = result;
       const box = document.getElementById("studentGradesDisplay");
       box.innerHTML = "<h4>📊 درجات الطالب</h4>";
 
       const table = document.createElement("table");
       table.className = "table-report";
+
+      // أول صف للاسم
+      const nameRow = document.createElement("tr");
+      nameRow.innerHTML = `<th>الاسم</th><td>${studentName}</td>`;
+      table.appendChild(nameRow);
 
       const rows = [
         ["الحضور", data.attendance],
@@ -2103,31 +2108,32 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
       box.appendChild(table);
     });
 }
+  
+  let cachedNames = [];
 
-  function loadGradeSuggestions(cls, input){
-  if(!input) { 
-    document.getElementById("gradeSuggestions").innerHTML = ""; 
-    return;
-  }
-
+function loadNamesOnce(cls){
   fetch(`${scriptURL}?action=getStudentNames&sheet=Grades&class=${cls}`)
     .then(res => res.json())
     .then(result => {
-      const suggestionsBox = document.getElementById("gradeSuggestions");
-      suggestionsBox.innerHTML = "";
-      const names = result.names || [];
-      const filtered = names.filter(n => n.includes(input));
-      filtered.forEach(n=>{
-        const div = document.createElement("div");
-        div.textContent = n;
-        div.onclick = ()=>{ 
-          document.getElementById("gradeNameInput").value = n; 
-          suggestionsBox.innerHTML=""; 
-          document.getElementById("gradeNameInput").blur(); // يمنع ظهور الاقتراحات تاني
-        };
-        suggestionsBox.appendChild(div);
-      });
+      cachedNames = result.names || [];
     });
+}
+
+function loadGradeSuggestions(input){
+  const suggestionsBox = document.getElementById("gradeSuggestions");
+  suggestionsBox.innerHTML = "";
+  if(!input) return;
+
+  cachedNames.filter(n => n.includes(input)).forEach(n=>{
+    const div = document.createElement("div");
+    div.textContent = n;
+    div.onclick = ()=>{ 
+      document.getElementById("gradeNameInput").value = n; 
+      suggestionsBox.innerHTML=""; 
+      document.getElementById("gradeNameInput").blur();
+    };
+    suggestionsBox.appendChild(div);
+  });
 }
   
   document.getElementById("gradeNameInput").addEventListener("input", function(){
