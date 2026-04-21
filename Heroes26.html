@@ -2081,6 +2081,22 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
   }).getStudentGrades(classSelected, studentName);
 }
 
+  function loadGradeSuggestions(cls, input){
+  google.script.run.withSuccessHandler(function(names){
+    const suggestionsBox = document.getElementById("gradeSuggestions");
+    suggestionsBox.innerHTML = "";
+    names.filter(n => n.includes(input)).forEach(n=>{
+      const div = document.createElement("div");
+      div.textContent = n;
+      div.onclick = ()=>{ 
+        document.getElementById("gradeNameInput").value = n; 
+        suggestionsBox.innerHTML=""; 
+      };
+      suggestionsBox.appendChild(div);
+    });
+  }).getGradeNamesByClass(cls);
+}
+
 </script>
 </body>
 </html>
