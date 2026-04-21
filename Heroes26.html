@@ -229,6 +229,15 @@
     .btn-behavior {
   color: #9C27B0 !important; /* البنفسجي بتاع التاب */
 }
+    #showGradesBtn {
+  background: linear-gradient(45deg,#2196F3,#64B5F6); /* نفس لون التاب */
+  color: white;              /* لون النص */
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
   </style>
 </head>
 <body>
@@ -578,7 +587,7 @@
 </select>
 <input type="text" id="gradeNameInput" class="input-box" placeholder="اكتب الاسم">
 <div id="gradeSuggestions" class="suggestions-box"></div>
-<button onclick="showStudentGrades()" class="main-btn">📋 عرض الدرجات</button>
+<button id="showGradesBtn" onclick="showStudentGrades()">📋عرض الدرجات</button>
 
 <div id="studentGradesDisplay"></div>
 
@@ -2096,6 +2105,12 @@ document.getElementById("editNameBehavior").addEventListener("input", function()
     });
   }).getGradeNamesByClass(cls);
 }
+
+  document.getElementById("gradeNameInput").addEventListener("input", function(){
+  const cls = document.getElementById("gradeClass").value;
+  const input = this.value;
+  loadGradeSuggestions(cls, input);
+});
 
 </script>
 </body>
