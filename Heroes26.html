@@ -2320,6 +2320,7 @@ document.getElementById("gradeNameInput").addEventListener("input", function(){
     name:name,
     score:score,
     className:selectedClass     // ✅ مهم تبعت الفرقة
+    apiKey:"123456"   // ✅ لازم تبعت المفتاح
   };
   fetch(scriptURL,{
     method:'POST',
