@@ -2324,10 +2324,13 @@ function submitMinus(){
   const score = Number(document.getElementById("minusScore").value);
   const week = document.getElementById("minusWeekSelect").value;
 
-  if(!minusNames.includes(name)){
+  // تحقق من الاسم بعد تنظيفه
+  const cleanName = name.replace(/\s+/g," ").trim();
+  if(!minusNames.some(n => n.replace(/\s+/g," ").trim() === cleanName)){
     showToast("❌ اختار اسم من الاقتراحات","error");
     return;
   }
+
   if(score > 0){
     showToast("❌ الماينص لازم يكون قيمة سالبة أو صفر","error");
     return;
@@ -2343,7 +2346,7 @@ function submitMinus(){
     method:'POST',
     body:JSON.stringify({
       action: "addMinus",
-      name,
+      name: cleanName,              // ✅ استخدم الاسم المنظف
       number: score,
       sheet: "Minus",
       week: week,
@@ -2366,7 +2369,7 @@ function submitMinus(){
     }
   });
 }
-
+  
 // البحث عن الماينص
 function searchMinus(){
   const search=document.getElementById("reactionSearchInput").value.trim();
