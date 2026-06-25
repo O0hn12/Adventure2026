@@ -2302,17 +2302,32 @@ document.getElementById("gradeNameInput").addEventListener("input", function(){
   loadGradeSuggestions(this.value);
 });
   
-  function submitMinus(){
+  let minusNames = [];
+
+// تحميل أسماء الماينص مرة واحدة عند اختيار الفرقة
+function loadMinusNames(){
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${selectedClass}`)
+    .then(res=>res.json())
+    .then(data=>{
+      if(data.success && data.names){
+        minusNames = data.names;
+      } else {
+        minusNames = [];
+      }
+    })
+    .catch(()=>showToast("❌ خطأ في تحميل أسماء الماينص","error"));
+}
+
+// إدخال الماينص
+function submitMinus(){
   const name = document.getElementById("minusNameInput").value.trim();
   const score = Number(document.getElementById("minusScore").value);
   const week = document.getElementById("minusWeekSelect").value;
 
-  // لازم الاسم يكون من الاقتراحات
   if(!minusNames.includes(name)){
     showToast("❌ اختار اسم من الاقتراحات","error");
     return;
   }
-  // الدرجة لازم تكون سالبة أو صفر
   if(score > 0){
     showToast("❌ الماينص لازم يكون قيمة سالبة أو صفر","error");
     return;
@@ -2327,12 +2342,12 @@ document.getElementById("gradeNameInput").addEventListener("input", function(){
   fetch(scriptURL,{
     method:'POST',
     body:JSON.stringify({
-      action: "addMinus",          // ✅ الأكشن بتاع الماينص
+      action: "addMinus",
       name,
-      number: score,               // ✅ لازم يكون number مش score
-      sheet: "Minus",              // ✅ هنا الفرق
+      number: score,
+      sheet: "Minus",
       week: week,
-      className: minusClass,       // ✅ الفرقة المختارة للماينص
+      className: selectedClass,
       isAdmin: ADMINS.includes(currentUser),
       apiKey: API_KEY
     }),
@@ -2352,6 +2367,7 @@ document.getElementById("gradeNameInput").addEventListener("input", function(){
   });
 }
 
+// البحث عن الماينص
 function searchMinus(){
   const search=document.getElementById("reactionSearchInput").value.trim();
   if(!search){
@@ -2374,9 +2390,10 @@ function searchMinus(){
     html+=`<td>${row[12]||"-"}</td></tr></table>`;
     document.getElementById("minusSearchDisplay").innerHTML=html;
   })
-    .catch(()=>showToast("❌ خطأ في الاتصال","error"));
+  .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
 
+// تعديل درجة الماينص
 function updateMinusScore(){
   const name=document.getElementById("editNameMinus").value.trim();
   const newScore=document.getElementById("editScoreMinus").value.trim();
@@ -2385,14 +2402,14 @@ function updateMinusScore(){
     return;
   }
   const payload={
-  action:"updateMinusScore",
-  sheet:"Minus",
-  week:selectedWeek,
-  name:name,
-  newScore:Number(newScore),
-  className:selectedClass,
-  apiKey:"123456"   // ✅ لازم تبعت المفتاح
-};
+    action:"updateMinusScore",
+    sheet:"Minus",
+    week:selectedWeek,
+    name:name,
+    newScore:Number(newScore),
+    className:selectedClass,
+    apiKey:"123456"
+  };
 
   fetch(scriptURL,{
     method:'POST',
@@ -2410,6 +2427,7 @@ function updateMinusScore(){
   .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
 
+// عدد الماينص
 function showMinusCount(){
   fetch(`${scriptURL}?action=getMinusCount&sheet=Minus&week=${selectedWeek}&class=${selectedClass}`)
     .then(res=>res.json())
@@ -2419,6 +2437,7 @@ function showMinusCount(){
     .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
 
+// تقرير الماينص
 function showMinusReport(){
   fetch(`${scriptURL}?action=getMinusReport&sheet=Minus&week=${selectedWeek}&class=${selectedClass}`)
     .then(res=>res.json())
@@ -2433,41 +2452,38 @@ function showMinusReport(){
     .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
 
-  document.getElementById("minusNameInput").addEventListener("input", ()=>{
-  const query=document.getElementById("minusNameInput").value.trim();
-  if(query.length<1){
+// الاقتراحات الفورية
+document.getElementById("minusNameInput").addEventListener("input", ()=>{
+  const query = document.getElementById("minusNameInput").value.trim();
+  if(query.length < 1){
     document.getElementById("minusSuggestions").innerHTML="";
     return;
   }
-  fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${selectedClass}`)
-    .then(res=>res.json())
-    .then(data=>{
-      if(!data.names){ // ✅ حماية من undefined
-        document.getElementById("minusSuggestions").innerHTML="";
-        return;
-      }
-      let suggestions=data.names.filter(n=>n.includes(query));
-      let html=suggestions.map(n=>`<div onclick="selectMinusName('${n}')">${n}</div>`).join("");
-      document.getElementById("minusSuggestions").innerHTML=html;
-    })
-    .catch(()=>showToast("❌ خطأ في الاتصال","error"));
+  let suggestions = minusNames.filter(n => n.includes(query));
+  let html = suggestions.map(n => `<div onclick="selectMinusName('${n}')">${n}</div>`).join("");
+  document.getElementById("minusSuggestions").innerHTML = html;
 });
 
-  function checkMinusFormReady(){
+// اختيار اسم من الاقتراحات
+function selectMinusName(name){
+  document.getElementById("minusNameInput").value = name;
+  document.getElementById("minusSuggestions").innerHTML = "";
+  checkMinusFormReady();
+}
+
+// تفعيل زر الإدخال
+function checkMinusFormReady(){
   const name=document.getElementById("minusNameInput").value.trim();
   const score=document.getElementById("minusScore").value.trim();
   const week=selectedWeek;
   const cls=selectedClass;
   const btn=document.getElementById("minusSubmitBtn");
 
-  if(name && score!=="" && week && cls){
-    btn.disabled=false;
-  }else{
-    btn.disabled=true;
-  }
+  btn.disabled = !(name && score!=="" && week && cls);
 }
 
-  document.getElementById("minusNameInput").addEventListener("input",checkMinusFormReady);
+// ربط الأحداث
+document.getElementById("minusNameInput").addEventListener("input",checkMinusFormReady);
 document.getElementById("minusScore").addEventListener("input",checkMinusFormReady);
 document.getElementById("minusWeekSelect").addEventListener("change",e=>{
   selectedWeek=e.target.value;
@@ -2475,48 +2491,9 @@ document.getElementById("minusWeekSelect").addEventListener("change",e=>{
 });
 document.getElementById("minusClassSelect").addEventListener("change",e=>{
   selectedClass=e.target.value;
+  loadMinusNames(); // تحميل الأسماء عند تغيير الفرقة
   checkMinusFormReady();
 });
-
-  function selectMinusName(name){
-  document.getElementById("minusNameInput").value=name;
-  document.getElementById("minusSuggestions").innerHTML=""; // ✅ يمسح الاقتراحات
-  checkMinusFormReady(); // ✅ يعيد تفعيل زر الإدخال لو الشروط متحققة
-}
-
-  let minusNames = [];
-
-function loadMinusNames(){
-  fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${selectedClass}`)
-    .then(res=>res.json())
-    .then(data=>{
-      if(data.success && data.names){
-        minusNames = data.names; // خزّن الأسماء مرة واحدة
-      } else {
-        minusNames = [];
-      }
-    })
-    .catch(()=>showToast("❌ خطأ في تحميل أسماء الماينص","error"));
-}
-
-// فلترة محلية أثناء الكتابة
-document.getElementById("minusNameInput").addEventListener("input", ()=>{
-  const query = document.getElementById("minusNameInput").value.trim();
-  if(query.length < 1){
-    document.getElementById("minusSuggestions").innerHTML="";
-    return;
-  }
-  // فلترة محلية بدون انتظار السيرفر
-  let suggestions = minusNames.filter(n => n.includes(query));
-  let html = suggestions.map(n => `<div onclick="selectMinusName('${n}')">${n}</div>`).join("");
-  document.getElementById("minusSuggestions").innerHTML = html;
-});
-
-function selectMinusName(name){
-  document.getElementById("minusNameInput").value = name;
-  document.getElementById("minusSuggestions").innerHTML = ""; // ✅ امسح الاقتراحات فورًا
-  checkMinusFormReady();
-}
 </script>
 </body>
 </html>
