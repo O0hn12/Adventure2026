@@ -744,6 +744,50 @@
 
   <hr style="margin:25px 0;">
 
+      <h2 style="color:#FF5722;margin-bottom:20px;">➖ minus</h2>
+
+<!-- اختيار الفرقة -->
+<select id="minusClassSelect" class="select-box">
+  <option value="">-- اختر الفرقة --</option>
+  <option value="1ب">1ب</option>
+  <option value="2ب">2ب</option>
+  <option value="3ب">3ب</option>
+  <option value="4ب">4ب</option>
+  <option value="5ب">5ب</option>
+  <option value="6ب">6ب</option>
+</select>
+
+<!-- اختيار الأسبوع -->
+<select id="minusWeekSelect" class="select-box">
+  <option value="">اختر الأسبوع</option>
+  <option value="C">الأسبوع 1</option>
+  <option value="D">الأسبوع 2</option>
+  <option value="E">الأسبوع 3</option>
+  <option value="F">الأسبوع 4</option>
+  <option value="G">الأسبوع 5</option>
+  <option value="H">الأسبوع 6</option>
+  <option value="I">الأسبوع 7</option>
+  <option value="J">الأسبوع 8</option>
+  <option value="K">الأسبوع 9</option>
+  <option value="L">الأسبوع 10</option>
+</select>
+
+<!-- إدخال الاسم -->
+<div style="margin-bottom:15px;">
+  <input type="text" id="minusNameInput" class="input-box" placeholder="الاسم">
+  <div id="minusSuggestions" class="suggestions-box"></div>
+</div>
+
+<!-- إدخال الدرجة -->
+<div style="margin-bottom:15px;">
+  <input type="number" id="minusScore" class="input-box" min="0" max="10" placeholder="درجة الماينص">
+</div>
+
+<!-- زرار إدخال -->
+<button id="minusSubmitBtn" class="main-btn btn-minus" onclick="submitMinus()" disabled>
+  ✅ إدخال
+</button>
+
   <!-- مربع البحث -->
   <h3 style="color:#1976D2;">🔍 بحث عن اسم</h3>
   <select id="reactionSearchClass" class="select-box">
@@ -762,10 +806,12 @@
   <div style="display:flex; gap:10px; margin-top:10px;">
   <button onclick="searchReaction()" class="main-btn btn-reaction">🔍 بحث التفاعل</button>
   <button onclick="searchBehavior()" class="main-btn btn-behavior">🔍 بحث السلوك</button>
+    <button onclick="searchMinus()" class="main-btn btn-minus">🔍 بحث الماينص</button>
 </div>
 
 <div id="reactionSearchDisplay"></div>
 <div id="behaviorSearchDisplay"></div>
+      <div id="minusSearchDisplay"></div>
 
   <!-- مربع تعديل للأدمن -->
   <div id="adminEditBoxReaction" class="admin-box">
@@ -836,6 +882,36 @@
     <button class="main-btn btn-reaction" onclick="updateBehaviorScore()">💾 تعديل</button>
   </div>
 
+      <div id="adminEditBoxMinus" class="admin-box">
+  <h3>✏️ تعديل بيانات الماينص</h3>
+  <select id="editClassMinus" class="select-box">
+    <option value="">-- اختر الفرقة --</option>
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+  </select>
+  <select id="editWeekMinus" class="select-box">
+    <option value="">اختر الأسبوع</option>
+    <option value="C">الأسبوع 1</option>
+    <option value="D">الأسبوع 2</option>
+    <option value="E">الأسبوع 3</option>
+    <option value="F">الأسبوع 4</option>
+    <option value="G">الأسبوع 5</option>
+    <option value="H">الأسبوع 6</option>
+    <option value="I">الأسبوع 7</option>
+    <option value="J">الأسبوع 8</option>
+    <option value="K">الأسبوع 9</option>
+    <option value="L">الأسبوع 10</option>
+  </select>
+  <input type="text" id="editNameMinus" class="input-box" placeholder="الاسم">
+  <div id="editSuggestionsMinus" class="suggestions-box"></div>
+  <input type="number" id="editScoreMinus" class="input-box" placeholder="الدرجة">
+  <button class="main-btn btn-minus" onclick="updateMinusScore()">💾 تعديل</button>
+</div>
+
       <div id="adminReportReaction" class="admin-box">
   <h3>👥 تقرير التفاعل والسلوك</h3>
   <select id="reportClassReaction" class="select-box">
@@ -875,6 +951,13 @@
     <button onclick="showBehaviorReport()" class="main-btn btn-behavior">📋 أسماء السلوك</button>
   </div>
 
+        <div style="display:flex; gap:10px; margin-top:10px;">
+  <button onclick="showMinusCount()" class="main-btn btn-minus">👥 عدد الماينص</button>
+  <button onclick="showMinusReport()" class="main-btn btn-minus">📋 أسماء الماينص</button>
+</div>
+
+<div id="minusCountDisplay"></div>
+<div id="minusReportDisplay"></div>
   <div id="reactionCountDisplay"></div>
 <div id="reactionReportDisplay"></div>
 <div id="behaviorCountDisplay"></div>
@@ -2219,6 +2302,100 @@ document.getElementById("gradeNameInput").addEventListener("input", function(){
   loadGradeSuggestions(this.value);
 });
 
+  function submitMinus(){
+  if(!currentUser){
+    showToast("❌ لازم تسجل دخول","error");
+    return;
+  }
+  const name=document.getElementById("minusNameInput").value.trim();
+  const score=Number(document.getElementById("minusScore").value);
+  if(!name || isNaN(score)){
+    showToast("❌ أدخل الاسم والدرجة","error");
+    return;
+  }
+  const data={action:"addMinus",sheet:selectedSheet,week:selectedWeek,name:name,score:score};
+  fetch(scriptURL,{
+    method:'POST',
+    body:JSON.stringify(data),
+    headers:{'Content-Type':'application/json'}
+  })
+  .then(res=>res.json())
+  .then(resp=>{
+    if(resp.success){
+      showToast("✅ تم إدخال الماينص","success");
+      document.getElementById("minusNameInput").value="";
+      document.getElementById("minusScore").value="";
+    }else{
+      showToast("❌ فشل الإدخال","error");
+    }
+  })
+  .catch(()=>showToast("❌ خطأ في الاتصال","error"));
+}
+
+  function searchMinus(){
+  const search=document.getElementById("reactionSearchInput").value.trim();
+  if(!search){
+    showToast("❌ أدخل اسم","error");
+    return;
+  }
+  fetch(`${scriptURL}?action=getMinusByName&sheet=${selectedSheet}&name=${encodeURIComponent(search)}`)
+    .then(res=>res.json())
+    .then(data=>{
+      if(!data.found){
+        showToast("❌ الاسم غير موجود","error");
+        return;
+      }
+      document.getElementById("minusSearchDisplay").innerHTML = "الماينص: " + data.row[4]; // مثال عمود 5
+    })
+    .catch(()=>showToast("❌ خطأ في الاتصال","error"));
+}
+
+  function updateMinusScore(){
+  const name=document.getElementById("editNameMinus").value.trim();
+  const newScore=document.getElementById("editScoreMinus").value.trim();
+  if(!name || newScore===""){
+    showToast("❌ يجب إدخال الاسم والدرجة!","error");
+    return;
+  }
+  const payload={action:"updateMinusScore",sheet:selectedSheet,week:selectedWeek,name:name,newScore:Number(newScore)};
+  fetch(scriptURL,{
+    method:'POST',
+    body:JSON.stringify(payload),
+    headers:{'Content-Type':'application/json'}
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.success){
+      showToast("✅ تم تعديل الماينص!","success");
+    }else{
+      showToast("❌ فشل التعديل!","error");
+    }
+  })
+  .catch(()=>showToast("❌ خطأ في الاتصال","error"));
+}
+
+  function showMinusCount(){
+  fetch(`${scriptURL}?action=getMinusCount&sheet=${selectedSheet}&week=${selectedWeek}`)
+    .then(res=>res.json())
+    .then(data=>{
+      document.getElementById("minusCountDisplay").innerText = "عدد الماينص: " + data.count;
+    })
+    .catch(()=>showToast("❌ خطأ في الاتصال","error"));
+}
+
+function showMinusReport(){
+  fetch(`${scriptURL}?action=getMinusReport&sheet=${selectedSheet}&week=${selectedWeek}`)
+    .then(res=>res.json())
+    .then(data=>{
+      let html="<table><tr><th>الاسم</th><th>الماينص</th></tr>";
+      data.report.forEach(row=>{
+        html+=`<tr><td>${row.name}</td><td>${row.score}</td></tr>`;
+      });
+      html+="</table>";
+      document.getElementById("minusReportDisplay").innerHTML=html;
+    })
+    .catch(()=>showToast("❌ خطأ في الاتصال","error"));
+}
 </script>
 </body>
 </html>
