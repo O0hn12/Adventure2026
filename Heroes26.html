@@ -2418,6 +2418,53 @@ function showMinusReport(){
     })
     .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
+
+  document.getElementById("minusNameInput").addEventListener("input", ()=>{
+  const query=document.getElementById("minusNameInput").value.trim();
+  if(query.length<1){
+    document.getElementById("minusSuggestions").innerHTML="";
+    return;
+  }
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${selectedClass}`)
+    .then(res=>res.json())
+    .then(data=>{
+      let suggestions=data.names.filter(n=>n.includes(query));
+      let html=suggestions.map(n=>`<div onclick="selectMinusName('${n}')">${n}</div>`).join("");
+      document.getElementById("minusSuggestions").innerHTML=html;
+    });
+});
+
+function selectMinusName(name){
+  document.getElementById("minusNameInput").value=name;
+  document.getElementById("minusSuggestions").innerHTML="";
+  checkMinusFormReady();
+}
+
+  function checkMinusFormReady(){
+  const name=document.getElementById("minusNameInput").value.trim();
+  const score=document.getElementById("minusScore").value.trim();
+  const week=selectedWeek;
+  const cls=selectedClass;
+  const btn=document.getElementById("minusSubmitBtn");
+
+  if(name && score!=="" && week && cls){
+    btn.disabled=false;
+  }else{
+    btn.disabled=true;
+  }
+}
+
+  document.getElementById("minusNameInput").addEventListener("input",checkMinusFormReady);
+document.getElementById("minusScore").addEventListener("input",checkMinusFormReady);
+document.getElementById("minusWeekSelect").addEventListener("change",e=>{
+  selectedWeek=e.target.value;
+  checkMinusFormReady();
+});
+document.getElementById("minusClassSelect").addEventListener("change",e=>{
+  selectedClass=e.target.value;
+  checkMinusFormReady();
+});
+
 </script>
 </body>
 </html>
