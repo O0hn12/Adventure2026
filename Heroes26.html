@@ -2433,10 +2433,23 @@ function updateMinusScore(){
   .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
 
-  let selectedClass = "";
+  // تعريف المتغيرات مرة واحدة فوق
+let selectedClass = "";
 let selectedWeek = "";
 
-// عدد الماينص
+// تحديث القيم لما تختار من الـ select
+document.getElementById("minusClassSelect").addEventListener("change", e=>{
+  selectedClass = e.target.value.trim();
+  loadMinusNames();
+  checkMinusFormReady();
+});
+
+document.getElementById("minusWeekSelect").addEventListener("change", e=>{
+  selectedWeek = e.target.value.trim();
+  checkMinusFormReady();
+});
+
+// استخدامهم في الدوال
 function showMinusCount(){
   fetch(`${scriptURL}?action=getMinusCount&sheet=Minus&week=${selectedWeek}&class=${selectedClass}`)
     .then(res=>res.json())
@@ -2446,20 +2459,6 @@ function showMinusCount(){
     .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
 
-// تقرير الماينص
-function showMinusReport(){
-  fetch(`${scriptURL}?action=getMinusReport&sheet=Minus&week=${selectedWeek}&class=${selectedClass}`)
-    .then(res=>res.json())
-    .then(data=>{
-      let html="<table><tr><th>الاسم</th><th>الماينص</th></tr>";
-      data.students.forEach(row=>{
-        html+=`<tr><td>${row.name}</td><td>${row.score}</td></tr>`;
-      });
-      html+="</table>";
-      document.getElementById("minusReportDisplay").innerHTML=html;
-    })
-    .catch(()=>showToast("❌ خطأ في الاتصال","error"));
-}
 
 // الاقتراحات الفورية
 document.getElementById("minusNameInput").addEventListener("input", ()=>{
