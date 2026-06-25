@@ -2453,12 +2453,6 @@ function showMinusReport(){
     .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 });
 
-function selectMinusName(name){
-  document.getElementById("minusNameInput").value=name;
-  document.getElementById("minusSuggestions").innerHTML="";
-  checkMinusFormReady();
-}
-
   function checkMinusFormReady(){
   const name=document.getElementById("minusNameInput").value.trim();
   const score=document.getElementById("minusScore").value.trim();
@@ -2489,11 +2483,6 @@ document.getElementById("minusClassSelect").addEventListener("change",e=>{
   document.getElementById("minusSuggestions").innerHTML=""; // ✅ يمسح الاقتراحات
   checkMinusFormReady(); // ✅ يعيد تفعيل زر الإدخال لو الشروط متحققة
 }
-
-  document.getElementById("minusClassSelect").addEventListener("change", e=>{
-  selectedClass = e.target.value;
-  loadMinusNames(); // تحميل أسماء الماينص للفرقة المختارة
-});
 
   let minusNames = [];
 
