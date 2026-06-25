@@ -2346,22 +2346,21 @@ function searchMinus(){
     return;
   }
   fetch(`${scriptURL}?action=getMinusByName&sheet=Minus&name=${encodeURIComponent(search)}&class=${selectedClass}`)
-    .then(res=>res.json())
-    .then(data=>{
-      if(!data.found){
-        showToast("❌ الاسم غير موجود","error");
-        return;
-      }
-      // ✅ عرض كل الأعمدة (C–L + Total)
-      let row=data.row;
-      let html="<table><tr><th>الاسم</th><th>الفرقة</th>";
-      for(let i=2;i<=11;i++){ html+=`<th>الأسبوع ${i-1}</th>`; }
-      html+="<th>Total</th></tr>";
-      html+=`<tr><td>${row[0]}</td><td>${row[1]}</td>`;
-      for(let i=2;i<=11;i++){ html+=`<td>${row[i]||"-"}</td>`; }
-      html+=`<td>${row[12]||"-"}</td></tr></table>`;
-      document.getElementById("minusSearchDisplay").innerHTML=html;
-    })
+  .then(res=>res.json())
+  .then(data=>{
+    if(!data.found){
+      showToast("❌ الاسم غير موجود","error");
+      return;
+    }
+    let row=data.row;
+    let html="<table><tr><th>الاسم</th><th>الفرقة</th>";
+    for(let i=2;i<=11;i++){ html+=`<th>الأسبوع ${i-1}</th>`; }
+    html+="<th>Total</th></tr>";
+    html+=`<tr><td>${row[0]}</td><td>${row[1]}</td>`;
+    for(let i=2;i<=11;i++){ html+=`<td>${row[i]||"-"}</td>`; }
+    html+=`<td>${row[12]||"-"}</td></tr></table>`;
+    document.getElementById("minusSearchDisplay").innerHTML=html;
+  })
     .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
 
@@ -2428,10 +2427,15 @@ function showMinusReport(){
   fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${selectedClass}`)
     .then(res=>res.json())
     .then(data=>{
+      if(!data.names){ // ✅ حماية من undefined
+        document.getElementById("minusSuggestions").innerHTML="";
+        return;
+      }
       let suggestions=data.names.filter(n=>n.includes(query));
       let html=suggestions.map(n=>`<div onclick="selectMinusName('${n}')">${n}</div>`).join("");
       document.getElementById("minusSuggestions").innerHTML=html;
-    });
+    })
+    .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 });
 
 function selectMinusName(name){
