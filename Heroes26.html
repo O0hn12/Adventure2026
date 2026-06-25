@@ -2302,6 +2302,8 @@ document.getElementById("gradeNameInput").addEventListener("input", function(){
   loadGradeSuggestions(this.value);
 });
 
+  let minusNames = [];
+
   function submitMinus(){
   const name = document.getElementById("minusNameInput").value.trim();
   const score = Number(document.getElementById("minusScore").value);
@@ -2489,6 +2491,11 @@ document.getElementById("minusClassSelect").addEventListener("change",e=>{
   document.getElementById("minusSuggestions").innerHTML=""; // ✅ يمسح الاقتراحات
   checkMinusFormReady(); // ✅ يعيد تفعيل زر الإدخال لو الشروط متحققة
 }
+
+  document.getElementById("minusClassSelect").addEventListener("change", e=>{
+  selectedClass = e.target.value;
+  loadMinusNames(); // ✅ تحميل الأسماء للفرقة المختارة
+});
 
 </script>
 </body>
