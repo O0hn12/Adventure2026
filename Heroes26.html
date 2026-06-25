@@ -2326,10 +2326,10 @@ function submitMinus(){
 
   // تحقق من الاسم بعد تنظيفه
   const cleanName = name.replace(/\s+/g," ").trim();
-  if(!minusNames.some(n => n.replace(/\s+/g," ").trim() === cleanName)){
-    showToast("❌ اختار اسم من الاقتراحات","error");
-    return;
-  }
+if(!minusNames.some(n => n.replace(/\s+/g," ").trim() === cleanName)){
+  showToast("❌ اختار اسم من الاقتراحات","error");
+  return;
+}
 
   if(score < 0 || score > 10){
   showToast("❌ الدرجة لازم تكون بين 0 و 10","error");
