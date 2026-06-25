@@ -2303,42 +2303,53 @@ document.getElementById("gradeNameInput").addEventListener("input", function(){
 });
 
   function submitMinus(){
-  if(!currentUser){
-    showToast("❌ لازم تسجل دخول","error");
+  const name = document.getElementById("minusNameInput").value.trim();
+  const score = Number(document.getElementById("minusScore").value);
+  const week = document.getElementById("minusWeekSelect").value;
+
+  // لازم الاسم يكون من الاقتراحات
+  if(!minusNames.includes(name)){
+    showToast("❌ اختار اسم من الاقتراحات","error");
     return;
   }
-  const name=document.getElementById("minusNameInput").value.trim();
-  const score=Number(document.getElementById("minusScore").value);
-  if(!name || isNaN(score)){
-    showToast("❌ أدخل الاسم والدرجة","error");
+  // الدرجة لازم تكون سالبة أو صفر
+  if(score > 0){
+    showToast("❌ الماينص لازم يكون قيمة سالبة أو صفر","error");
     return;
   }
-  const data={
-  action:"addMinus",
-  sheet:"Minus",
-  week:selectedWeek,
-  name:name,
-  score:score,
-  className:selectedClass,
-  apiKey:"123456"   // ✅ لازم تبعت المفتاح
-};
+  if(!week){
+    showToast("❌ اختار الأسبوع","warning");
+    return;
+  }
+
+  showToast("⏳ برجاء الانتظار...", "warning");
 
   fetch(scriptURL,{
     method:'POST',
-    body:JSON.stringify(data),
+    body:JSON.stringify({
+      action: "addMinus",          // ✅ الأكشن بتاع الماينص
+      name,
+      number: score,               // ✅ لازم يكون number مش score
+      sheet: "Minus",              // ✅ هنا الفرق
+      week: week,
+      className: minusClass,       // ✅ الفرقة المختارة للماينص
+      isAdmin: ADMINS.includes(currentUser),
+      apiKey: API_KEY
+    }),
     headers:{'Content-Type':'application/json'}
   })
   .then(res=>res.json())
-  .then(resp=>{
-    if(resp.success){
-      showToast("✅ تم إدخال الماينص","success");
-      document.getElementById("minusNameInput").value="";
-      document.getElementById("minusScore").value="";
-    }else{
-      showToast(resp.message || "❌ فشل الإدخال","error");
+  .then(res=>{
+    if(res.success){
+      showToast(res.message,"success");
+      document.getElementById("minusNameInput").value = "";
+      document.getElementById("minusScore").value = "";
+      document.getElementById("minusSuggestions").innerHTML = "";
+      document.getElementById("minusSubmitBtn").disabled = true;
+    } else {
+      showToast(res.message,"error");
     }
-  })
-  .catch(()=>showToast("❌ خطأ في الاتصال","error"));
+  });
 }
 
 function searchMinus(){
@@ -2374,13 +2385,15 @@ function updateMinusScore(){
     return;
   }
   const payload={
-    action:"updateMinusScore",
-    sheet:"Minus",              // ✅ لازم تبقى Minus
-    week:selectedWeek,
-    name:name,
-    newScore:Number(newScore),
-    className:selectedClass
-  };
+  action:"updateMinusScore",
+  sheet:"Minus",
+  week:selectedWeek,
+  name:name,
+  newScore:Number(newScore),
+  className:selectedClass,
+  apiKey:"123456"   // ✅ لازم تبعت المفتاح
+};
+
   fetch(scriptURL,{
     method:'POST',
     body:JSON.stringify(payload),
@@ -2470,6 +2483,12 @@ document.getElementById("minusClassSelect").addEventListener("change",e=>{
   selectedClass=e.target.value;
   checkMinusFormReady();
 });
+
+  function selectMinusName(name){
+  document.getElementById("minusNameInput").value=name;
+  document.getElementById("minusSuggestions").innerHTML=""; // ✅ يمسح الاقتراحات
+  checkMinusFormReady(); // ✅ يعيد تفعيل زر الإدخال لو الشروط متحققة
+}
 
 </script>
 </body>
