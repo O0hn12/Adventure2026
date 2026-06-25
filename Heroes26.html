@@ -2301,9 +2301,7 @@ document.getElementById("gradeClass").addEventListener("change", function(){
 document.getElementById("gradeNameInput").addEventListener("input", function(){
   loadGradeSuggestions(this.value);
 });
-
-  let minusNames = [];
-
+  
   function submitMinus(){
   const name = document.getElementById("minusNameInput").value.trim();
   const score = Number(document.getElementById("minusScore").value);
@@ -2494,9 +2492,8 @@ document.getElementById("minusClassSelect").addEventListener("change",e=>{
 
   document.getElementById("minusClassSelect").addEventListener("change", e=>{
   selectedClass = e.target.value;
-  loadMinusNames(); // ✅ تحميل الأسماء للفرقة المختارة
+  loadMinusNames(); // تحميل أسماء الماينص للفرقة المختارة
 });
-
 </script>
 </body>
 </html>
