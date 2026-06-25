@@ -2331,10 +2331,11 @@ function submitMinus(){
     return;
   }
 
-  if(score > 0){
-    showToast("❌ الماينص لازم يكون قيمة سالبة أو صفر","error");
-    return;
-  }
+  if(score < 0 || score > 10){
+  showToast("❌ الدرجة لازم تكون بين 0 و 10","error");
+  return;
+}
+
   if(!week){
     showToast("❌ اختار الأسبوع","warning");
     return;
