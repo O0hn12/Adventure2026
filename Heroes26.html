@@ -2314,14 +2314,15 @@ document.getElementById("gradeNameInput").addEventListener("input", function(){
     return;
   }
   const data={
-    action:"addMinus",
-    sheet:"Minus",              // ✅ لازم تبقى Minus
-    week:selectedWeek,
-    name:name,
-    score:score,
-    className:selectedClass     // ✅ مهم تبعت الفرقة
-    apiKey:"123456"   // ✅ لازم تبعت المفتاح
-  };
+  action:"addMinus",
+  sheet:"Minus",
+  week:selectedWeek,
+  name:name,
+  score:score,
+  className:selectedClass,
+  apiKey:"123456"   // ✅ لازم تبعت المفتاح
+};
+
   fetch(scriptURL,{
     method:'POST',
     body:JSON.stringify(data),
