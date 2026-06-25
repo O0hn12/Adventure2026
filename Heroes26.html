@@ -2433,6 +2433,9 @@ function updateMinusScore(){
   .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
 
+  let selectedClass = "";
+let selectedWeek = "";
+
 // عدد الماينص
 function showMinusCount(){
   fetch(`${scriptURL}?action=getMinusCount&sheet=Minus&week=${selectedWeek}&class=${selectedClass}`)
