@@ -2324,16 +2324,15 @@ function submitMinus(){
   const score = Number(document.getElementById("minusScore").value);
   const week = document.getElementById("minusWeekSelect").value;
 
-  // تنظيف الاسم والتحقق
   const cleanName = name.replace(/\s+/g," ").trim();
-  const found = minusNames.some(n => n.replace(/\s+/g," ").trim().toLowerCase() === cleanName.toLowerCase());
+  const cleanClass = selectedClass.replace(/\s+/g," ").trim();
 
+  const found = minusNames.some(n => n.replace(/\s+/g," ").trim().toLowerCase() === cleanName.toLowerCase());
   if(!found){
     showToast("❌ اختار اسم من الاقتراحات","error");
     return;
   }
 
-  // تحقق من الدرجة
   if(score < 0 || score > 10){
     showToast("❌ الدرجة لازم تكون بين 0 و 10","error");
     return;
@@ -2350,11 +2349,11 @@ function submitMinus(){
     method:'POST',
     body:JSON.stringify({
       action: "addMinus",
-      name: cleanName,                 // ✅ الاسم المنظف
+      name: cleanName,
       number: score,
       sheet: "Minus",
       week: week,
-      className: selectedClass.trim(), // ✅ تنظيف الفرقة
+      className: cleanClass,
       isAdmin: ADMINS.includes(currentUser),
       apiKey: API_KEY
     }),
