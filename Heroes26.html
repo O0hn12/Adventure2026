@@ -2326,7 +2326,9 @@ function submitMinus(){
 
   // تنظيف الاسم والتحقق
   const cleanName = name.replace(/\s+/g," ").trim();
-  if(!minusNames.some(n => n.replace(/\s+/g," ").trim() === cleanName)){
+  const found = minusNames.some(n => n.replace(/\s+/g," ").trim().toLowerCase() === cleanName.toLowerCase());
+
+  if(!found){
     showToast("❌ اختار اسم من الاقتراحات","error");
     return;
   }
@@ -2348,11 +2350,11 @@ function submitMinus(){
     method:'POST',
     body:JSON.stringify({
       action: "addMinus",
-      name: cleanName,                // ✅ الاسم المنظف
+      name: cleanName,                 // ✅ الاسم المنظف
       number: score,
       sheet: "Minus",
       week: week,
-      className: selectedClass.trim(),// ✅ تنظيف الفرقة
+      className: selectedClass.trim(), // ✅ تنظيف الفرقة
       isAdmin: ADMINS.includes(currentUser),
       apiKey: API_KEY
     }),
