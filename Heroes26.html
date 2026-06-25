@@ -2434,24 +2434,22 @@ function updateMinusScore(){
 }
 
   // تعريف المتغيرات مرة واحدة فوق
-let selectedClass = "";
-let selectedWeek = "";
+let minusSelectedClass = "";
+let minusSelectedWeek = "";
 
-// تحديث القيم لما تختار من الـ select
-document.getElementById("minusClassSelect").addEventListener("change", e=>{
-  selectedClass = e.target.value.trim();
+  document.getElementById("minusClassSelect").addEventListener("change", e=>{
+  minusSelectedClass = e.target.value.trim();
   loadMinusNames();
   checkMinusFormReady();
 });
 
 document.getElementById("minusWeekSelect").addEventListener("change", e=>{
-  selectedWeek = e.target.value.trim();
+  minusSelectedWeek = e.target.value.trim();
   checkMinusFormReady();
 });
 
-// استخدامهم في الدوال
-function showMinusCount(){
-  fetch(`${scriptURL}?action=getMinusCount&sheet=Minus&week=${selectedWeek}&class=${selectedClass}`)
+  function showMinusCount(){
+  fetch(`${scriptURL}?action=getMinusCount&sheet=Minus&week=${minusSelectedWeek}&class=${minusSelectedClass}`)
     .then(res=>res.json())
     .then(data=>{
       document.getElementById("minusCountDisplay").innerText = "عدد الماينص: " + data.count;
@@ -2459,18 +2457,19 @@ function showMinusCount(){
     .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
 
-
-// الاقتراحات الفورية
-document.getElementById("minusNameInput").addEventListener("input", ()=>{
-  const query = document.getElementById("minusNameInput").value.trim();
-  if(query.length < 1){
-    document.getElementById("minusSuggestions").innerHTML="";
-    return;
-  }
-  let suggestions = minusNames.filter(n => n.includes(query));
-  let html = suggestions.map(n => `<div onclick="selectMinusName('${n}')">${n}</div>`).join("");
-  document.getElementById("minusSuggestions").innerHTML = html;
-});
+function showMinusReport(){
+  fetch(`${scriptURL}?action=getMinusReport&sheet=Minus&week=${minusSelectedWeek}&class=${minusSelectedClass}`)
+    .then(res=>res.json())
+    .then(data=>{
+      let html="<table><tr><th>الاسم</th><th>الماينص</th></tr>";
+      data.students.forEach(row=>{
+        html+=`<tr><td>${row.name}</td><td>${row.score}</td></tr>`;
+      });
+      html+="</table>";
+      document.getElementById("minusReportDisplay").innerHTML=html;
+    })
+    .catch(()=>showToast("❌ خطأ في الاتصال","error"));
+}
 
 // اختيار اسم من الاقتراحات
 function selectMinusName(name){
