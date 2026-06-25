@@ -2494,6 +2494,40 @@ document.getElementById("minusClassSelect").addEventListener("change",e=>{
   selectedClass = e.target.value;
   loadMinusNames(); // تحميل أسماء الماينص للفرقة المختارة
 });
+
+  let minusNames = [];
+
+function loadMinusNames(){
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${selectedClass}`)
+    .then(res=>res.json())
+    .then(data=>{
+      if(data.success && data.names){
+        minusNames = data.names; // خزّن الأسماء مرة واحدة
+      } else {
+        minusNames = [];
+      }
+    })
+    .catch(()=>showToast("❌ خطأ في تحميل أسماء الماينص","error"));
+}
+
+// فلترة محلية أثناء الكتابة
+document.getElementById("minusNameInput").addEventListener("input", ()=>{
+  const query = document.getElementById("minusNameInput").value.trim();
+  if(query.length < 1){
+    document.getElementById("minusSuggestions").innerHTML="";
+    return;
+  }
+  // فلترة محلية بدون انتظار السيرفر
+  let suggestions = minusNames.filter(n => n.includes(query));
+  let html = suggestions.map(n => `<div onclick="selectMinusName('${n}')">${n}</div>`).join("");
+  document.getElementById("minusSuggestions").innerHTML = html;
+});
+
+function selectMinusName(name){
+  document.getElementById("minusNameInput").value = name;
+  document.getElementById("minusSuggestions").innerHTML = ""; // ✅ امسح الاقتراحات فورًا
+  checkMinusFormReady();
+}
 </script>
 </body>
 </html>
