@@ -2478,13 +2478,13 @@ function selectMinusName(name){
 
 // تفعيل زر الإدخال
 function checkMinusFormReady(){
-  const name=document.getElementById("minusNameInput").value.trim();
-  const score=document.getElementById("minusScore").value.trim();
-  const week=selectedWeek;
-  const cls=selectedClass;
-  const btn=document.getElementById("minusSubmitBtn");
+  const name = document.getElementById("minusNameInput").value.trim();
+  const score = document.getElementById("minusScore").value.trim();
+  const week = minusSelectedWeek;
+  const cls = minusSelectedClass;
+  const btn = document.getElementById("minusSubmitBtn");
 
-  btn.disabled = !(name && score!=="" && week && cls);
+  btn.disabled = !(name && score !== "" && week && cls);
 }
 
 // ربط الأحداث
