@@ -2303,6 +2303,8 @@ document.getElementById("gradeNameInput").addEventListener("input", function(){
 });
   
   let minusNames = [];
+  let minusSelectedClass = "";
+let minusSelectedWeek = "";
 
 // تحميل أسماء الماينص مرة واحدة عند اختيار الفرقة
 function loadMinusNames(){
@@ -2432,10 +2434,6 @@ function updateMinusScore(){
   })
   .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
-
-  // تعريف المتغيرات مرة واحدة فوق
-let minusSelectedClass = "";
-let minusSelectedWeek = "";
 
   document.getElementById("minusClassSelect").addEventListener("change", e=>{
   minusSelectedClass = e.target.value.trim();
