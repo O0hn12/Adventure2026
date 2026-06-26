@@ -2490,16 +2490,17 @@ function checkMinusFormReady(){
 document.getElementById("minusNameInput").addEventListener("input", checkMinusFormReady);
 document.getElementById("minusScore").addEventListener("input", checkMinusFormReady);
 
-document.getElementById("minusWeekSelect").addEventListener("change", e => {
-  minusSelectedWeek = e.target.value.trim();   // ✅ تخزين القيمة في المتغير الصح
+document.getElementById("reportWeekReaction").addEventListener("change", e => {
+  minusSelectedWeek = e.target.value.trim();
   checkMinusFormReady();
 });
 
-document.getElementById("minusClassSelect").addEventListener("change", e => {
-  minusSelectedClass = e.target.value.trim(); // ✅ تخزين القيمة في المتغير الصح
-  loadMinusNames();                           // تحميل أسماء الماينص للفرقة المختارة
+document.getElementById("reportClassReaction").addEventListener("change", e => {
+  minusSelectedClass = e.target.value.trim();
+  loadMinusNames();
   checkMinusFormReady();
 });
+
 </script>
 </body>
 </html>
