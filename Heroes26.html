@@ -913,7 +913,7 @@
  </div>
 
       <div id="adminReportReaction" class="admin-box">
-  <h3>👥 تقرير التفاعل والسلوك و الخصم</h3>
+  <h3>تقرير التفاعل والسلوك</h3>
   <select id="reportClassReaction" class="select-box">
     
     <option value="">-- اختر الفرقة --</option>
@@ -951,13 +951,6 @@
     <button onclick="showBehaviorReport()" class="main-btn btn-behavior">📋 أسماء السلوك</button>
   </div>
 
-        <div style="display:flex; gap:10px; margin-top:10px;">
-  <button onclick="showMinusCount()" class="main-btn btn-minus">👥 عدد الماينص</button>
-  <button onclick="showMinusReport()" class="main-btn btn-minus">📋 أسماء الماينص</button>
-</div>
-
-<div id="minusCountDisplay"></div>
-<div id="minusReportDisplay"></div>
   <div id="reactionCountDisplay"></div>
 <div id="reactionReportDisplay"></div>
 <div id="behaviorCountDisplay"></div>
@@ -2444,29 +2437,6 @@ document.getElementById("minusClassSelect").addEventListener("change",e=>{
   loadMinusNames();
   checkMinusFormReady();
 });
-
-  function showMinusCount(){
-  fetch(`${scriptURL}?action=getMinusCount&sheet=Minus&week=${minusSelectedWeek}&class=${minusSelectedClass}`)
-    .then(res=>res.json())
-    .then(data=>{
-      document.getElementById("minusCountDisplay").innerText = "عدد الماينص: " + data.count;
-    })
-    .catch(()=>showToast("❌ خطأ في الاتصال","error"));
-}
-
-function showMinusReport(){
-  fetch(`${scriptURL}?action=getMinusReport&sheet=Minus&week=${minusSelectedWeek}&class=${minusSelectedClass}`)
-    .then(res=>res.json())
-    .then(data=>{
-      let html="<table><tr><th>الاسم</th><th>الماينص</th></tr>";
-      data.students.forEach(row=>{
-        html+=`<tr><td>${row.name}</td><td>${row.score}</td></tr>`;
-      });
-      html+="</table>";
-      document.getElementById("minusReportDisplay").innerHTML=html;
-    })
-    .catch(()=>showToast("❌ خطأ في الاتصال","error"));
-}
 
 // اختيار اسم من الاقتراحات
 function selectMinusName(name){
