@@ -913,7 +913,7 @@
 </div>
 
       <div id="adminReportReaction" class="admin-box">
-  <h3>👥 تقرير التفاعل والسلوك و الخصم-</h3>
+  <h3>👥 تقرير التفاعل والسلوك و الخصم</h3>
   <select id="reportClassReaction" class="select-box">
     
     <option value="">-- اختر الفرقة --</option>
@@ -2487,15 +2487,17 @@ function checkMinusFormReady(){
 }
 
 // ربط الأحداث
-document.getElementById("minusNameInput").addEventListener("input",checkMinusFormReady);
-document.getElementById("minusScore").addEventListener("input",checkMinusFormReady);
-document.getElementById("minusWeekSelect").addEventListener("change",e=>{
-  minusSelectedWeek=e.target.value;
+document.getElementById("minusNameInput").addEventListener("input", checkMinusFormReady);
+document.getElementById("minusScore").addEventListener("input", checkMinusFormReady);
+
+document.getElementById("minusWeekSelect").addEventListener("change", e => {
+  minusSelectedWeek = e.target.value.trim();   // ✅ تخزين القيمة في المتغير الصح
   checkMinusFormReady();
 });
-document.getElementById("minusClassSelect").addEventListener("change",e=>{
-  minusSelectedClass=e.target.value;
-  loadMinusNames(); // تحميل الأسماء عند تغيير الفرقة
+
+document.getElementById("minusClassSelect").addEventListener("change", e => {
+  minusSelectedClass = e.target.value.trim(); // ✅ تخزين القيمة في المتغير الصح
+  loadMinusNames();                           // تحميل أسماء الماينص للفرقة المختارة
   checkMinusFormReady();
 });
 </script>
