@@ -2327,7 +2327,7 @@ function submitMinus(){
   const week = document.getElementById("minusWeekSelect").value;
 
   const cleanName = name.replace(/\s+/g," ").trim();
-  const cleanClass = selectedClass.replace(/\s+/g," ").trim();
+  const cleanClass = minusSelectedClass.replace(/\s+/g," ").trim();
 
   const found = minusNames.some(n => n.replace(/\s+/g," ").trim().toLowerCase() === cleanName.toLowerCase());
   if(!found){
@@ -2382,7 +2382,7 @@ function searchMinus(){
     showToast("❌ أدخل اسم","error");
     return;
   }
-  fetch(`${scriptURL}?action=getMinusByName&sheet=Minus&name=${encodeURIComponent(search)}&class=${selectedClass}`)
+  fetch(`${scriptURL}?action=getMinusByName&sheet=Minus&name=${encodeURIComponent(search)}&class=${minusSelectedClass}`)
   .then(res=>res.json())
   .then(data=>{
     if(!data.found){
@@ -2412,10 +2412,10 @@ function updateMinusScore(){
   const payload={
     action:"updateMinusScore",
     sheet:"Minus",
-    week:selectedWeek,
+    week:minusSelectedWeek,
+className:minusSelectedClass,
     name:name,
     newScore:Number(newScore),
-    className:selectedClass,
     apiKey:"123456"
   };
 
@@ -2435,14 +2435,13 @@ function updateMinusScore(){
   .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
 
-  document.getElementById("minusClassSelect").addEventListener("change", e=>{
-  minusSelectedClass = e.target.value.trim();
-  loadMinusNames();
+  document.getElementById("minusWeekSelect").addEventListener("change",e=>{
+  minusSelectedWeek = e.target.value.trim();
   checkMinusFormReady();
 });
-
-document.getElementById("minusWeekSelect").addEventListener("change", e=>{
-  minusSelectedWeek = e.target.value.trim();
+document.getElementById("minusClassSelect").addEventListener("change",e=>{
+  minusSelectedClass = e.target.value.trim();
+  loadMinusNames();
   checkMinusFormReady();
 });
 
