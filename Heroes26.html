@@ -2306,7 +2306,7 @@ document.getElementById("gradeNameInput").addEventListener("input", function(){
 
 // تحميل أسماء الماينص مرة واحدة عند اختيار الفرقة
 function loadMinusNames(){
-  fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${selectedClass}`)
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${minusSelectedClass}`)
     .then(res=>res.json())
     .then(data=>{
       if(data.success && data.names){
