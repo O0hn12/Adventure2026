@@ -2490,11 +2490,11 @@ function checkMinusFormReady(){
 document.getElementById("minusNameInput").addEventListener("input",checkMinusFormReady);
 document.getElementById("minusScore").addEventListener("input",checkMinusFormReady);
 document.getElementById("minusWeekSelect").addEventListener("change",e=>{
-  selectedWeek=e.target.value;
+  minusSelectedWeek=e.target.value;
   checkMinusFormReady();
 });
 document.getElementById("minusClassSelect").addEventListener("change",e=>{
-  selectedClass=e.target.value;
+  minusSelectedClass=e.target.value;
   loadMinusNames(); // تحميل الأسماء عند تغيير الفرقة
   checkMinusFormReady();
 });
