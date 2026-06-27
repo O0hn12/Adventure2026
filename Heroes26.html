@@ -2867,8 +2867,7 @@ document.getElementById("editNameMinus").addEventListener("input", loadEditMinus
 
       gifts = data;
 
-renderGiftCards();
-
+drawGiftCards();
     });
 
 }
@@ -2902,6 +2901,7 @@ return;
 }
 
 currentPoints=data.total;
+  drawGiftCards();
 
 document.getElementById("galleryPointsCard").innerHTML=`
 
@@ -2990,8 +2990,8 @@ qty:1
 }
 
 drawCart();
-renderGiftCards();
-}
+drawGiftCards();
+  }
 
   function drawCart(){
 
@@ -3095,8 +3095,8 @@ ${currentPoints-total}
     }
 
     drawCart();
-    renderGiftCards();
-
+drawGiftCards();
+    
 }
 
   function removeGift(code){
@@ -3104,8 +3104,8 @@ ${currentPoints-total}
 giftCart=giftCart.filter(g=>g.code!=code);
 
 drawCart();
-renderGiftCards();
-}
+drawGiftCards();
+  }
 
   function saveGiftOrder(){
 
@@ -3146,7 +3146,7 @@ renderGiftCards();
         currentPoints = 0;
 
 drawCart();
-renderGiftCards();
+drawGiftCards();
         document.getElementById("galleryNameInput").value = "";
         document.getElementById("giftNotes").value = "";
 
@@ -3161,57 +3161,6 @@ renderGiftCards();
     }
 
 });
-
-}
-
-  function renderGiftCards() {
-
-  const container = document.getElementById("giftCards");
-  container.innerHTML = "";
-
-  gifts.forEach((gift) => {
-
-    const qty = giftCart.find(g => g.code === gift.code)?.qty || 0;
-
-    container.innerHTML += `
-      <div class="gift-card">
-
-        <img src="${gift.image || 'https://via.placeholder.com/150?text=Gift'}">
-
-        <div class="gift-name">
-          ${gift.name}
-        </div>
-
-        <div class="gift-code">
-          ${gift.code}
-        </div>
-
-        <div class="gift-price">
-          ⭐ ${gift.points} نقطة
-        </div>
-
-        <div class="qty-box">
-
-          <button class="qty-btn"
-                  onclick="changeQty('${gift.code}',-1)">
-            −
-          </button>
-
-          <span id="qty-${gift.code}" class="qty-number">
-            ${qty}
-          </span>
-
-          <button class="qty-btn"
-                  onclick="changeQty('${gift.code}',1)">
-            +
-          </button>
-
-        </div>
-
-      </div>
-    `;
-
-  });
 
 }
 
