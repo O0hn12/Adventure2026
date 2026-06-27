@@ -3294,6 +3294,63 @@ giftCart=giftCart.filter(g=>g.code!=code);
 drawCart();
 
 }
+
+  function saveGiftOrder(){
+
+    if(giftCart.length==0){
+        showToast("❌ أضف هدية أولاً","warning");
+        return;
+    }
+
+    const payload = {
+        action: "saveGiftOrder",
+        sheet: "GiftOrders",
+        apiKey: API_KEY,
+
+        name: document.getElementById("galleryNameInput").value.trim(),
+        className: document.getElementById("galleryClassSelect").value,
+
+        notes: document.getElementById("giftNotes").value.trim(),
+
+        cart: giftCart
+    };
+
+    fetch(scriptURL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(payload)
+    })
+    .then(r=>r.json())
+    .then(data=>{
+
+    if(data.success){
+
+        showToast("✅ تم حفظ الطلب بنجاح","success");
+
+        // تفريغ البيانات
+        giftCart = [];
+        currentPoints = 0;
+
+        drawCart();
+
+        document.getElementById("galleryNameInput").value = "";
+        document.getElementById("giftNotes").value = "";
+
+        document.getElementById("galleryPointsCard").innerHTML = "";
+        document.getElementById("availableGifts").innerHTML = "";
+        document.getElementById("lockedGifts").innerHTML = "";
+
+    }else{
+
+        showToast(data.message,"error");
+
+    }
+
+});
+
+}
 </script>
 </body>
 </html>
