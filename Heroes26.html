@@ -299,6 +299,144 @@
     .btn-minus {
   background: linear-gradient(45deg,#9C27B0,#BA68C8);
 }
+
+    /* معرض الهدايا */
+
+.gift-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+
+gap:20px;
+
+margin-top:20px;
+
+}
+
+.gift-card{
+
+background:white;
+
+border-radius:15px;
+
+padding:15px;
+
+box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+text-align:center;
+
+transition:.3s;
+
+}
+
+.gift-card:hover{
+
+transform:translateY(-5px);
+
+}
+
+.gift-card img{
+
+width:100%;
+
+height:170px;
+
+object-fit:cover;
+
+border-radius:12px;
+
+margin-bottom:10px;
+
+}
+
+.gift-name{
+
+font-size:20px;
+
+font-weight:bold;
+
+margin-bottom:8px;
+
+}
+
+.gift-code{
+
+color:#777;
+
+margin-bottom:6px;
+
+}
+
+.gift-price{
+
+color:#E91E63;
+
+font-weight:bold;
+
+font-size:18px;
+
+margin-bottom:15px;
+
+}
+
+.qty-box{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+.qty-btn{
+
+width:35px;
+
+height:35px;
+
+border:none;
+
+border-radius:50%;
+
+background:#9C27B0;
+
+color:white;
+
+font-size:20px;
+
+cursor:pointer;
+
+}
+
+.qty-number{
+
+font-size:20px;
+
+font-weight:bold;
+
+width:35px;
+
+text-align:center;
+
+}
+
+#giftCart{
+
+background:white;
+
+border-radius:15px;
+
+padding:20px;
+
+box-shadow:0 3px 10px rgba(0,0,0,.1);
+
+min-height:120px;
+
+}
   </style>
 </head>
 <body>
@@ -962,7 +1100,88 @@
 
 </section>
     
-    <section id="gallery"><h2>المعرض</h2><p>صور أو محتوى إضافي.</p></section>
+    <section id="gallery">
+
+  <h2 style="color:#E91E63;margin-bottom:20px;">🎁 معرض الهدايا</h2>
+
+  <!-- اختيار الفرقة -->
+  <select id="galleryClassSelect" class="select-box">
+    <option value="">-- اختر الفرقة --</option>
+    <option value="1ب">1ب</option>
+    <option value="2ب">2ب</option>
+    <option value="3ب">3ب</option>
+    <option value="4ب">4ب</option>
+    <option value="5ب">5ب</option>
+    <option value="6ب">6ب</option>
+  </select>
+
+  <!-- الاسم -->
+  <div style="margin-bottom:15px;">
+    <input
+      type="text"
+      id="galleryNameInput"
+      class="input-box"
+      placeholder="اكتب الاسم">
+    <div id="gallerySuggestions" class="suggestions-box"></div>
+  </div>
+
+  <!-- زر عرض الرصيد -->
+  <button
+      id="showGalleryPointsBtn"
+      class="main-btn btn-reaction">
+
+      📊 عرض رصيدى
+
+  </button>
+
+  <br><br>
+
+  <!-- كارت الرصيد -->
+
+  <div id="galleryPointsCard"></div>
+
+  <hr style="margin:30px 0;">
+
+  <h3 style="color:#E91E63;">
+      🎁 اختر هداياك
+  </h3>
+
+  <!-- الكروت -->
+
+  <div id="giftCards" class="gift-grid">
+
+  </div>
+
+  <hr style="margin:30px 0;">
+
+  <h3 style="color:#E91E63;">
+      🛒 طلبى
+  </h3>
+
+  <div id="giftCart">
+
+      لم يتم اختيار أى هدية.
+
+  </div>
+
+  <br>
+
+  <textarea
+      id="giftNotes"
+      class="input-box"
+      rows="4"
+      placeholder="ملاحظات..."></textarea>
+
+  <button
+      id="saveGiftOrderBtn"
+      class="main-btn btn-reaction">
+
+      💾 حفظ الطلب
+
+  </button>
+
+</section>
+    
   </main>
 <script>
   const API_KEY = "123456";
