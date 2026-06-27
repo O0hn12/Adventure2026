@@ -2399,22 +2399,25 @@ function searchMinus(){
 
 // تعديل درجة الماينص
 function updateMinusScore(){
-  const name=document.getElementById("editNameMinus").value.trim();
-  const newScore=document.getElementById("editScoreMinus").value.trim();
-  if(!name || newScore===""){
+  const rawName = document.getElementById("editNameMinus").value;
+  const cleanName = rawName.replace(/\s+/g," ").trim(); // ✅ تنظيف الاسم
+  const newScore = document.getElementById("editScoreMinus").value.trim();
+
+  if(!cleanName || newScore===""){
     showToast("❌ يجب إدخال الاسم والدرجة!","error");
     return;
   }
+
   const payload={
-  action:"updateMinusScore",
-  sheet:"Minus",
-  week:minusSelectedWeek,
-  className:minusSelectedClass,
-  name:name,
-  newScore:Number(newScore),
-  isAdmin: ADMINS.includes(currentUser), // ✅ إضافة التحقق من الأدمن
-  apiKey: API_KEY
-};
+    action:"updateMinusScore",
+    sheet:"Minus",
+    week:minusSelectedWeek,
+    className:minusSelectedClass,
+    name:cleanName, // ✅ استخدام الاسم المنظف
+    newScore:Number(newScore),
+    isAdmin: ADMINS.includes(currentUser), // ✅ تحقق الأدمن
+    apiKey: API_KEY
+  };
 
   fetch(scriptURL,{
     method:'POST',
@@ -2475,27 +2478,36 @@ document.getElementById("reportClassReaction").addEventListener("change", e => {
   checkMinusFormReady();
 });
 
-  // بعد ما تحدد إذا المستخدم أدمن
-if (ADMINS.includes(currentUser)) {
-  document.getElementById("adminEditBoxMinus").style.display = "block";
-} else {
-  document.getElementById("adminEditBoxMinus").style.display = "none";
-}
+  let editMinusNames = [];
 
-  function loadEditMinusNames(){
-  fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${encodeURIComponent(document.getElementById("editClassMinus").value)}`)
+function loadEditMinusNames(){
+  const cls = document.getElementById("editClassMinus").value.trim();
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${encodeURIComponent(cls)}`)
     .then(res=>res.json())
     .then(data=>{
       if(data.success && data.names){
-        let html = data.names.map(n=>`<div onclick="selectEditMinusName('${n}')">${n}</div>`).join("");
-        document.getElementById("editSuggestionsMinus").innerHTML = html;
+        editMinusNames = data.names;
+      } else {
+        editMinusNames = [];
       }
     });
 }
 
+document.getElementById("editClassMinus").addEventListener("change", loadEditMinusNames);
+
+document.getElementById("editNameMinus").addEventListener("input", e=>{
+  const val = e.target.value.trim().toLowerCase();
+  let html = "";
+  if(val){
+    const filtered = editMinusNames.filter(n=>n.toLowerCase().includes(val));
+    html = filtered.map(n=>`<div onclick="selectEditMinusName('${n}')">${n}</div>`).join("");
+  }
+  document.getElementById("editSuggestionsMinus").innerHTML = html;
+});
+
 function selectEditMinusName(name){
   document.getElementById("editNameMinus").value = name;
-  document.getElementById("editSuggestionsMinus").innerHTML = "";
+  document.getElementById("editSuggestionsMinus").innerHTML = ""; // ✅ يمسح الاقتراحات بعد الاختيار
 }
 
 document.getElementById("editClassMinus").addEventListener("change", loadEditMinusNames);
