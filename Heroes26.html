@@ -2867,7 +2867,7 @@ document.getElementById("editNameMinus").addEventListener("input", loadEditMinus
 
   function loadGifts(){
 
-fetch(`${scriptURL}?action=getGifts`)
+fetch(`${scriptURL}?action=getGifts&sheet=Gifts`)
 
 .then(r=>r.json())
 
