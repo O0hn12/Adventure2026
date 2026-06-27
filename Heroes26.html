@@ -2406,14 +2406,15 @@ function updateMinusScore(){
     return;
   }
   const payload={
-    action:"updateMinusScore",
-    sheet:"Minus",
-    week:minusSelectedWeek,
-className:minusSelectedClass,
-    name:name,
-    newScore:Number(newScore),
-    apiKey:"123456"
-  };
+  action:"updateMinusScore",
+  sheet:"Minus",
+  week:minusSelectedWeek,
+  className:minusSelectedClass,
+  name:name,
+  newScore:Number(newScore),
+  isAdmin: ADMINS.includes(currentUser), // ✅ إضافة التحقق من الأدمن
+  apiKey: API_KEY
+};
 
   fetch(scriptURL,{
     method:'POST',
@@ -2480,6 +2481,25 @@ if (ADMINS.includes(currentUser)) {
 } else {
   document.getElementById("adminEditBoxMinus").style.display = "none";
 }
+
+  function loadEditMinusNames(){
+  fetch(`${scriptURL}?action=getStudentNames&sheet=Minus&class=${encodeURIComponent(document.getElementById("editClassMinus").value)}`)
+    .then(res=>res.json())
+    .then(data=>{
+      if(data.success && data.names){
+        let html = data.names.map(n=>`<div onclick="selectEditMinusName('${n}')">${n}</div>`).join("");
+        document.getElementById("editSuggestionsMinus").innerHTML = html;
+      }
+    });
+}
+
+function selectEditMinusName(name){
+  document.getElementById("editNameMinus").value = name;
+  document.getElementById("editSuggestionsMinus").innerHTML = "";
+}
+
+document.getElementById("editClassMinus").addEventListener("change", loadEditMinusNames);
+document.getElementById("editNameMinus").addEventListener("input", loadEditMinusNames);
 
 </script>
 </body>
