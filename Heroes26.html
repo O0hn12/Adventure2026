@@ -1223,6 +1223,39 @@ onclick="showGalleryPoints()">
 </h2>
 
 <div id="lockedGifts"></div>
+
+    <hr style="margin:30px 0;">
+
+<h2 style="color:#4CAF50;">🧾 الشيك</h2>
+
+<div id="cartContainer">
+
+<table id="giftCartTable" class="table-report">
+
+<thead>
+
+<tr>
+
+<th>الكود</th>
+<th>الهدية</th>
+<th>السعر</th>
+<th>الكمية</th>
+<th>الإجمالى</th>
+<th>❌</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+<div id="cartSummary" style="margin-top:20px;font-size:18px;font-weight:bold;"></div>
+
+</div>
     
   </h3>
 
@@ -3131,6 +3164,134 @@ locked.appendChild(card);
 }
 
 });
+
+}
+
+  function addGift(code){
+
+const gift=gifts.find(g=>g.code==code);
+
+if(!gift)return;
+
+const old=giftCart.find(g=>g.code==code);
+
+if(old){
+
+old.qty++;
+
+}else{
+
+giftCart.push({
+
+...gift,
+
+qty:1
+
+});
+
+}
+
+drawCart();
+
+}
+
+  function drawCart(){
+
+const tbody=document.querySelector("#giftCartTable tbody");
+
+tbody.innerHTML="";
+
+let total=0;
+
+giftCart.forEach(item=>{
+
+const sum=item.qty*item.points;
+
+total+=sum;
+
+tbody.innerHTML+=`
+
+<tr>
+
+<td>${item.code}</td>
+
+<td>${item.name}</td>
+
+<td>${item.points}</td>
+
+<td>
+
+<button onclick="changeQty('${item.code}',-1)">-</button>
+
+${item.qty}
+
+<button onclick="changeQty('${item.code}',1)">+</button>
+
+</td>
+
+<td>${sum}</td>
+
+<td>
+
+<button onclick="removeGift('${item.code}')">
+
+🗑
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById("cartSummary").innerHTML=`
+
+رصيد الطفل :
+
+${currentPoints}
+
+<br><br>
+
+إجمالى الطلب :
+
+${total}
+
+<br><br>
+
+المتبقى :
+
+${currentPoints-total}
+
+`;
+
+}
+
+  function changeQty(code,diff){
+
+const gift=giftCart.find(g=>g.code==code);
+
+if(!gift)return;
+
+gift.qty+=diff;
+
+if(gift.qty<=0){
+
+giftCart=giftCart.filter(g=>g.code!=code);
+
+}
+
+drawCart();
+
+}
+
+  function removeGift(code){
+
+giftCart=giftCart.filter(g=>g.code!=code);
+
+drawCart();
 
 }
 </script>
