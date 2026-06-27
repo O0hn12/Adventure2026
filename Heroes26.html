@@ -2867,17 +2867,17 @@ document.getElementById("editNameMinus").addEventListener("input", loadEditMinus
 
   function loadGifts(){
 
-fetch(`${scriptURL}?action=getGifts&sheet=Gifts`)
+  fetch(`${scriptURL}?action=getGifts&sheet=Gifts`)
+    .then(r => r.json())
+    .then(data => {
 
-.then(r=>r.json())
+      console.log(data);       // 👈 مهم
+      console.log(Array.isArray(data)); // 👈 مهم
 
-.then(data=>{
+      gifts = data;
+      renderGiftCards();
 
-gifts=data;
-
-renderGiftCards();
-
-});
+    });
 
 }
 
