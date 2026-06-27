@@ -3215,6 +3215,52 @@ drawGiftCards();
         });
 
 }
+
+  function drawGiftCards(){
+
+    const available = document.getElementById("availableGifts");
+    const locked = document.getElementById("lockedGifts");
+
+    available.innerHTML = "";
+    locked.innerHTML = "";
+
+    gifts.forEach(gift => {
+
+        const card = document.createElement("div");
+
+        card.className = "gift-card";
+
+        card.innerHTML = `
+            <img src="${gift.image || ''}">
+
+            <h3>${gift.name}</h3>
+
+            <p>الكود : ${gift.code}</p>
+
+            <p>⭐ ${gift.points} نقطة</p>
+
+            <button
+                class="main-btn btn-reaction"
+                onclick="addGift('${gift.code}')">
+                ➕ إضافة
+            </button>
+        `;
+
+        if(gift.points <= currentPoints){
+
+            available.appendChild(card);
+
+        }else{
+
+            card.classList.add("locked");
+
+            locked.appendChild(card);
+
+        }
+
+    });
+
+}
 </script>
 </body>
 </html>
