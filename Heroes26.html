@@ -2881,62 +2881,6 @@ document.getElementById("editNameMinus").addEventListener("input", loadEditMinus
 
 }
 
-  function renderGiftCards(){
-
-const container=document.getElementById("giftCards");
-
-container.innerHTML="";
-
-gifts.forEach((gift,index)=>{
-
-container.innerHTML+=`
-
-<div class="gift-card">
-
-<img src="${gift.image}">
-
-<div class="gift-name">
-
-${gift.name}
-
-</div>
-
-<div class="gift-code">
-
-${gift.code}
-
-</div>
-
-<div class="gift-price">
-
-⭐ ${gift.points} نقطة
-
-</div>
-
-<div class="qty-box">
-
-<button class="qty-btn" onclick="changeQty(${index},-1)">−</button>
-
-<span
-id="qty${index}"
-class="qty-number">
-
-0
-
-</span>
-
-<button class="qty-btn" onclick="changeQty(${index},1)">+</button>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-}
-
   function changeQty(index, change) {
 
   const gift = gifts[index];
@@ -2964,63 +2908,6 @@ class="qty-number">
 
   updateGiftCards();
   updateCart();
-
-}
-
-  function updateGiftCards() {
-
-  gifts.forEach((gift, index) => {
-
-    const item = cart.find(x => x.code === gift.code);
-
-    document.getElementById("qty" + index).textContent =
-      item ? item.qty : 0;
-
-  });
-
-}
-
-  function updateCart() {
-
-  const cartDiv = document.getElementById("giftCart");
-
-  if (cart.length === 0) {
-
-    cartDiv.innerHTML = "لم يتم اختيار أى هدية.";
-
-    return;
-
-  }
-
-  let total = 0;
-
-  let html = "";
-
-  cart.forEach(item => {
-
-    let sub = item.qty * item.points;
-
-    total += sub;
-
-    html += `
-      <div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #ddd;">
-
-        <b>${item.name}</b><br>
-
-        ${item.qty} × ${item.points} = ⭐ ${sub}
-
-      </div>
-    `;
-
-  });
-
-  html += `
-    <h3 style="color:#E91E63;text-align:center;">
-      الإجمالى : ⭐ ${total}
-    </h3>
-  `;
-
-  cartDiv.innerHTML = html;
 
 }
 
