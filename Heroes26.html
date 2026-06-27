@@ -296,6 +296,10 @@
   padding: 12px;
   font-size: 16px;
 }
+    .btn-minus {
+  background: linear-gradient(45deg,#FF5722,#FF8A65);
+  color: #fff;
+}
   </style>
 </head>
 <body>
@@ -2432,10 +2436,17 @@ function updateMinusScore(){
   .then(res=>res.json())
   .then(data=>{
     if(data.success){
-      showToast("✅ تم تعديل الماينص!","success");
-    }else{
-      showToast(data.message || "❌ فشل التعديل!","error");
-    }
+  showToast("✅ تم تعديل الماينص!","success");
+
+  // تفريغ الحقول
+  document.getElementById("editNameMinus").value = "";
+  document.getElementById("editScoreMinus").value = "";
+
+  // اختياري: رجّع المؤشر لخانة الاسم
+  document.getElementById("editNameMinus").focus();
+}else{
+  showToast(data.message || "❌ فشل التعديل!","error");
+}
   })
   .catch(()=>showToast("❌ خطأ في الاتصال","error"));
 }
