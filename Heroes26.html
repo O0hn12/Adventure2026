@@ -1171,7 +1171,10 @@ filter:grayscale(100%);
   <h2 style="color:#E91E63;margin-bottom:20px;">🎁 معرض الهدايا</h2>
 
   <!-- اختيار الفرقة -->
-  <select id="galleryClassSelect" class="select-box">
+  <select
+id="galleryClassSelect"
+class="select-box"
+onchange="loadGalleryNames()">
     <option value="">-- اختر الفرقة --</option>
     <option value="1ب">1ب</option>
     <option value="2ب">2ب</option>
@@ -1184,10 +1187,11 @@ filter:grayscale(100%);
   <!-- الاسم -->
   <div style="margin-bottom:15px;">
     <input
-      type="text"
-      id="galleryNameInput"
-      class="input-box"
-      placeholder="اكتب الاسم">
+type="text"
+id="galleryNameInput"
+class="input-box"
+placeholder="اكتب الاسم"
+oninput="gallerySuggestNames()">
     <div id="gallerySuggestions" class="suggestions-box"></div>
   </div>
 
@@ -1261,21 +1265,7 @@ onclick="showGalleryPoints()">
 
   <!-- الكروت -->
 
-  <div id="giftCards" class="gift-grid">
-
-  </div>
-
   <hr style="margin:30px 0;">
-
-  <h3 style="color:#E91E63;">
-      🛒 طلبى
-  </h3>
-
-  <div id="giftCart">
-
-      لم يتم اختيار أى هدية.
-
-  </div>
 
   <br>
 
@@ -1286,8 +1276,9 @@ onclick="showGalleryPoints()">
       placeholder="ملاحظات..."></textarea>
 
   <button
-      id="saveGiftOrderBtn"
-      class="main-btn btn-reaction">
+id="saveGiftOrderBtn"
+class="main-btn btn-reaction"
+onclick="saveGiftOrder()">
 
       💾 حفظ الطلب
 
@@ -1306,6 +1297,7 @@ let currentClass = "";
   let gifts = [];
   let currentPoints = 0;
   let giftCart = [];
+  let galleryNames = [];
 let allNames = []; // 🔥 تخزين الأسماء
 const ADMINS = ["Admin","john","Selvana","Maria","Mariam","Nadine","Andrew","Anna","Besho","Dany","Jena","Kamatcho","Karen","Madonna","Marez","Marina","Medo","Nardeen","Rovena","Sarah","Tota","Yoyo"]; // هنا تزود أي أدمن جديد مرة واحدة
 
@@ -3220,6 +3212,58 @@ renderGiftCards();
     `;
 
   });
+
+}
+
+  function loadGalleryNames(){
+
+    const cls = document.getElementById("galleryClassSelect").value;
+
+    if(!cls) return;
+
+    fetch(`${scriptURL}?action=getStudentNames&sheet=Grades&class=${encodeURIComponent(cls)}`)
+
+    .then(r=>r.json())
+
+    .then(data=>{
+
+        galleryNames = data.names || [];
+
+    });
+
+}
+
+  function gallerySuggestNames(){
+
+    const input = document.getElementById("galleryNameInput");
+
+    const box = document.getElementById("gallerySuggestions");
+
+    const value = input.value.trim();
+
+    box.innerHTML = "";
+
+    if(value==="") return;
+
+    galleryNames
+        .filter(n=>n.includes(value))
+        .forEach(name=>{
+
+            const div=document.createElement("div");
+
+            div.textContent=name;
+
+            div.onclick=function(){
+
+                input.value=name;
+
+                box.innerHTML="";
+
+            };
+
+            box.appendChild(div);
+
+        });
 
 }
 </script>
