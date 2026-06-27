@@ -3237,6 +3237,57 @@ drawCart();
 });
 
 }
+
+  function renderGiftCards() {
+
+  const container = document.getElementById("giftCards");
+  container.innerHTML = "";
+
+  gifts.forEach((gift) => {
+
+    const qty = giftCart.find(g => g.code === gift.code)?.qty || 0;
+
+    container.innerHTML += `
+      <div class="gift-card">
+
+        <img src="${gift.image || 'https://via.placeholder.com/150?text=Gift'}">
+
+        <div class="gift-name">
+          ${gift.name}
+        </div>
+
+        <div class="gift-code">
+          ${gift.code}
+        </div>
+
+        <div class="gift-price">
+          ⭐ ${gift.points} نقطة
+        </div>
+
+        <div class="qty-box">
+
+          <button class="qty-btn"
+                  onclick="changeQty('${gift.code}',-1)">
+            −
+          </button>
+
+          <span id="qty-${gift.code}" class="qty-number">
+            ${qty}
+          </span>
+
+          <button class="qty-btn"
+                  onclick="changeQty('${gift.code}',1)">
+            +
+          </button>
+
+        </div>
+
+      </div>
+    `;
+
+  });
+
+}
 </script>
 </body>
 </html>
