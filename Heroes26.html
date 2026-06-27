@@ -2400,8 +2400,11 @@ function searchMinus(){
 // تعديل درجة الماينص
 function updateMinusScore(){
   const rawName = document.getElementById("editNameMinus").value;
-  const cleanName = rawName.replace(/\s+/g," ").trim(); // ✅ تنظيف الاسم
+  const cleanName = rawName.replace(/\s+/g," ").trim();
   const newScore = document.getElementById("editScoreMinus").value.trim();
+
+  const className = document.getElementById("editClassMinus").value;
+  const week = document.getElementById("editWeekMinus").value;
 
   if(!cleanName || newScore===""){
     showToast("❌ يجب إدخال الاسم والدرجة!","error");
@@ -2411,13 +2414,15 @@ function updateMinusScore(){
   const payload={
     action:"updateMinusScore",
     sheet:"Minus",
-    week:minusSelectedWeek,
-    className:minusSelectedClass,
-    name:cleanName, // ✅ استخدام الاسم المنظف
-    newScore:Number(newScore),
-    isAdmin: ADMINS.includes(currentUser), // ✅ تحقق الأدمن
+    week: week,
+    className: className,
+    name: cleanName,
+    newScore: Number(newScore),
+    isAdmin: ADMINS.includes(currentUser),
     apiKey: API_KEY
   };
+
+  console.log(payload);
 
   fetch(scriptURL,{
     method:'POST',
