@@ -1304,7 +1304,6 @@ const scriptURL = 'https://heroes-26-system.johnmamdouh777.workers.dev/';
 let currentUser = "";
 let currentClass = "";
   let gifts = [];
-  let cart = [];
   let currentPoints = 0;
   let giftCart = [];
 let allNames = []; // 🔥 تخزين الأسماء
@@ -2876,37 +2875,9 @@ document.getElementById("editNameMinus").addEventListener("input", loadEditMinus
 
       gifts = data;
 
+renderGiftCards();
+
     });
-
-}
-
-  function changeQty(index, change) {
-
-  const gift = gifts[index];
-
-  let item = cart.find(x => x.code === gift.code);
-
-  if (!item && change > 0) {
-    cart.push({
-      code: gift.code,
-      name: gift.name,
-      points: gift.points,
-      image: gift.image,
-      qty: 1
-    });
-
-  } else if (item) {
-
-    item.qty += change;
-
-    if (item.qty <= 0) {
-      cart = cart.filter(x => x.code !== gift.code);
-    }
-
-  }
-
-  updateGiftCards();
-  updateCart();
 
 }
 
@@ -3002,57 +2973,6 @@ document.getElementById("galleryPointsCard").innerHTML=`
 
 }
 
-  function drawGiftCards(){
-
-const available=document.getElementById("availableGifts");
-
-const locked=document.getElementById("lockedGifts");
-
-available.innerHTML="";
-locked.innerHTML="";
-
-gifts.forEach(gift=>{
-
-const card=document.createElement("div");
-
-card.className="gift-card";
-
-card.innerHTML=`
-
-<img src="${gift.image}">
-
-<h3>${gift.name}</h3>
-
-<p>الكود : ${gift.code}</p>
-
-<p>${gift.points} نقطة</p>
-
-<button
-class="main-btn btn-reaction"
-onclick="addGift('${gift.code}')">
-
-➕ إضافة
-
-</button>
-
-`;
-
-if(gift.points<=currentPoints){
-
-available.appendChild(card);
-
-}else{
-
-card.classList.add("locked");
-
-locked.appendChild(card);
-
-}
-
-});
-
-}
-
   function addGift(code){
 
 const gift=gifts.find(g=>g.code==code);
@@ -3078,7 +2998,7 @@ qty:1
 }
 
 drawCart();
-
+renderGiftCards();
 }
 
   function drawCart(){
@@ -3155,21 +3075,35 @@ ${currentPoints-total}
 
 }
 
-  function changeQty(code,diff){
+  function changeQty(code, diff){
 
-const gift=giftCart.find(g=>g.code==code);
+    const gift = gifts.find(g => g.code == code);
 
-if(!gift)return;
+    let item = giftCart.find(g => g.code == code);
 
-gift.qty+=diff;
+    if(!item){
 
-if(gift.qty<=0){
+        if(diff < 0) return;
 
-giftCart=giftCart.filter(g=>g.code!=code);
+        giftCart.push({
+            ...gift,
+            qty:1
+        });
 
-}
+    }else{
 
-drawCart();
+        item.qty += diff;
+
+        if(item.qty <= 0){
+
+            giftCart = giftCart.filter(g => g.code != code);
+
+        }
+
+    }
+
+    drawCart();
+    renderGiftCards();
 
 }
 
@@ -3178,7 +3112,7 @@ drawCart();
 giftCart=giftCart.filter(g=>g.code!=code);
 
 drawCart();
-
+renderGiftCards();
 }
 
   function saveGiftOrder(){
@@ -3219,8 +3153,8 @@ drawCart();
         giftCart = [];
         currentPoints = 0;
 
-        drawCart();
-
+drawCart();
+renderGiftCards();
         document.getElementById("galleryNameInput").value = "";
         document.getElementById("giftNotes").value = "";
 
