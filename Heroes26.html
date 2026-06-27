@@ -1190,6 +1190,8 @@ let selectedWeek = "C";
 const scriptURL = 'https://heroes-26-system.johnmamdouh777.workers.dev/';
 let currentUser = "";
 let currentClass = "";
+  let gifts = [];
+  let cart = [];
 let allNames = []; // 🔥 تخزين الأسماء
 const ADMINS = ["Admin","john","Selvana","Maria","Mariam","Nadine","Andrew","Anna","Besho","Dany","Jena","Kamatcho","Karen","Madonna","Marez","Marina","Medo","Nardeen","Rovena","Sarah","Tota","Yoyo"]; // هنا تزود أي أدمن جديد مرة واحدة
 
@@ -1287,6 +1289,7 @@ function showTab(tabId, event){
 
   // ⚡ تحميل الأسماء
   loadNames();
+  loadGifts();
 }
 
 // ✅ Toast
@@ -2746,6 +2749,165 @@ function selectEditMinusName(name){
 
 document.getElementById("editClassMinus").addEventListener("change", loadEditMinusNames);
 document.getElementById("editNameMinus").addEventListener("input", loadEditMinusNames);
+
+  function loadGifts(){
+
+fetch(`${scriptURL}?action=getGifts`)
+
+.then(r=>r.json())
+
+.then(data=>{
+
+gifts=data;
+
+renderGiftCards();
+
+});
+
+}
+
+  function renderGiftCards(){
+
+const container=document.getElementById("giftCards");
+
+container.innerHTML="";
+
+gifts.forEach((gift,index)=>{
+
+container.innerHTML+=`
+
+<div class="gift-card">
+
+<img src="${gift.image}">
+
+<div class="gift-name">
+
+${gift.name}
+
+</div>
+
+<div class="gift-code">
+
+${gift.code}
+
+</div>
+
+<div class="gift-price">
+
+⭐ ${gift.points} نقطة
+
+</div>
+
+<div class="qty-box">
+
+<button class="qty-btn" onclick="changeQty(${index},-1)">−</button>
+
+<span
+id="qty${index}"
+class="qty-number">
+
+0
+
+</span>
+
+<button class="qty-btn" onclick="changeQty(${index},1)">+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+  function changeQty(index, change) {
+
+  const gift = gifts[index];
+
+  let item = cart.find(x => x.code === gift.code);
+
+  if (!item && change > 0) {
+    cart.push({
+      code: gift.code,
+      name: gift.name,
+      points: gift.points,
+      image: gift.image,
+      qty: 1
+    });
+
+  } else if (item) {
+
+    item.qty += change;
+
+    if (item.qty <= 0) {
+      cart = cart.filter(x => x.code !== gift.code);
+    }
+
+  }
+
+  updateGiftCards();
+  updateCart();
+
+}
+
+  function updateGiftCards() {
+
+  gifts.forEach((gift, index) => {
+
+    const item = cart.find(x => x.code === gift.code);
+
+    document.getElementById("qty" + index).textContent =
+      item ? item.qty : 0;
+
+  });
+
+}
+
+  function updateCart() {
+
+  const cartDiv = document.getElementById("giftCart");
+
+  if (cart.length === 0) {
+
+    cartDiv.innerHTML = "لم يتم اختيار أى هدية.";
+
+    return;
+
+  }
+
+  let total = 0;
+
+  let html = "";
+
+  cart.forEach(item => {
+
+    let sub = item.qty * item.points;
+
+    total += sub;
+
+    html += `
+      <div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #ddd;">
+
+        <b>${item.name}</b><br>
+
+        ${item.qty} × ${item.points} = ⭐ ${sub}
+
+      </div>
+    `;
+
+  });
+
+  html += `
+    <h3 style="color:#E91E63;text-align:center;">
+      الإجمالى : ⭐ ${total}
+    </h3>
+  `;
+
+  cartDiv.innerHTML = html;
+
+}
 
 </script>
 </body>
