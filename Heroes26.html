@@ -1289,13 +1289,13 @@ onclick="saveGiftOrder()">
 <h3>✏️ تعديل طلب الهدايا</h3>
 
 <select id="editGiftClass" class="select-box">
-<option value="">-- اختر الفرقة --</option>
-<option value="1ب">1ب</option>
-<option value="2ب">2ب</option>
-<option value="3ب">3ب</option>
-<option value="4ب">4ب</option>
-<option value="5ب">5ب</option>
-<option value="6ب">6ب</option>
+  <option value="">-- اختر الفرقة --</option>
+  <option value="1ب">1ب</option>
+  <option value="2ب">2ب</option>
+  <option value="3ب">3ب</option>
+  <option value="4ب">4ب</option>
+  <option value="5ب">5ب</option>
+  <option value="6ب">6ب</option>
 </select>
 
 <input
@@ -1316,9 +1316,13 @@ onclick="loadGiftOrder()">
 
 </button>
 
-<br><br>
+<hr style="margin:25px 0;">
 
+<!-- هنا هيظهر الطلب -->
 <div id="giftOrderEditor"></div>
+
+<!-- وهنا هيظهر معرض اختيار الهدايا -->
+<div id="giftSelectorArea"></div>
 
 </div>
 
@@ -1336,6 +1340,7 @@ let currentClass = "";
   let currentPoints = 0;
   let giftCart = [];
   let galleryNames = [];
+  let giftNames = [];
 let allNames = []; // 🔥 تخزين الأسماء
 const ADMINS = ["Admin","john","Selvana","Maria","Mariam","Nadine","Andrew","Anna","Besho","Dany","Jena","Kamatcho","Karen","Madonna","Marez","Marina","Medo","Nardeen","Rovena","Sarah","Tota","Yoyo"]; // هنا تزود أي أدمن جديد مرة واحدة
 
@@ -1391,7 +1396,11 @@ document.getElementById("loginBtn").addEventListener("click", function () {
 
   // 👇 إضافة الماينص
   document.getElementById("adminEditBoxMinus").style.display = "block";
+
+      document.getElementById("adminGiftEditBox").style.display = "block";
 }
+
+    
 
     showToast("✅ تم تسجيل الدخول بنجاح","success");
     currentUser = username;
@@ -3348,9 +3357,9 @@ class="input-box">
 
 class="main-btn btn-reaction"
 
-onclick="updateGiftQty(${item.row})">
+onclick="showGiftSelector(${item.row})"
 
-💾 تعديل
+✏️ تغيير الهدية
 
 </button>
 
@@ -3394,6 +3403,96 @@ fetch(scriptURL,{
     showToast(data.message,data.success?"success":"error");
 
 });
+}
+
+  function loadGiftNames(){
+
+const cls=document.getElementById("editGiftClass").value;
+
+if(!cls)return;
+
+fetch(`${scriptURL}?action=getStudentNames&sheet=Grades&class=${encodeURIComponent(cls)}`)
+
+.then(r=>r.json())
+
+.then(data=>{
+
+giftNames=data.names||[];
+
+});
+
+}
+
+  function giftSuggest(){
+
+const input=document.getElementById("editGiftName");
+
+const box=document.getElementById("editGiftSuggestions");
+
+const value=input.value.trim();
+
+box.innerHTML="";
+
+if(value.length==0)return;
+
+giftNames
+.filter(n=>n.includes(value))
+.forEach(name=>{
+
+const div=document.createElement("div");
+
+div.innerHTML=name;
+
+div.onclick=function(){
+
+input.value=name;
+
+box.innerHTML="";
+
+};
+
+box.appendChild(div);
+
+});
+
+}
+
+  document
+.getElementById("editGiftClass")
+.addEventListener("change",loadGiftNames);
+
+document
+.getElementById("editGiftName")
+.addEventListener("input",giftSuggest);
+
+  function showGiftSelector(row){
+
+const div=document.getElementById("selector"+row);
+
+let html="";
+
+gifts.forEach(g=>{
+
+html+=`
+
+<div class="gift-card"
+
+onclick="selectGift(${row},'${g.code}')">
+
+<img src="${g.image || ''}">
+
+<h3>${g.name}</h3>
+
+<p>${g.points} نقطة</p>
+
+</div>
+
+`;
+
+});
+
+div.innerHTML=html;
+
 }
 </script>
 </body>
