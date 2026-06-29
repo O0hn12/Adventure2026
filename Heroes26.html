@@ -1284,6 +1284,44 @@ onclick="saveGiftOrder()">
 
   </button>
 
+      <div id="adminGiftEditBox" class="admin-box">
+
+<h3>✏️ تعديل طلب الهدايا</h3>
+
+<select id="editGiftClass" class="select-box">
+<option value="">-- اختر الفرقة --</option>
+<option value="1ب">1ب</option>
+<option value="2ب">2ب</option>
+<option value="3ب">3ب</option>
+<option value="4ب">4ب</option>
+<option value="5ب">5ب</option>
+<option value="6ب">6ب</option>
+</select>
+
+<input
+id="editGiftName"
+class="input-box"
+placeholder="اكتب اسم الطفل">
+
+<div
+id="editGiftSuggestions"
+class="suggestions-box">
+</div>
+
+<button
+class="main-btn btn-reaction"
+onclick="loadGiftOrder()">
+
+📄 عرض الطلب
+
+</button>
+
+<br><br>
+
+<div id="giftOrderEditor"></div>
+
+</div>
+
 </section>
     
   </main>
@@ -3260,6 +3298,102 @@ drawGiftCards();
 
     });
 
+}
+
+  function loadGiftOrder(){
+
+const cls=document.getElementById("editGiftClass").value;
+
+const name=document.getElementById("editGiftName").value.trim();
+
+fetch(`${scriptURL}?action=getGiftOrder&class=${cls}&name=${encodeURIComponent(name)}`)
+
+.then(r=>r.json())
+
+.then(data=>{
+
+let html="";
+
+data.order.forEach(item=>{
+
+html+=`
+
+<div class="gift-edit-card">
+
+<div>
+
+${item.name}
+
+</div>
+
+<div>
+
+${item.code}
+
+</div>
+
+<div>
+
+${item.points} نقطة
+
+</div>
+
+<input
+type="number"
+value="${item.qty}"
+id="qty${item.row}"
+class="input-box">
+
+<button
+
+class="main-btn btn-reaction"
+
+onclick="updateGiftQty(${item.row})">
+
+💾 تعديل
+
+</button>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("giftOrderEditor").innerHTML=html;
+
+});
+
+}
+
+  function updateGiftQty(row){
+
+const qty = document.getElementById("qty"+row).value;
+
+fetch(scriptURL,{
+    method:"POST",
+    headers:{
+        "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+
+        action:"updateGiftQty",
+
+        apiKey:API_KEY,
+
+        row:row,
+
+        qty:qty
+
+    })
+
+})
+.then(r=>r.json())
+.then(data=>{
+
+    showToast(data.message,data.success?"success":"error");
+
+});
 }
 </script>
 </body>
