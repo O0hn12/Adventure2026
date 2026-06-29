@@ -3354,12 +3354,30 @@ id="qty${item.row}"
 class="input-box">
 
 <button
-
 class="main-btn btn-reaction"
-
-onclick="showGiftSelector(${item.row})"
+onclick="showGiftSelector(${item.row})">
 
 ✏️ تغيير الهدية
+
+</button>
+
+<button
+class="main-btn"
+style="background:#f44336;margin-top:8px;"
+onclick="deleteGift(${item.row})">
+
+🗑 حذف الهدية
+
+</button>
+
+<div id="selector${item.row}" class="gift-selector"></div>
+
+<button
+class="main-btn"
+style="background:#4CAF50;margin-top:8px;"
+onclick="deliverOrder('${item.orderId}')">
+
+✅ تم التسليم
 
 </button>
 
@@ -3492,6 +3510,170 @@ onclick="selectGift(${row},'${g.code}')">
 });
 
 div.innerHTML=html;
+
+}
+
+  function showGiftSelector(row){
+
+const div = document.getElementById("selector"+row);
+
+let html = "";
+
+gifts.forEach(gift=>{
+
+html += `
+
+<div class="gift-card small-card"
+onclick="changeGift(${row},'${gift.code}')">
+
+<img src="${gift.image}">
+
+<h4>${gift.name}</h4>
+
+<p>${gift.code}</p>
+
+<p>⭐ ${gift.points}</p>
+
+</div>
+
+`;
+
+});
+
+div.innerHTML = html;
+
+}
+
+  function changeGift(row,newCode){
+
+fetch(scriptURL,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+action:"changeGift",
+
+apiKey:API_KEY,
+
+row:row,
+
+newCode:newCode
+
+})
+
+})
+
+.then(r=>r.json())
+
+.then(data=>{
+
+if(data.success){
+
+showToast("✅ تم تغيير الهدية","success");
+
+loadGiftOrder();
+
+}else{
+
+showToast(data.message,"error");
+
+}
+
+});
+
+}
+
+  function deleteGift(row){
+
+if(!confirm("هل تريد حذف هذه الهدية؟")) return;
+
+fetch(scriptURL,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+action:"deleteGift",
+
+apiKey:API_KEY,
+
+row:row
+
+})
+
+})
+
+.then(r=>r.json())
+
+.then(data=>{
+
+if(data.success){
+
+showToast("✅ تم حذف الهدية","success");
+
+loadGiftOrder();
+
+}else{
+
+showToast(data.message,"error");
+
+}
+
+});
+
+}
+
+  function deliverOrder(orderId){
+
+if(!confirm("تأكيد تسليم الطلب؟")) return;
+
+fetch(scriptURL,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+action:"deliverOrder",
+
+apiKey:API_KEY,
+
+orderId:orderId
+
+})
+
+})
+
+.then(r=>r.json())
+
+.then(data=>{
+
+if(data.success){
+
+showToast("✅ تم تسليم الطلب","success");
+
+// يمسح شاشة التعديل
+document.getElementById("giftOrderEditor").innerHTML="";
+
+}else{
+
+showToast(data.message,"error");
+
+}
+
+});
 
 }
 </script>
