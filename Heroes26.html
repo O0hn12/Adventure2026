@@ -3315,12 +3315,12 @@ const cls=document.getElementById("editGiftClass").value;
 
 const name=document.getElementById("editGiftName").value.trim();
 
-fetch(`${scriptURL}?action=getGiftOrder&class=${cls}&name=${encodeURIComponent(name)}`)
+fetch(`${scriptURL}?action=getGiftOrder&sheet=GiftOrders&class=${cls}&name=${encodeURIComponent(name)}`)
 
 .then(r=>r.json())
 
 .then(data=>{
-
+console.log(data);
 let html="";
 
 data.order.forEach(item=>{
